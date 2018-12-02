@@ -9,7 +9,22 @@
 		"updateBodies": "nodemon --exec babel-node src/index.js updateBodies",
 		"updateAll": "nodemon --exec babel-node src/index.js updateAll"
 	},
-	"author": "Vall (Vall @ Canonn discord)",
+	"author": {
+		"name": "Canonn R&D",
+		"email": "rd@canonn.technology",
+		"url": "https://canonn.science"
+	},
+	"maintainers": [
+		{
+			"name": "Vall",
+			"discord": "[R&D] Vall#4954"
+		},
+		{
+			"name": "dmehaffy",
+			"email": "dmehaffy@canonn.technology",
+			"url": "https://canonn.science"
+		}
+	],
 	"devDependencies": {
 		"babel-cli": "^6.26.0",
 		"babel-preset-env": "^1.7.0",
