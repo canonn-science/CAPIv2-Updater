@@ -14,6 +14,8 @@ export function queueUpdates(type, updateArray, fn) {
 	var keyArray = {};
 	var names = [];
 
+	const updateErrors = [];
+
 	if(type == 'systems') {
 
 		console.log('--- UPDATING SYSTEMS --- ');
@@ -24,7 +26,10 @@ export function queueUpdates(type, updateArray, fn) {
 
 		updateArray.forEach( (systemsBlock, i) => {
 			keyArray[i] = systemsBlock;
-			names.push(i);
+			
+			if( names.indexOf(i) == -1) {
+				names.push(i);
+			}
 		});
 
 	} else if( type == 'bodies' ) {
@@ -45,7 +50,9 @@ export function queueUpdates(type, updateArray, fn) {
 				keyArray[name] = [body];
 			}
 
-			names.push(name);
+			if( names.indexOf(name) == -1) {
+				names.push(name);
+			}
 		});
 
 	} else {
@@ -61,9 +68,9 @@ export function queueUpdates(type, updateArray, fn) {
 				let item = names[index++];
 				let nextQ = keyArray[ item ];
 	
-				console.log('['+index+'] ~~ Updating ['+item+']: '+nextQ.length+' '+type);
+				console.log('['+index+'/'+names.length+'] ~~ Updating '+item+': '+nextQ.length+' '+type);
 	
-				fn(item, nextQ).then( (r) => {
+				fn(item, nextQ, updateErrors).then( (r) => {
 
 					console.log('> Waiting '+EDSM_DELAY+'ms...');
 	
@@ -78,6 +85,21 @@ export function queueUpdates(type, updateArray, fn) {
 				console.log('');
 				console.log('------ UPDATE COMPLETE ------');
 				console.log('');
+
+				if(updateErrors.length > 0) {
+					console.log('');
+					console.log('------ UPDATE ERRORS FOUND ------');
+					console.log('');
+					updateErrors.forEach( error => {
+						console.log(' - System: ', error.system);
+						console.log(' - Body: ', error.body);
+						console.log(' - Reason: ', error.msg);
+						console.log('');
+					});
+					console.log('');
+					console.log('------ UPDATE ERRORS END ------');
+				}
+
 				resolve();
 			}
 			
@@ -87,17 +109,24 @@ export function queueUpdates(type, updateArray, fn) {
 
 }
 
-export function updateBodies(systemName, bodies) {
+export function updateBodies(systemName, bodies, errorsLog) {
 
 	return new Promise(function(resolve, reject) {
 
 		queryEDSMBodies(systemName).then( edsmBodies => {
 
+			// promise array for all bodies updates
+			var updateBodies = [];
+
+			var edsmBodyNames = [];
+
 			edsmBodies.forEach( edsmBody => {
 	
+				edsmBodyNames.push(edsmBody.name);
+
 				bodies.forEach( canonnBody => {
 		
-					if( canonnBody.bodyName.toUpperCase() == edsmBody.name.toUpperCase() ) {
+					if( canonnBody.bodyName.toUpperCase().trim() == edsmBody.name.toUpperCase().trim() ) {
 		
 						if(edsmBody.id) 							{ canonnBody.edsmID = edsmBody.id }
 						if(edsmBody.bodyId) 						{ canonnBody.bodyID = edsmBody.bodyId }
@@ -131,18 +160,46 @@ export function updateBodies(systemName, bodies) {
 						if(edsmBody.rotationalPeriodTidallyLocked) 	{ canonnBody.rotationalPeriodTidallyLocked = edsmBody.rotationalPeriodTidallyLocked }
 						if(edsmBody.axialTilt) 						{ canonnBody.axialTilt = edsmBody.axialTilt }
 		
-						//if(edsmBody.solidComposition) 				{ canonnBody.solidComposition = edsmBody.solidComposition }
-						//if(edsmBody.atmosphere) 					{ canonnBody.atmosphere = edsmBody.atmosphere }
-						//if(edsmBody.materials) 						{ canonnBody.material = edsmBody.materials }
-		
+						if(edsmBody.solidComposition) 				{ canonnBody.solidComposition = edsmBody.solidComposition }
+						if(edsmBody.atmosphere) 					{ canonnBody.atmosphere = edsmBody.atmosphere }
+						if(edsmBody.materials) 						{ canonnBody.material = edsmBody.materials }
+
 						updateBody(canonnBody);
 
+					} else {
+
+						canonnBody.scriptCheck = {
+							system: canonnBody.system.systemName,
+							body: canonnBody.bodyName,
+							error: true,
+							msg: 'Body not found. Either it\'s not on EDSM or It may be wrong designation. EDSM body names for this system: '+JSON.stringify(edsmBodyNames)
+						}
+						
 					}
 		
 				});
 			});
+
+			return Promise.all(updateBodies).then( r => {
+
+				bodies.forEach( body => {
+
+					if( body.scriptCheck && body.scriptCheck.error == true ) {
+
+						errorsLog.push({
+							system: body.scriptCheck.system,
+							body: body.scriptCheck.body,
+							msg: body.scriptCheck.msg
+						});
+
+						console.log(' < [EDSM][CANONN] Body not found: ', body.bodyName);
+					}
+				});
+
+				resolve();
+
+			});
 	
-		resolve();
 		//queryEDSMBodies end
 		});
 

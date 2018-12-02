@@ -3,19 +3,22 @@ const fetch = require("node-fetch");
 import systemsQL from '../schemas/systems.js';
 import bodiesQL from '../schemas/bodies.js';
 
-import { API_CANONN_STEP } from '../settings.js';
+import { 
+	API_CANONN_STEP,
+	API_CANONN_GRAPHQL,
+	API_CANONN_REST
+} from '../settings.js';
 
-const API_AUTH = 'https://api.canonn.tech:2053/auth/local';
-const API_GRAPHQL = 'https://api.canonn.tech:2083/graphql';
-const API_UPDATE_SYSTEM = 'https://api.canonn.tech:2083/systems/';
-const API_UPDATE_BODY = 'https://api.canonn.tech:2083/bodies/';
+const API_AUTH = API_CANONN_REST+'/auth/local';
+const API_UPDATE_SYSTEM = API_CANONN_REST+'/systems/';
+const API_UPDATE_BODY = API_CANONN_REST+'/bodies/';
 
 const pullData = {};
 var TOKEN = null;
 
 export function authenticate(username, password) {
 
-	console.log('Authenticating with Canonn API...')
+	console.log('Authenticating with Canonn API...');
 
 	const options = {
 		method: 'POST',
@@ -47,7 +50,7 @@ export function authenticate(username, password) {
 			}
 	
 		} else if(r.status == 400) {
-			console.log('[FORBIDDEN] Authentication failed. Check your usernam/password in .env');
+			console.log('[FORBIDDEN] Authentication failed. Check your username/password in .env');
 			console.log('[FORBIDDEN] or contact someone somewhere.');
 			console.log('............................................');
 		} else {
@@ -62,13 +65,12 @@ function fetchQLData(resolve, reject, counter = 0, query, qlNode) {
 
 	const step = API_CANONN_STEP;
 
-	const API_URL = 'https://api.canonn.tech:2083/graphql';
 	const options = {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' }
 	}
 
-	fetch(API_URL, {
+	fetch(API_CANONN_GRAPHQL, {
 		...options,
 		body: JSON.stringify({
 			query: query(step, counter)
@@ -112,13 +114,11 @@ export function getBodies() {
 
 export function updateBody(body) {
 
-	console.log(' > [CANONN] Updating body... ', body.bodyName);
-	console.log(' > TOKEN ', TOKEN);
-
 	// Get rid of unneeded fields.
 	const payload = {...body};
 		delete payload.bodyName;
 		delete payload.id;
+		delete payload.scripCheck;
 
 	const options = {
 		method: 'PUT',
@@ -131,15 +131,11 @@ export function updateBody(body) {
 
 	return fetch(API_UPDATE_BODY+body.id, options).then(r => {
 
-		console.log('')
-		console.log('response')
-		console.log(r);
-		console.log('')
-
 		if(r.status == 200) {
 	
 			try {
-				const resp = r.json();
+				console.log(' < [CANONN] ('+body.bodyName+') Ok...');
+				return r.json();
 
 			} catch(e) {
 				console.log(' < [CANONN] ERROR on saving to Canonn API: ');
