@@ -28,12 +28,12 @@ export function queryEDSMSystems(systems) {
 				console.log('');
 				console.log(' < [EDSM] on request:');
 				console.log('');
-				console.log(r)
+				console.log(r);
 
 			}
 
 		}).then( r=> {
-			console.log(' < [EDSM] Ok...')
+			console.log(' < [EDSM] Ok...');
 			resolve(r.systems);
 		});
 
@@ -63,12 +63,12 @@ export function queryEDSMBodies(systemName) {
 				console.log('');
 				console.log(' < [EDSM] on request:');
 				console.log('');
-				console.log(r)
+				console.log(r);
 
 			}
 
 		}).then( r=> {
-			console.log(' < [EDSM] Ok...')
+			console.log(' < [EDSM] Ok...');
 			resolve(r.bodies);
 		});
 
