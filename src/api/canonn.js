@@ -29,7 +29,7 @@ export function authenticate(username, password) {
 			identifier: username,
 			password: password
 		})
-	}
+	};
 
 	return fetch(API_AUTH, options).then(r => {
 		if(r.status == 200) {
@@ -68,7 +68,7 @@ function fetchQLData(resolve, reject, counter = 0, query, qlNode) {
 	const options = {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' }
-	}
+	};
 
 	fetch(API_CANONN_GRAPHQL, {
 		...options,

@@ -45,7 +45,7 @@ export function queueUpdates(type, updateArray, fn) {
 			// Then to each system name we're adding bodies that
 			// are inside that system
 			if( keyArray[name] ) {
-				keyArray[name].push( body )
+				keyArray[name].push( body );
 			} else {
 				keyArray[name] = [body];
 			}

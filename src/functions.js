@@ -49,6 +49,6 @@ export function pullAPIData() {
 // returns time in minutes
 export function timeToUpdate(systems, bodies) {
 
-	return Math.ceil( bodies.length*(EDSM_DELAY/1000)/60 ) + Math.ceil( systems.length/EDSM_MAX_CALL_STACK*(EDSM_DELAY/1000)/60 )
+	return Math.ceil( bodies.length*(EDSM_DELAY/1000)/60 ) + Math.ceil( systems.length/EDSM_MAX_CALL_STACK*(EDSM_DELAY/1000)/60 );
 
 }

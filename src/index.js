@@ -20,7 +20,7 @@ var forceUpdate = false;
 var systems = [];
 var systemsToUpdate = [];
 
-var bodies = []
+var bodies = [];
 var bodiesToUpdate = [];
 
 /* Script start */
@@ -56,7 +56,7 @@ pullAPIData().then( result => {
 		console.log('+ SYSTEMS');
 		console.log('   Total: ', systems.length);
 		console.log('   Candidates for update: ', systemsToUpdate.length);
-		console.log('')
+		console.log('');
 		console.log('+ BODIES');
 		console.log('   Total: ', bodies.length);
 		console.log('   Candidates for update: ', bodiesToUpdate.length);
@@ -66,7 +66,7 @@ pullAPIData().then( result => {
 		console.log('   updateSystems: '+timeToUpdate(systemsToUpdate, [])+'+ min' );
 		console.log('   updateBodies: '+timeToUpdate([], bodiesToUpdate)+'+ min' );
 		console.log('   updateAll: '+timeToUpdate(systemsToUpdate, bodiesToUpdate)+'+ min' );
-		console.log('')
+		console.log('');
 		console.log('   + forceUpdate (update all systems/bodies)');
 		console.log('   updateSystems: '+timeToUpdate(systems, [])+'+ min' );
 		console.log('   updateBodies: '+timeToUpdate([], bodies)+'+ min' );
