@@ -117,67 +117,70 @@ export function updateBodies(systemName, bodies, errorsLog) {
 
 			// promise array for all bodies updates
 			var updateBodies = [];
-
-			var edsmBodyNames = [];
+			var edsmBodiesObj = {};
 
 			edsmBodies.forEach( edsmBody => {
-	
-				edsmBodyNames.push(edsmBody.name);
+				let edmsBodyName = edsmBody.name.trim().toUpperCase();
+				edsmBodiesObj[ edmsBodyName ] = edsmBody;
+			});
 
-				bodies.forEach( canonnBody => {
+			bodies.forEach( canonnBody => {
+
+				let edsmBody = edsmBodiesObj[ canonnBody.bodyName.trim().toUpperCase() ];
 		
-					if( canonnBody.bodyName.toUpperCase().trim() == edsmBody.name.toUpperCase().trim() ) {
+				if( edsmBody ) {
 		
-						if(edsmBody.id) 							{ canonnBody.edsmID = edsmBody.id }
-						if(edsmBody.bodyId) 						{ canonnBody.bodyID = edsmBody.bodyId }
-						if(edsmBody.id64) 							{ canonnBody.id64 = edsmBody.id64 }
-						if(edsmBody.type) 							{ canonnBody.type = edsmBody.type }
-						if(edsmBody.subType) 						{ canonnBody.subType = edsmBody.subType }
-						if(edsmBody.offset) 						{ canonnBody.offset = edsmBody.offset }
-						if(edsmBody.distanceToArrival) 				{ canonnBody.distanceToArrival = edsmBody.distanceToArrival }
-						if(edsmBody.isMainStar) 					{ canonnBody.isMainStar = edsmBody.isMainStar }
-						if(edsmBody.isScoopable) 					{ canonnBody.isScoopable = edsmBody.isScoopable }
-						if(edsmBody.isLandable) 					{ canonnBody.isLandable = edsmBody.isLandable }
-						if(edsmBody.age) 							{ canonnBody.age = edsmBody.age }
-						if(edsmBody.luminosity) 					{ canonnBody.luminosity = edsmBody.luminosity }
-						if(edsmBody.absoluteMagnitude) 				{ canonnBody.absoluteMagnitude = edsmBody.absoluteMagnitude }
-						if(edsmBody.solarMasses) 					{ canonnBody.solarMasses = edsmBody.solarMasses }
-						if(edsmBody.solarRadius) 					{ canonnBody.solarRadius = edsmBody.solarRadius }
-						if(edsmBody.gravity) 						{ canonnBody.gravity = edsmBody.gravity }
-						if(edsmBody.earthMasses) 					{ canonnBody.earthMasses = edsmBody.earthMasses }
-						if(edsmBody.radius) 						{ canonnBody.radius = edsmBody.radius }
-						if(edsmBody.surfaceTemperature) 			{ canonnBody.surfaceTemperature = edsmBody.surfaceTemperature }
-						if(edsmBody.surfacePressure) 				{ canonnBody.surfacePressure = edsmBody.surfacePressure }
-						if(edsmBody.volcanismType) 					{ canonnBody.volcanismType = edsmBody.volcanismType }
-						if(edsmBody.atmosphereType) 				{ canonnBody.atmosphereType = edsmBody.atmosphereType }
-						if(edsmBody.terraformingState) 				{ canonnBody.terraformingState = edsmBody.terraformingState }
-						if(edsmBody.orbitalPeriod) 					{ canonnBody.orbitalPeriod = edsmBody.orbitalPeriod }
-						if(edsmBody.semiMajorAxis) 					{ canonnBody.semiMajorAxis = edsmBody.semiMajorAxis }
-						if(edsmBody.orbitalEccentricity) 			{ canonnBody.orbitalEccentricity = edsmBody.orbitalEccentricity }
-						if(edsmBody.orbitalInclination) 			{ canonnBody.orbitalInclination = edsmBody.orbitalInclination }
-						if(edsmBody.argOfPeriapsis) 				{ canonnBody.argOfPeriapsis = edsmBody.argOfPeriapsis }
-						if(edsmBody.rotationalPeriod) 				{ canonnBody.rotationalPeriod = edsmBody.rotationalPeriod }
-						if(edsmBody.rotationalPeriodTidallyLocked) 	{ canonnBody.rotationalPeriodTidallyLocked = edsmBody.rotationalPeriodTidallyLocked }
-						if(edsmBody.axialTilt) 						{ canonnBody.axialTilt = edsmBody.axialTilt }
+					if(edsmBody.id) 							{ canonnBody.edsmID = edsmBody.id }
+					if(edsmBody.bodyId) 						{ canonnBody.bodyID = edsmBody.bodyId }
+					if(edsmBody.id64) 							{ canonnBody.id64 = edsmBody.id64 }
+					if(edsmBody.type) 							{ canonnBody.type = edsmBody.type }
+					if(edsmBody.subType) 						{ canonnBody.subType = edsmBody.subType }
+					if(edsmBody.offset) 						{ canonnBody.offset = edsmBody.offset }
+					if(edsmBody.distanceToArrival) 				{ canonnBody.distanceToArrival = edsmBody.distanceToArrival }
+					if(edsmBody.isMainStar) 					{ canonnBody.isMainStar = edsmBody.isMainStar }
+					if(edsmBody.isScoopable) 					{ canonnBody.isScoopable = edsmBody.isScoopable }
+					if(edsmBody.isLandable) 					{ canonnBody.isLandable = edsmBody.isLandable }
+					if(edsmBody.age) 							{ canonnBody.age = edsmBody.age }
+					if(edsmBody.luminosity) 					{ canonnBody.luminosity = edsmBody.luminosity }
+					if(edsmBody.absoluteMagnitude) 				{ canonnBody.absoluteMagnitude = edsmBody.absoluteMagnitude }
+					if(edsmBody.solarMasses) 					{ canonnBody.solarMasses = edsmBody.solarMasses }
+					if(edsmBody.solarRadius) 					{ canonnBody.solarRadius = edsmBody.solarRadius }
+					if(edsmBody.gravity) 						{ canonnBody.gravity = edsmBody.gravity }
+					if(edsmBody.earthMasses) 					{ canonnBody.earthMasses = edsmBody.earthMasses }
+					if(edsmBody.radius) 						{ canonnBody.radius = edsmBody.radius }
+					if(edsmBody.surfaceTemperature) 			{ canonnBody.surfaceTemperature = edsmBody.surfaceTemperature }
+					if(edsmBody.surfacePressure) 				{ canonnBody.surfacePressure = edsmBody.surfacePressure }
+					if(edsmBody.volcanismType) 					{ canonnBody.volcanismType = edsmBody.volcanismType }
+					if(edsmBody.atmosphereType) 				{ canonnBody.atmosphereType = edsmBody.atmosphereType }
+					if(edsmBody.terraformingState) 				{ canonnBody.terraformingState = edsmBody.terraformingState }
+					if(edsmBody.orbitalPeriod) 					{ canonnBody.orbitalPeriod = edsmBody.orbitalPeriod }
+					if(edsmBody.semiMajorAxis) 					{ canonnBody.semiMajorAxis = edsmBody.semiMajorAxis }
+					if(edsmBody.orbitalEccentricity) 			{ canonnBody.orbitalEccentricity = edsmBody.orbitalEccentricity }
+					if(edsmBody.orbitalInclination) 			{ canonnBody.orbitalInclination = edsmBody.orbitalInclination }
+					if(edsmBody.argOfPeriapsis) 				{ canonnBody.argOfPeriapsis = edsmBody.argOfPeriapsis }
+					if(edsmBody.rotationalPeriod) 				{ canonnBody.rotationalPeriod = edsmBody.rotationalPeriod }
+					if(edsmBody.rotationalPeriodTidallyLocked) 	{ canonnBody.rotationalPeriodTidallyLocked = edsmBody.rotationalPeriodTidallyLocked }
+					if(edsmBody.axialTilt) 						{ canonnBody.axialTilt = edsmBody.axialTilt }
 		
-						if(edsmBody.solidComposition) 				{ canonnBody.solidComposition = edsmBody.solidComposition }
-						if(edsmBody.atmosphere) 					{ canonnBody.atmosphere = edsmBody.atmosphere }
-						if(edsmBody.materials) 						{ canonnBody.material = edsmBody.materials }
+					if(edsmBody.solidComposition) 				{ canonnBody.solidComposition = edsmBody.solidComposition }
+					if(edsmBody.atmosphere) 					{ canonnBody.atmosphere = edsmBody.atmosphere }
+					if(edsmBody.materials) 						{ canonnBody.material = edsmBody.materials }
 
-						updateBody(canonnBody);
+					updateBodies.push( updateBody(canonnBody) );
 
-					} else {
+				} else {
 
-						canonnBody.scriptCheck = {
-							system: canonnBody.system.systemName,
-							body: canonnBody.bodyName,
-							error: true,
-							msg: 'Body not found. Either it\'s not on EDSM or It may be wrong designation. EDSM body names for this system: '+JSON.stringify(edsmBodyNames)
-						}
-						
+					console.log(' < [CANONN, EDSM] Body not found: ', canonnBody.bodyName);
+
+					canonnBody.scriptCheck = {
+						system: canonnBody.system.systemName,
+						body: canonnBody.bodyName,
+						error: true,
+						msg: 'Body not found. Either it\'s not on EDSM or It may be wrong designation.'
 					}
+
+				}
 		
-				});
 			});
 
 			return Promise.all(updateBodies).then( r => {
@@ -192,7 +195,6 @@ export function updateBodies(systemName, bodies, errorsLog) {
 							msg: body.scriptCheck.msg
 						});
 
-						console.log(' < [EDSM][CANONN] Body not found: ', body.bodyName);
 					}
 				});
 
