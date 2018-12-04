@@ -7,11 +7,11 @@ Nodejs based tool to update the Canonn API with planetary and stellar data from 
 - [Canonn-EDSM-Updater](#canonn-edsm-updater)
     - [Requirements](#requirements)
     - [Setup](#setup)
-        - [Settings.js](#settingsjs)
-            - [API_CANONN_STEP](#api_canonn_step)
-            - [EDSM_MAX_CALL_STACK](#edsm_max_call_stack)
-            - [API_CANONN_REST](#api_canonn_rest)
+    - [Settings.js](#settingsjs)
+    - [Usage](#usage)
+        - [status](#status)
         - [updateSystems](#updatesystems)
+        - [updateBodies](#updatebodies)
         - [updateAll](#updateall)
 
 <!-- /TOC -->
@@ -27,70 +27,52 @@ Nodejs based tool to update the Canonn API with planetary and stellar data from 
 - create `.env` file in main repository directory (See .env.example)
 - Build the package with `npm run build`
 
-### Settings.js
+## Settings.js
 
-#### API_CANONN_STEP
+Configuration options for the CAPIv2-Updater
 
-```API_CANONN_STEP = 1000;```
+```javascript
+// Maximum limit of results for Canonn GraphQL API. Consult your Canonn API admin for more information.
+// Default: 1000
+export const API_CANONN_STEP = 1000; 
 
-Maximum limit of results for Canonn GraphQL API. Consult your Canonn API admin for more information.
+// Delay [ms] between EDSM API calls. If it's too small you may get banned from EDSM.
+// Default: 3000
+export const EDSM_DELAY = 1500;
 
-Default: 1000
+// Maximum number of Systems pulled in one API call. If it's too big, you may get banned from EDSM.
+// Default: 25
+export const EDSM_MAX_CALL_STACK = 25;
 
-#### EDSM_DELAY
+// Canonn GraphQL server you are trying to reach for updates.
+// Default: Canonn Development server
+export const API_CANONN_GRAPHQL = 'https://api.canonn.tech:2083/graphql';
 
-```EDSM_DELAY = 3000;```
+// Canonn REST server the data will be saved to.
+// Default: Canonn Development server
+export const API_CANONN_REST = 'https://api.canonn.tech:2083';
+```
 
-Delay [ms] between EDSM API calls. If it's too small you may get banned from EDSM.
+## Usage
 
-Default: 3000
-
-#### EDSM_MAX_CALL_STACK
-
-```EDSM_MAX_CALL_STACK = 25```
-
-Maximum number of Systems pulled in one API call. If it's too big, you may get banned from EDSM.
-
-Default: 25
-
-#### API_CANONN_GRAPHQL
-
-```API_CANONN_GRAPHQL = 'https://api.canonn.tech:2083/graphql';```
-
-Canonn GraphQL server you are trying to reach for updates.
-
-Default: Canonn Development server
-
-#### API_CANONN_REST
-
-```API_CANONN_REST = 'https://api.canonn.tech:2083';```
-
-Canonn REST server the data will be saved to.
-
-Default: Canonn Development server
-
-## Running
+These are the following commands for running the updater after being built
 
 ### status
 
-```npm run status```
-
+`npm run status`
 Displays basic status of Canonn API
 
 ### updateSystems
 
-```npm run updateSystems```
-
+`npm run updateSystems`
 Update all Systems that are candidates
 
 ### updateBodies
 
-```npm run updateBodies```
-
+`npm run updateBodies`
 Update all Bodies that are candidates
 
 ### updateAll
 
-```npm run updateAll```
-
+`npm run updateAll`
 Update all systems that are candidates
