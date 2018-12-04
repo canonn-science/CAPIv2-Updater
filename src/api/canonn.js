@@ -65,19 +65,15 @@ function fetchQLData(resolve, reject, counter = 0, query, qlNode) {
 
 	const step = API_CANONN_STEP;
 
-	const options = {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' }
-	};
-
 	fetch(API_CANONN_GRAPHQL, {
-		...options,
+		
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
 			query: query(step, counter)
 		})
-	})
-	.then( r => r.json() )
-	.then( r => { 
+
+	}).then( r => r.json() ).then( r => { 
 	
 		pullData[qlNode].push( ...r.data[qlNode] );
 
@@ -135,6 +131,48 @@ export function updateBody(body) {
 	
 			try {
 				console.log(' < [CANONN] ('+body.bodyName+') Ok...');
+				return r.json();
+
+			} catch(e) {
+				console.log(' < [CANONN] ERROR on saving to Canonn API: ');
+				console.log('');
+				console.log('  Error:', e);
+				console.log('');
+				console.log('  Payload:', payload);
+				console.log('');
+			}
+	
+		} else {
+			console.log(' < [CANONN] ERROR Response status ', r.status);
+		}
+
+	});
+
+}
+
+export function updateSystem(system) {
+
+	// Get rid of unneeded fields.
+	const payload = {...system};
+		delete payload.systemName;
+		delete payload.id;
+		delete payload.scripCheck;
+
+	const options = {
+		method: 'PUT',
+		headers: { 
+			'Content-Type': 'application/json',
+			'Authorization': 'Bearer '+TOKEN
+		},
+		system: JSON.stringify(payload)
+	}
+
+	return fetch(API_UPDATE_SYSTEM+system.id, options).then(r => {
+
+		if(r.status == 200) {
+	
+			try {
+				console.log(' < [CANONN] ('+system.systemName+') Ok...');
 				return r.json();
 
 			} catch(e) {

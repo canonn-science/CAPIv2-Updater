@@ -5,7 +5,8 @@ import { EDSM_DELAY, EDSM_MAX_CALL_STACK } from './settings.js';
 
 import { 
 	queueUpdates,
-	updateBodies
+	updateBodies,
+	updateSystems
 } from './updater.js';
 
 import {
@@ -92,20 +93,23 @@ pullAPIData().then( result => {
 				if(forceUpdate) {
 	
 					console.log('');
-					console.log('Updating ALL Systems ['+result.systems.length+'] and ALL Bodies ['+result.bodies.length+']');
-					console.log('Approximate time to finish: '+timeToUpdate(result.systems, result.bodies)+' min' );
+					console.log('[i] Updating ALL Systems ['+systemsToUpdate.length+'] and ALL Bodies ['+bodiesToUpdate.length+']');
+					console.log('Approximate time to finish: '+timeToUpdate(systemsToUpdate, bodiesToUpdate)+' min' );
 					console.log('');
 	
 				} else {
 	
 					console.log('');
-					console.log('Updating ['+result.systemsUpdate.length+'] Systems and ['+result.bodiesUpdate.length+'] Bodies.');
-					console.log('Approximate time to finish: '+timeToUpdate(result.systemsUpdate, result.bodiesUpdate)+' min' );
+					console.log('[i] Updating ['+systemsToUpdate.length+'] Systems and ['+bodiesToUpdate.length+'] Bodies.');
+					console.log('Approximate time to finish: '+timeToUpdate(systemsToUpdate, bodiesToUpdate)+' min' );
 					console.log('');
 	
 					queueUpdates('bodies', bodiesToUpdate, updateBodies).then( r=> {
-						console.log('Bodies complete, proceeding to systems');
-						//queueUpdates('systems', systemsToUpdate, updateSystems);
+						console.log('');
+						console.log('~~~~ Bodies complete, proceeding to Systems');
+						console.log('');
+
+						queueUpdates('systems', systemsToUpdate, updateSystems);
 					});
 	
 				}
@@ -117,14 +121,24 @@ pullAPIData().then( result => {
 	
 			authenticate(process.env.API_USERNAME, process.env.API_PASSWORD).then( (token) => { 
 	
-				console.log('[i] Updating all Systems that are considered for update.');
+				console.log('[i] Updating ['+systemsToUpdate.length+'] Systems.');
+				console.log('Approximate time to finish: '+timeToUpdate(systemsToUpdate, [])+' min' );
+				console.log('');
+
+				queueUpdates('systems', systemsToUpdate, updateSystems);
+
 			});
 			
 		} else if( runArgs.indexOf('updateBodies') != -1 ) {
 	
 			authenticate(process.env.API_USERNAME, process.env.API_PASSWORD).then( (token) => {
 	
-				console.log('[i] Updating all Bodies that are considered for update.');
+				console.log('[i] Updating ['+bodiesToUpdate.length+'] Bodies.');
+				console.log('Approximate time to finish: '+timeToUpdate([], bodiesToUpdate)+' min' );
+				console.log('');
+
+				queueUpdates('bodies', bodiesToUpdate, updateBodies);
+
 			});
 			
 		} else {

@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
 
 const API_SYSTEM = 'https://www.edsm.net/api-system-v1/bodies';
-const API_SYSTEMS = 'https://www.edsm.net/api-v1/systems?showId&showCoordinates';
+const API_SYSTEMS = 'https://www.edsm.net/api-v1/systems';
 
 import { updateBody, updateSystem } from './canonn.js';
 
@@ -10,10 +10,20 @@ export function queryEDSMSystems(systems) {
 
 	return new Promise(function(resolve, reject) {
 
-		console.log(' > [EDSM] Fetching...', systemName);
+		console.log(' > [EDSM] Fetching systems...');
+		console.log('');
+		console.log(systems);
+		console.log('');
 
-		fetch(API_SYSTEMS+'&systemName='+systemName, {
-			method: 'GET'
+		fetch(API_SYSTEMS, {
+			method: 'POST',
+			headers: { 
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				systemName: systems,
+				showCoordinates: true
+			})
 		}).then(r => {
 
 			try {
@@ -34,7 +44,7 @@ export function queryEDSMSystems(systems) {
 
 		}).then( r=> {
 			console.log(' < [EDSM] Ok...')
-			resolve(r.systems);
+			resolve(r);
 		});
 
 	});

@@ -52,3 +52,18 @@ export function timeToUpdate(systems, bodies) {
 	return Math.ceil( bodies.length*(EDSM_DELAY/1000)/60 ) + Math.ceil( systems.length/EDSM_MAX_CALL_STACK*(EDSM_DELAY/1000)/60 );
 
 }
+
+// split an array to array-chunks of set size
+export function chunkArray(array, chunk_size = EDSM_MAX_CALL_STACK){
+    let index = 0;
+    const arrayLength = array.length;
+    let tempArray = [];
+    
+    for (index = 0; index < arrayLength; index += chunk_size) {
+        let chunk = array.slice(index, index+chunk_size);
+
+        tempArray.push(chunk);
+    }
+
+    return tempArray;
+}

@@ -1,6 +1,7 @@
 import { EDSM_DELAY, EDSM_MAX_CALL_STACK } from './settings.js';
 import { queryEDSMBodies, queryEDSMSystems } from './api/edsm.js';
 import { updateBody, updateSystem } from './api/canonn.js';
+import { chunkArray } from './functions.js';
 
 /*
 	Set up a queue for bodies or systems
@@ -24,11 +25,14 @@ export function queueUpdates(type, updateArray, fn) {
 		// systems are passed in as blocks (arrays) of 
 		// EDSM_MAX_CALL_STACK systems at one call.
 
-		updateArray.forEach( (systemsBlock, i) => {
-			keyArray[i] = systemsBlock;
+		let chunks = chunkArray(updateArray);
+
+		chunks.forEach( (systemsBlock, i) => {
+
+			keyArray['CHUNK ['+i+']'] = systemsBlock;
 			
 			if( names.indexOf(i) == -1) {
-				names.push(i);
+				names.push('CHUNK ['+i+']');
 			}
 		});
 
@@ -176,7 +180,7 @@ export function updateBodies(systemName, bodies, errorsLog) {
 						system: canonnBody.system.systemName,
 						body: canonnBody.bodyName,
 						error: true,
-						msg: 'Body not found. Either it\'s not on EDSM or It may be wrong designation.'
+						msg: 'Body not found. Either it\'s not on EDSM or It may be wrong designation. (A 2 B instead of 2 B)'
 					}
 
 				}
@@ -207,6 +211,56 @@ export function updateBodies(systemName, bodies, errorsLog) {
 
 	});
 
-	
+}
+
+
+export function updateSystems(index, systemsChunk, errorsLog) {
+
+	return new Promise(function(resolve, reject) {
+
+		var edsmSystemNames = [];
+
+		systemsChunk.forEach( system => {
+			edsmSystemNames.push( system.systemName.toUpperCase() );
+		});
+
+		queryEDSMSystems(edsmSystemNames).then( edsmSystems => {
+
+			var updateSystems = [];
+			var edsmSystemsObj = {};
+
+			edsmSystems.forEach( edsmSystem => {
+				let edmsSystemName = edsmSystem.name.trim().toUpperCase();
+				edsmSystemsObj[ edmsSystemName ] = edsmSystem;
+			});
+
+			systemsChunk.forEach( canonnSystem => {
+
+				let edsmSystem = edsmSystemsObj[ canonnSystem.systemName.trim().toUpperCase() ];
+
+				if(edsmSystem) {
+
+					if(edsmSystem.id64) 		{ canonnSystem.id64 = edsmSystem.id64 }
+
+					if(edsmSystem.coords) 		{ 
+													canonnSystem.edsmCoordX = edsmSystem.coords.x; 
+					 								canonnSystem.edsmCoordX = edsmSystem.coords.y;
+					 								canonnSystem.edsmCoordX = edsmSystem.coords.z;
+												}
+
+					if(edsmSystem.coordsLocked) { canonnSystem.edsmCoordLocked = edsmSystem.coordsLocked }
+
+					updateSystems.push( updateSystem(canonnSystem) );
+				}
+
+			});
+
+			return Promise.all(updateSystems).then( r => {
+				resolve();
+			});
+
+		});
+
+	});
 
 }
