@@ -9,7 +9,11 @@
 		"status": "node build/index.js status",
 		"updateSystems": "node build/index.js updateSystems",
 		"updateBodies": "node build/index.js updateBodies",
-		"updateAll": "node build/index.js updateAll"
+		"updateAll": "node build/index.js updateAll",
+		"status:dev": "nodemon --exec babel-node src/index.js status",
+		"updateSystems:dev": "nodemon --exec babel-node src/index.js updateSystems",
+		"updateBodies:dev": "nodemon --exec babel-node src/index.js updateBodies",
+		"updateAll:dev": "nodemon --exec babel-node src/index.js updateAll"
 	},
 	"devDependencies": {
 		"babel-cli": "^6.26.0",
