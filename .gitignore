@@ -1,4 +1,11 @@
+## Generated files
+/build
 /.env
 /node_modules
 /package-lock.json
+
+## Testing and dumps
 /errors.txt
+
+## Environment & IDE files
+\.eslintrc\.js

@@ -4,10 +4,12 @@
 	"description": "Nodejs based tool to update the Canonn API with planetary and stellar data from EDSM",
 	"main": "index.js",
 	"scripts": {
-		"status": "nodemon --exec babel-node src/index.js status",
-		"updateSystems": "nodemon --exec babel-node src/index.js updateSystems",
-		"updateBodies": "nodemon --exec babel-node src/index.js updateBodies",
-		"updateAll": "nodemon --exec babel-node src/index.js updateAll"
+		"clean": "rm -rf build && mkdir build",
+		"build": "npm run clean && babel src -d build",
+		"status": "node build/index.js status",
+		"updateSystems": "node build/index.js updateSystems",
+		"updateBodies": "node build/index.js updateBodies",
+		"updateAll": "node build/index.js updateAll"
 	},
 	"devDependencies": {
 		"babel-cli": "^6.26.0",
