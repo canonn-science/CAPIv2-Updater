@@ -1,4 +1,4 @@
-# Canonn-EDSM-Updater
+# CAPIv2-Updater
 
 Nodejs based tool to update the Canonn API with planetary and stellar data from EDSM
 
@@ -6,7 +6,7 @@ Nodejs based tool to update the Canonn API with planetary and stellar data from 
 
 <!-- TOC -->
 
-- [Canonn-EDSM-Updater](#canonn-edsm-updater)
+- [CAPIv2-Updater](#capiv2-updater)
     - [Requirements](#requirements)
     - [Setup](#setup)
     - [Settings.js](#settingsjs)
