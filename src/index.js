@@ -93,9 +93,17 @@ pullAPIData().then( result => {
 				if(forceUpdate) {
 	
 					console.log('');
-					console.log('[i] Updating ALL Systems ['+systemsToUpdate.length+'] and ALL Bodies ['+bodiesToUpdate.length+']');
-					console.log('Approximate time to finish: '+timeToUpdate(systemsToUpdate, bodiesToUpdate)+' min' );
+					console.log('[i] Updating ALL Systems ['+systems.length+'] and ALL Bodies ['+bodies.length+']');
+					console.log('Approximate time to finish: '+timeToUpdate(systems, bodies)+' min' );
 					console.log('');
+
+					queueUpdates('bodies', bodies, updateBodies).then( r=> {
+						console.log('');
+						console.log('~~~~ Bodies complete, proceeding to Systems');
+						console.log('');
+
+						queueUpdates('systems', systems, updateSystems);
+					});
 	
 				} else {
 	
@@ -119,25 +127,49 @@ pullAPIData().then( result => {
 			
 		} else if( runArgs.indexOf('updateSystems') != -1 ) {
 	
-			authenticate(process.env.API_USERNAME, process.env.API_PASSWORD).then( (token) => { 
-	
-				console.log('[i] Updating ['+systemsToUpdate.length+'] Systems.');
-				console.log('Approximate time to finish: '+timeToUpdate(systemsToUpdate, [])+' min' );
-				console.log('');
+			authenticate(process.env.API_USERNAME, process.env.API_PASSWORD).then( (token) => {
 
-				queueUpdates('systems', systemsToUpdate, updateSystems);
+				if(forceUpdate) {
+
+					console.log('[i] Updating ['+systems.length+'] Systems.');
+					console.log('Approximate time to finish: '+timeToUpdate(systems, [])+' min' );
+					console.log('');
+
+					queueUpdates('systems', systems, updateSystems);
+
+				} else {
+
+					console.log('[i] Updating ['+systemsToUpdate.length+'] Systems.');
+					console.log('Approximate time to finish: '+timeToUpdate(systemsToUpdate, [])+' min' );
+					console.log('');
+
+					queueUpdates('systems', systemsToUpdate, updateSystems);
+
+				}
 
 			});
 			
 		} else if( runArgs.indexOf('updateBodies') != -1 ) {
 	
 			authenticate(process.env.API_USERNAME, process.env.API_PASSWORD).then( (token) => {
-	
-				console.log('[i] Updating ['+bodiesToUpdate.length+'] Bodies.');
-				console.log('Approximate time to finish: '+timeToUpdate([], bodiesToUpdate)+' min' );
-				console.log('');
 
-				queueUpdates('bodies', bodiesToUpdate, updateBodies);
+				if(forceUpdate) {
+
+					console.log('[i] Updating ['+bodies.length+'] Bodies.');
+					console.log('Approximate time to finish: '+timeToUpdate([], bodies)+' min' );
+					console.log('');
+
+					queueUpdates('bodies', bodies, updateBodies);
+
+				} else {
+
+					console.log('[i] Updating ['+bodiesToUpdate.length+'] Bodies.');
+					console.log('Approximate time to finish: '+timeToUpdate([], bodiesToUpdate)+' min' );
+					console.log('');
+
+					queueUpdates('bodies', bodiesToUpdate, updateBodies);
+
+				}
 
 			});
 			
