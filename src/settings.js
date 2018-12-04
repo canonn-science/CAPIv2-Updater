@@ -22,3 +22,9 @@ export const API_CANONN_REST = 'https://api.canonn.fyi';
 export const ARG_SYSTEMS_STRING='systems=';
 export const ARG_BODIES_STRING='bodies=';
 
+// Main run arguments
+export const UPDATE_STATUS = 'status';
+export const UPDATE_ALL = 'updateAll';
+export const UPDATE_SYSTEMS = 'updateSystems';
+export const UPDATE_BODIES = 'updateBodies';
+export const UPDATE_FORCE = 'forceUpdate';

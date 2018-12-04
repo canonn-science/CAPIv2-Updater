@@ -15,6 +15,14 @@ import {
 	parseArgArray
 } from './functions.js';
 
+import {
+	UPDATE_STATUS,
+	UPDATE_ALL,
+	UPDATE_SYSTEMS,
+	UPDATE_BODIES,
+	UPDATE_FORCE
+} from './settings.js';
+
 /* Run arguments */
 const runArgs = [];
 var forceUpdate = false;
@@ -46,72 +54,11 @@ pullAPIData().then( result => {
 	systems = result.systems;
 	systemsToUpdate = result.systemsUpdate;
 
-	if(updateOverride.systems.length > 0) {
-
-		console.log('');
-		console.log('[WARNING] Systems override from runtime:');
-
-		systemsToUpdate = updateOverride.systems.reduce( (foundArray, systemId) => {
-
-			let found = false;
-
-			systems.forEach( system => {
-
-				if( system.id  == systemId ) {
-					console.log(' [Ok...] ID: '+systemId+' found as: '+system.systemName);
-					foundArray.push(system);
-					found = true;
-				}
-
-			});
-
-			if(!found) {
-				console.log(' [ERROR] ID: '+systemId+' not found in Canonn API');
-			}
-
-			return foundArray;
-
-		}, []);
-
-		console.log('');
-
-	}
-
 	bodies = result.bodies;
 	bodiesToUpdate = result.bodiesUpdate;
 
-	if(updateOverride.bodies.length > 0) {
 
-		console.log('');
-		console.log('[WARNING] Bodies override from runtime:');
-
-		bodiesToUpdate = updateOverride.bodies.reduce( (foundArray, bodyId) => {
-
-			let found = false;
-
-			bodies.forEach( body => {
-
-				if( body.id  == bodyId ) {
-					console.log(' [Ok...] ID: '+bodyId+' found as: '+body.bodyName);
-					foundArray.push(body);
-					found = true;
-				}
-
-			});
-
-			if(!found) {
-				console.log(' [ERROR] ID: '+bodyId+' not found in Canonn API');
-			}
-
-			return foundArray;
-
-		}, []);
-
-		console.log('');
-
-	}
-
-	if( runArgs.indexOf('status') != -1 ) {
+	if( runArgs.indexOf(UPDATE_STATUS) != -1 ) {
 		console.log('-------------------------------------');
 		/*console.log('+ LAST UPDATE (if we have the meta I mentioned)');
 		console.log('   When: TIMESTAMP');
@@ -141,42 +88,101 @@ pullAPIData().then( result => {
 
 	} else {
 
-		if( runArgs.indexOf('forceUpdate') != -1 ) {
-			forceUpdate = true;
-	
-			console.log('[WARNING] forceUpdate triggered. ALL Systems and/or ALL Bodies will be updated (regardless of their status).');
-			console.log('');
-		}
-	
-		if( runArgs.indexOf('updateAll') != -1 ) {
-	
+		if( runArgs.indexOf(UPDATE_SYSTEMS) !== -1 	||
+			runArgs.indexOf(UPDATE_BODIES) !== -1 	||
+			runArgs.indexOf(UPDATE_ALL) !== -1
+		) {
+
 			authenticate(process.env.API_USERNAME, process.env.API_PASSWORD).then( (token) => {
 
-				var keySystemsArray = [];
-				var keyBodiesArray = [];
-		
-				if(forceUpdate) {
-	
-					console.log('');
-					console.log('[i] Updating ALL Systems ['+systems.length+'] and ALL Bodies ['+bodies.length+']');
-					console.log('Approximate time to finish: '+timeToUpdate(systems, bodies)+' min' );
+				// check for force update
+
+				if( runArgs.indexOf(UPDATE_FORCE) !== -1 ) {
+					console.log('[WARNING] forceUpdate triggered. ALL Systems and/or ALL Bodies will be updated (regardless of their status).');
 					console.log('');
 
-					queueUpdates('bodies', bodies, updateBodies).then( r=> {
-						console.log('');
-						console.log('~~~~ Bodies complete, proceeding to Systems');
-						console.log('');
+					systemsToUpdate = systems;
+					bodiesToUpdate = bodies;
 
-						queueUpdates('systems', systems, updateSystems);
-					});
-	
-				} else {
-	
+					forceUpdate = true;
+				}
+
+				// check for run parameters systems=[], bodies=[]
+
+				if(updateOverride.systems.length > 0) {
+
 					console.log('');
-					console.log('[i] Updating ['+systemsToUpdate.length+'] Systems and ['+bodiesToUpdate.length+'] Bodies.');
+					console.log('[WARNING] Systems override from runtime:');
+
+					systemsToUpdate = updateOverride.systems.reduce( (foundArray, systemId) => {
+
+						let found = false;
+
+						systems.forEach( system => {
+
+							if( system.id  == systemId ) {
+								console.log(' [Ok...] ID: '+systemId+' found as: '+system.systemName);
+								foundArray.push(system);
+								found = true;
+							}
+
+						});
+
+						if(!found) {
+							console.log(' [ERROR] ID: '+systemId+' not found in Canonn API');
+						}
+
+						return foundArray;
+
+					}, []);
+
+					console.log('');
+
+				}
+
+				if(updateOverride.bodies.length > 0) {
+
+					console.log('');
+					console.log('[WARNING] Bodies override from runtime:');
+			
+					bodiesToUpdate = updateOverride.bodies.reduce( (foundArray, bodyId) => {
+			
+						let found = false;
+			
+						bodies.forEach( body => {
+			
+							if( body.id  == bodyId ) {
+								console.log(' [Ok...] ID: '+bodyId+' found as: '+body.bodyName);
+								foundArray.push(body);
+								found = true;
+							}
+			
+						});
+			
+						if(!found) {
+							console.log(' [ERROR] ID: '+bodyId+' not found in Canonn API');
+						}
+			
+						return foundArray;
+			
+					}, []);
+			
+					console.log('');
+			
+				}
+
+				// Main script loop
+				// updateSystems
+				// updateBodies
+				// updateAll
+
+				if( runArgs.indexOf(UPDATE_ALL) !== -1 ) {
+
+					console.log('');
+					console.log('[i] Updating ['+systemsToUpdate.length+'] Systems and ['+bodiesToUpdate.length+'] Bodies');
 					console.log('Approximate time to finish: '+timeToUpdate(systemsToUpdate, bodiesToUpdate)+' min' );
 					console.log('');
-	
+
 					queueUpdates('bodies', bodiesToUpdate, updateBodies).then( r=> {
 						console.log('');
 						console.log('~~~~ Bodies complete, proceeding to Systems');
@@ -184,49 +190,17 @@ pullAPIData().then( result => {
 
 						queueUpdates('systems', systemsToUpdate, updateSystems);
 					});
-	
-				}
 
-	
-			});
-			
-		} else if( runArgs.indexOf('updateSystems') != -1 ) {
-	
-			authenticate(process.env.API_USERNAME, process.env.API_PASSWORD).then( (token) => {
+				} else if( runArgs.indexOf(UPDATE_SYSTEMS) !== -1 ) {
 
-				if(forceUpdate) {
-
-					console.log('[i] Updating ['+systems.length+'] Systems.');
-					console.log('Approximate time to finish: '+timeToUpdate(systems, [])+' min' );
 					console.log('');
-
-					queueUpdates('systems', systems, updateSystems);
-
-				} else {
-
 					console.log('[i] Updating ['+systemsToUpdate.length+'] Systems.');
 					console.log('Approximate time to finish: '+timeToUpdate(systemsToUpdate, [])+' min' );
 					console.log('');
 
 					queueUpdates('systems', systemsToUpdate, updateSystems);
 
-				}
-
-			});
-			
-		} else if( runArgs.indexOf('updateBodies') != -1 ) {
-	
-			authenticate(process.env.API_USERNAME, process.env.API_PASSWORD).then( (token) => {
-
-				if(forceUpdate) {
-
-					console.log('[i] Updating ['+bodies.length+'] Bodies.');
-					console.log('Approximate time to finish: '+timeToUpdate([], bodies)+' min' );
-					console.log('');
-
-					queueUpdates('bodies', bodies, updateBodies);
-
-				} else {
+				} else if( runArgs.indexOf(UPDATE_BODIES) !== -1 ) {
 
 					console.log('[i] Updating ['+bodiesToUpdate.length+'] Bodies.');
 					console.log('Approximate time to finish: '+timeToUpdate([], bodiesToUpdate)+' min' );
@@ -237,11 +211,14 @@ pullAPIData().then( result => {
 				}
 
 			});
-			
-		} else {
-			console.log('[ERROR] Unrecognized command, try: npm run [status, updateSystems, updateBodies, updateAll]');
-		}
 
+		// No known script runtime mode passed
+		} else {
+			console.log('');
+			console.log('============================================');
+			console.log('Unknown runtime mode. Try: '+UPDATE_SYSTEMS+', '+UPDATE_BODIES+' or '+UPDATE_ALL);
+			console.log('============================================');
+		}
 	}
 
 });
