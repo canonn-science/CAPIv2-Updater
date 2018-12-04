@@ -2,6 +2,8 @@
 
 Nodejs based tool to update the Canonn API with planetary and stellar data from EDSM
 
+![CAPIv2-Updater](images/preview.png)
+
 <!-- TOC -->
 
 - [Canonn-EDSM-Updater](#canonn-edsm-updater)
