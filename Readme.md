@@ -3,6 +3,7 @@
 Nodejs based tool to update the Canonn API with planetary and stellar data from EDSM
 
 ![CAPIv2-Updater](images/preview.png)
+___
 
 <!-- TOC -->
 
@@ -21,6 +22,7 @@ Nodejs based tool to update the Canonn API with planetary and stellar data from 
             - [updateAll:dev](#updatealldev)
 
 <!-- /TOC -->
+___
 
 ## Requirements
 
@@ -62,55 +64,71 @@ export const API_CANONN_REST = 'https://api.canonn.tech:2083';
 ## Usage
 
 These are the following commands for running the updater.
+___
 
 ### status
 
-`npm run status`
 Displays basic status of Canonn API
+
+`npm run status`
 
 #### status:dev
 
-`npm run status:dev`
 Used to display the status without building while in a development mode
+
+`npm run status:dev`
+___
 
 ### updateSystems
 
-`npm run updateSystems`
 Update all Systems that are candidates
 
-`npm run updateSystems systems=[1,2,3,...]`
+`npm run updateSystems`
+
 You can also query for specific systems
+
+`npm run updateSystems systems=[1,2,3,...]`
 
 #### updateSystems:dev
 
-`npm run updateSystems:dev`
 Update all Systems that are candidates without building
 
-`npm run updateSystems:dev systems=[1,2,3,...]`
+`npm run updateSystems:dev`
+
 You can also query for specific systems without building
+
+`npm run updateSystems:dev systems=[1,2,3,...]`
+___
 
 ### updateBodies
 
-`npm run updateBodies`
 Update all Bodies that are candidates
 
-`npm run updateBodies bodies=[1,2,3,...]`
+`npm run updateBodies`
+
 You can also query for specific bodies.
+
+`npm run updateBodies bodies=[1,2,3,...]`
 
 #### updateBodies:dev
 
-`npm run updateBodies:dev`
 Update all Bodies that are candidates without building
 
-`npm run updateBodies:dev bodies=[1,2,3,...]`
+`npm run updateBodies:dev`
+
 You can also query for specific bodies without building
+
+`npm run updateBodies:dev bodies=[1,2,3,...]`
+___
 
 ### updateAll
 
-`npm run updateAll`
 Update all systems and bodies that are candidates
+
+`npm run updateAll`
 
 #### updateAll:dev
 
-`npm run updateAll:dev`
 Update all systems and bodies that are candidates without building
+
+`npm run updateAll:dev`
