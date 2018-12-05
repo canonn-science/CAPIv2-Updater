@@ -19,7 +19,9 @@ export function queueUpdates(type, updateArray, fn) {
 
 	if(type == 'systems') {
 
-		console.log('--- UPDATING SYSTEMS --- ');
+		console.log('============================================');
+		console.log('UPDATING SYSTEMS');
+		console.log('============================================');
 		console.log('');
 
 		// systems are passed in as blocks (arrays) of 
@@ -38,7 +40,9 @@ export function queueUpdates(type, updateArray, fn) {
 
 	} else if( type == 'bodies' ) {
 
-		console.log('--- UPDATING BODIES --- ');
+		console.log('============================================');
+		console.log('UPDATING BODIES');
+		console.log('============================================');
 		console.log('');
 
 		updateArray.forEach( body => {
@@ -76,6 +80,7 @@ export function queueUpdates(type, updateArray, fn) {
 	
 				fn(item, nextQ, updateErrors).then( (r) => {
 
+					console.log('');
 					console.log('> Waiting '+EDSM_DELAY+'ms...');
 	
 					let AnthorsDelay = setTimeout(function() {
@@ -87,12 +92,11 @@ export function queueUpdates(type, updateArray, fn) {
 	
 			} else {
 				console.log('');
-				console.log('------ UPDATE COMPLETE ------');
+				console.log('[Ok...] UPDATE COMPLETE');
 				console.log('');
 
 				if(updateErrors.length > 0) {
-					console.log('');
-					console.log('------ UPDATE ERRORS FOUND ------');
+					console.log('!!!!!!!!!!!!!!!! ERRORS !!!!!!!!!!!!!!!!!!!!');
 					console.log('');
 					updateErrors.forEach( error => {
 						console.log(' - System: ', error.system);
@@ -101,7 +105,8 @@ export function queueUpdates(type, updateArray, fn) {
 						console.log('');
 					});
 					console.log('');
-					console.log('------ UPDATE ERRORS END ------');
+					console.log('!!!!!!!!!!!!!!!! ERRORS !!!!!!!!!!!!!!!!!!!!');
+					console.log('');
 				}
 
 				resolve();
@@ -174,14 +179,33 @@ export function updateBodies(systemName, bodies, errorsLog) {
 
 				} else {
 
-					console.log(' < [CANONN, EDSM] Body not found: ', canonnBody.bodyName);
+					// Error reporting
 
 					canonnBody.scriptCheck = {
 						system: canonnBody.system.systemName,
 						body: canonnBody.bodyName,
+						edsmBody: 'Not found.',
 						error: true,
-						msg: 'Body not found. Either it\'s not on EDSM or It may be wrong designation. (A 2 B instead of 2 B)'
+						msg: 'Body not found in EDSM.'
 					}
+
+					// This is for checking if Canonn "A 2 b" is EDSM "2 b" type.
+					let correctedCanonnBody = canonnBody.bodyName.replace( canonnBody.system.systemName, '' )
+						correctedCanonnBody = correctedCanonnBody.trim().substr(1).trim();
+						correctedCanonnBody = canonnBody.system.systemName.toUpperCase()+' '+correctedCanonnBody;
+
+					let edsmErrorBody = edsmBodiesObj[correctedCanonnBody];
+
+					if( edsmErrorBody ) {
+						console.log(' < [ERROR] Canonn API body designation incorrect.');
+						console.log(' < [ERROR] EDSM body: ['+edsmErrorBody.name+']');
+						console.log(' < [ERROR] Canonn body: ['+canonnBody.bodyName+']');
+						canonnBody.scriptCheck.msg = 'Canonn API body designation incorrect. EDSM body: ['+edsmErrorBody.name+']; Canonn body: ['+canonnBody.bodyName+']';
+						canonnBody.scriptCheck.edsmBody = edsmErrorBody;
+
+					} else {
+						console.log(' < [CANONN, EDSM] Body not found: ', canonnBody.bodyName);
+					}					
 
 				}
 		
