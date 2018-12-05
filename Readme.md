@@ -12,9 +12,13 @@ Nodejs based tool to update the Canonn API with planetary and stellar data from 
     - [Settings.js](#settingsjs)
     - [Usage](#usage)
         - [status](#status)
+            - [status:dev](#statusdev)
         - [updateSystems](#updatesystems)
+            - [updateSystems:dev](#updatesystemsdev)
         - [updateBodies](#updatebodies)
+            - [updateBodies:dev](#updatebodiesdev)
         - [updateAll](#updateall)
+            - [updateAll:dev](#updatealldev)
 
 <!-- /TOC -->
 
@@ -57,24 +61,56 @@ export const API_CANONN_REST = 'https://api.canonn.tech:2083';
 
 ## Usage
 
-These are the following commands for running the updater after being built
+These are the following commands for running the updater.
 
 ### status
 
 `npm run status`
 Displays basic status of Canonn API
 
+#### status:dev
+
+`npm run status:dev`
+Used to display the status without building while in a development mode
+
 ### updateSystems
 
 `npm run updateSystems`
 Update all Systems that are candidates
+
+`npm run updateSystems systems=[1,2,3,...]`
+You can also query for specific systems
+
+#### updateSystems:dev
+
+`npm run updateSystems:dev`
+Update all Systems that are candidates without building
+
+`npm run updateSystems:dev systems=[1,2,3,...]`
+You can also query for specific systems without building
 
 ### updateBodies
 
 `npm run updateBodies`
 Update all Bodies that are candidates
 
+`npm run updateBodies bodies=[1,2,3,...]`
+You can also query for specific bodies.
+
+#### updateBodies:dev
+
+`npm run updateBodies:dev`
+Update all Bodies that are candidates without building
+
+`npm run updateBodies:dev bodies=[1,2,3,...]`
+You can also query for specific bodies without building
+
 ### updateAll
 
 `npm run updateAll`
-Update all systems that are candidates
+Update all systems and bodies that are candidates
+
+#### updateAll:dev
+
+`npm run updateAll:dev`
+Update all systems and bodies that are candidates without building
