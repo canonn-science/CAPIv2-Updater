@@ -262,14 +262,16 @@ export function updateSystems(index, systemsChunk, errorsLog) {
 
 				let edsmSystem = edsmSystemsObj[ canonnSystem.systemName.trim().toUpperCase() ];
 
+				console.log('DEV: edsmSystem', edsmSystem);
+
 				if(edsmSystem) {
 
+					if(edsmSystem.id)			{ canonnSystem.edsmID = edsmSystem.id }
 					if(edsmSystem.id64) 		{ canonnSystem.id64 = edsmSystem.id64 }
-
 					if(edsmSystem.coords) 		{ 
 													canonnSystem.edsmCoordX = edsmSystem.coords.x; 
-					 								canonnSystem.edsmCoordX = edsmSystem.coords.y;
-					 								canonnSystem.edsmCoordX = edsmSystem.coords.z;
+					 								canonnSystem.edsmCoordY = edsmSystem.coords.y;
+					 								canonnSystem.edsmCoordZ = edsmSystem.coords.z;
 												}
 
 					if(edsmSystem.coordsLocked) { canonnSystem.edsmCoordLocked = edsmSystem.coordsLocked }

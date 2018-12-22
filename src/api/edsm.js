@@ -22,7 +22,8 @@ export function queryEDSMSystems(systems) {
 			},
 			body: JSON.stringify({
 				systemName: systems,
-				showCoordinates: true
+				showCoordinates: true,
+				showId: true
 			})
 		}).then(r => {
 
