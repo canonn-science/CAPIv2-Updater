@@ -133,7 +133,7 @@ export function updateBodies(systemName, bodies, errorsLog) {
 				edsmBodiesObj[ edmsBodyName ] = edsmBody;
 			});
 
-			bodies.forEach( canonnBody => {
+			bodies && bodies.forEach( canonnBody => {
 
 				let edsmBody = edsmBodiesObj[ canonnBody.bodyName.trim().toUpperCase() ];
 		
@@ -261,7 +261,7 @@ export function updateSystems(index, systemsChunk, errorsLog) {
 			systemsChunk.forEach( canonnSystem => {
 
 				let edsmSystem = edsmSystemsObj[ canonnSystem.systemName.trim().toUpperCase() ];
-				
+
 				if(edsmSystem) {
 
 					if(edsmSystem.id)			{ canonnSystem.edsmID = edsmSystem.id }
