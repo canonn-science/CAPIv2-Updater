@@ -261,9 +261,7 @@ export function updateSystems(index, systemsChunk, errorsLog) {
 			systemsChunk.forEach( canonnSystem => {
 
 				let edsmSystem = edsmSystemsObj[ canonnSystem.systemName.trim().toUpperCase() ];
-
-				console.log('DEV: edsmSystem', edsmSystem);
-
+				
 				if(edsmSystem) {
 
 					if(edsmSystem.id)			{ canonnSystem.edsmID = edsmSystem.id }

@@ -4,7 +4,7 @@
 	"description": "Nodejs based tool to update the Canonn API with planetary and stellar data from EDSM",
 	"main": "index.js",
 	"scripts": {
-		"clean": "rm -rf build && mkdir build",
+		"clean": "rimraf build/*",
 		"build": "npm run clean && babel src -d build",
 		"status": "node build/index.js status",
 		"updateSystems": "node build/index.js updateSystems",
