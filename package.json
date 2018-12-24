@@ -4,7 +4,7 @@
 	"description": "Nodejs based tool to update the Canonn API with planetary and stellar data from EDSM",
 	"main": "index.js",
 	"scripts": {
-		"clean": "rimraf build/*",
+		"clean": "rimraf build",
 		"build": "npm run clean && babel src -d build",
 		"status": "node build/index.js status",
 		"updateSystems": "node build/index.js updateSystems",
@@ -19,7 +19,8 @@
 		"babel-cli": "^6.26.0",
 		"babel-preset-env": "^1.7.0",
 		"babel-preset-stage-2": "^6.24.1",
-		"nodemon": "^1.18.7"
+		"nodemon": "^1.18.7",
+		"rimraf": "^2.6.2"
 	},
 	"dependencies": {
 		"dotenv": "^6.1.0",
