@@ -153,7 +153,7 @@ export function updateBody(body) {
 export function updateSystem(system) {
 
 	// Get rid of unneeded fields.
-	const payload = {...system};
+	const payload = { ...system };
 		delete payload.systemName;
 		delete payload.id;
 		delete payload.scripCheck;
@@ -164,7 +164,7 @@ export function updateSystem(system) {
 			'Content-Type': 'application/json',
 			'Authorization': 'Bearer '+TOKEN
 		},
-		system: JSON.stringify(payload)
+		body: JSON.stringify(payload)
 	}
 
 	return fetch(API_UPDATE_SYSTEM+system.id, options).then(r => {

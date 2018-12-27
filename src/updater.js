@@ -133,7 +133,7 @@ export function updateBodies(systemName, bodies, errorsLog) {
 				edsmBodiesObj[ edmsBodyName ] = edsmBody;
 			});
 
-			bodies.forEach( canonnBody => {
+			bodies && bodies.forEach( canonnBody => {
 
 				let edsmBody = edsmBodiesObj[ canonnBody.bodyName.trim().toUpperCase() ];
 		
@@ -264,12 +264,12 @@ export function updateSystems(index, systemsChunk, errorsLog) {
 
 				if(edsmSystem) {
 
+					if(edsmSystem.id)			{ canonnSystem.edsmID = edsmSystem.id }
 					if(edsmSystem.id64) 		{ canonnSystem.id64 = edsmSystem.id64 }
-
 					if(edsmSystem.coords) 		{ 
 													canonnSystem.edsmCoordX = edsmSystem.coords.x; 
-					 								canonnSystem.edsmCoordX = edsmSystem.coords.y;
-					 								canonnSystem.edsmCoordX = edsmSystem.coords.z;
+					 								canonnSystem.edsmCoordY = edsmSystem.coords.y;
+					 								canonnSystem.edsmCoordZ = edsmSystem.coords.z;
 												}
 
 					if(edsmSystem.coordsLocked) { canonnSystem.edsmCoordLocked = edsmSystem.coordsLocked }
