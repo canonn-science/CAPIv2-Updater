@@ -1,6 +1,4 @@
 import { getSystems, getBodies } from './api/canonn.js';
-import validateSystem from './validators/system.js';
-import validateBody from './validators/body.js';
 
 import { 
 	EDSM_DELAY,
@@ -9,47 +7,6 @@ import {
 	ARG_BODIES_STRING
 } from './settings.js';
 
-const systems = [];
-const systemsUpdate = [];
-
-const bodies = [];
-const bodiesUpdate = [];
-
-export function pullAPIData() {
-
-	console.log('Fetching Systems and Bodies from Canonn API...');
-
-	return Promise.all([ getSystems(), getBodies()] )
-	.then( result => {
-		systems.push(...result[0]);
-		bodies.push(...result[1]);
-		console.log('> ...OK');
-
-		console.log('Validating Systems and Bodies');
-
-		systems.forEach( system => {
-			if( !validateSystem(system) ) {
-				systemsUpdate.push(system);
-			}
-		});
-
-		bodies.forEach( body => {
-			if( !validateBody(body) ) {
-				bodiesUpdate.push(body);
-			}
-		});
-		console.log('> ...OK');
-
-		return {
-			systems: systems,
-			systemsUpdate: systemsUpdate,
-
-			bodies: bodies,
-			bodiesUpdate: bodiesUpdate
-		};
-	});
-
-}
 
 // returns time in minutes
 export function timeToUpdate(systems, bodies) {
@@ -73,6 +30,8 @@ export function chunkArray(array, chunk_size = EDSM_MAX_CALL_STACK){
     return tempArray;
 }
 
+// parse runtime arguments logic
+// if new runtime parameters are added you should revisit this function
 export function parseArgArray(argsArray) {
 
 	var systemsToUpdate = [];

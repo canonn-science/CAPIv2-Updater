@@ -6,7 +6,7 @@ import { API_CANONN_STEP } from '../settings.js';
 	query { } is omited on purpose
 */
 
-export default function bodiesQL(limit = API_CANONN_STEP, start = 0) {
+export default function bodiesSchema(limit = API_CANONN_STEP, start = 0) {
 
 	return `
 	{

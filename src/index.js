@@ -1,19 +1,18 @@
 import 'dotenv/config';
 
-import { authenticate } from './api/canonn.js';
+import { authenticate, pullAPIData } from './api/canonn.js';
 import { EDSM_DELAY, EDSM_MAX_CALL_STACK } from './settings.js';
 
-import { 
-	queueUpdates,
-	updateBodies,
-	updateSystems
-} from './updater.js';
+
+import queueUpdates from './updaters/queue.js';
+import updateBodies from './updaters/bodies.js';
+import updateSystems from './updaters/systems.js';
+
 
 import {
-	pullAPIData,
 	timeToUpdate,
 	parseArgArray
-} from './functions.js';
+} from './utils.js';
 
 import {
 	UPDATE_STATUS,
@@ -22,6 +21,8 @@ import {
 	UPDATE_BODIES,
 	UPDATE_FORCE
 } from './settings.js';
+
+
 
 /* Run arguments */
 const runArgs = [];
@@ -94,6 +95,11 @@ pullAPIData().then( result => {
 		) {
 
 			authenticate(process.env.API_USERNAME, process.env.API_PASSWORD).then( (token) => {
+
+				if(!token) {
+					console.log('EXITING...');
+					return null;
+				}
 
 				// check for force update
 

@@ -6,7 +6,7 @@ import { API_CANONN_STEP } from '../settings.js';
 	query { } is omited on purpose
 */
 
-export default function systemsQL(limit = API_CANONN_STEP, start = 0) {
+export default function systemsSchema(limit = API_CANONN_STEP, start = 0) {
 
 	return `
 	{

@@ -1,132 +1,19 @@
-import { EDSM_DELAY, EDSM_MAX_CALL_STACK } from './settings.js';
-import { queryEDSMBodies, queryEDSMSystems } from './api/edsm.js';
-import { updateBody, updateSystem } from './api/canonn.js';
-import { chunkArray } from './functions.js';
+import { queryEDSMBodies } from '../api/edsm.js';
+import { updateBody } from '../api/canonn.js';
 
 /*
-	Set up a queue for bodies or systems
-	type: should either be "bodies" or "systems"
-	updateArray: should be an array of objects (bodies/systems)
-	fn: function to call on every queue tick
+	Bodies update logic.
 */
-export function queueUpdates(type, updateArray, fn) {
 
-	var index = 0;
-	var keyArray = {};
-	var names = [];
-
-	const updateErrors = [];
-
-	if(type == 'systems') {
-
-		console.log('============================================');
-		console.log('UPDATING SYSTEMS');
-		console.log('============================================');
-		console.log('');
-
-		// systems are passed in as blocks (arrays) of 
-		// EDSM_MAX_CALL_STACK systems at one call.
-
-		let chunks = chunkArray(updateArray);
-
-		chunks.forEach( (systemsBlock, i) => {
-
-			keyArray['CHUNK ['+i+']'] = systemsBlock;
-			
-			if( names.indexOf(i) == -1) {
-				names.push('CHUNK ['+i+']');
-			}
-		});
-
-	} else if( type == 'bodies' ) {
-
-		console.log('============================================');
-		console.log('UPDATING BODIES');
-		console.log('============================================');
-		console.log('');
-
-		updateArray.forEach( body => {
-
-			// we are looping over system names
-			let name = body.system.systemName;
-
-			// Then to each system name we're adding bodies that
-			// are inside that system
-			if( keyArray[name] ) {
-				keyArray[name].push( body );
-			} else {
-				keyArray[name] = [body];
-			}
-
-			if( names.indexOf(name) == -1) {
-				names.push(name);
-			}
-		});
-
-	} else {
-		console.log('[ERROR]: type argument should be either "systems" or "bodies"!');
-		return null;
-	}
-
-	return new Promise(function(resolve, reject) {
-		function next() {
-
-			if(index < names.length) {
-
-				let item = names[index++];
-				let nextQ = keyArray[ item ];
-	
-				console.log('['+index+'/'+names.length+'] ~~ Updating '+item+': '+nextQ.length+' '+type);
-	
-				fn(item, nextQ, updateErrors).then( (r) => {
-
-					console.log('');
-					console.log('> Waiting '+EDSM_DELAY+'ms...');
-	
-					let AnthorsDelay = setTimeout(function() {
-						console.log('');
-						next();
-					}, EDSM_DELAY);
-	
-				});
-	
-			} else {
-				console.log('');
-				console.log('[Ok...] UPDATE COMPLETE');
-				console.log('');
-
-				if(updateErrors.length > 0) {
-					console.log('!!!!!!!!!!!!!!!! ERRORS !!!!!!!!!!!!!!!!!!!!');
-					console.log('');
-					updateErrors.forEach( error => {
-						console.log(' - System: ', error.system);
-						console.log(' - Body: ', error.body);
-						console.log(' - Reason: ', error.msg);
-						console.log('');
-					});
-					console.log('');
-					console.log('!!!!!!!!!!!!!!!! ERRORS !!!!!!!!!!!!!!!!!!!!');
-					console.log('');
-				}
-
-				resolve();
-			}
-			
-		}
-		next();
-	});
-
-}
-
-export function updateBodies(systemName, bodies, errorsLog) {
+export default function updateBodies(systemName, bodies, errorsLog) {
 
 	return new Promise(function(resolve, reject) {
 
 		queryEDSMBodies(systemName).then( edsmBodies => {
 
 			// promise array for all bodies updates
-			var updateBodies = [];
-			var edsmBodiesObj = {};
+			const updateBodies = [];
+			const edsmBodiesObj = {};
 
 			edsmBodies.forEach( edsmBody => {
 				let edmsBodyName = edsmBody.name.trim().toUpperCase();
@@ -231,58 +118,6 @@ export function updateBodies(systemName, bodies, errorsLog) {
 			});
 	
 		//queryEDSMBodies end
-		});
-
-	});
-
-}
-
-
-export function updateSystems(index, systemsChunk, errorsLog) {
-
-	return new Promise(function(resolve, reject) {
-
-		var edsmSystemNames = [];
-
-		systemsChunk.forEach( system => {
-			edsmSystemNames.push( system.systemName.toUpperCase() );
-		});
-
-		queryEDSMSystems(edsmSystemNames).then( edsmSystems => {
-
-			var updateSystems = [];
-			var edsmSystemsObj = {};
-
-			edsmSystems.forEach( edsmSystem => {
-				let edmsSystemName = edsmSystem.name.trim().toUpperCase();
-				edsmSystemsObj[ edmsSystemName ] = edsmSystem;
-			});
-
-			systemsChunk.forEach( canonnSystem => {
-
-				let edsmSystem = edsmSystemsObj[ canonnSystem.systemName.trim().toUpperCase() ];
-
-				if(edsmSystem) {
-
-					if(edsmSystem.id)			{ canonnSystem.edsmID = edsmSystem.id }
-					if(edsmSystem.id64) 		{ canonnSystem.id64 = edsmSystem.id64 }
-					if(edsmSystem.coords) 		{ 
-													canonnSystem.edsmCoordX = edsmSystem.coords.x; 
-					 								canonnSystem.edsmCoordY = edsmSystem.coords.y;
-					 								canonnSystem.edsmCoordZ = edsmSystem.coords.z;
-												}
-
-					if(edsmSystem.coordsLocked) { canonnSystem.edsmCoordLocked = edsmSystem.coordsLocked }
-
-					updateSystems.push( updateSystem(canonnSystem) );
-				}
-
-			});
-
-			return Promise.all(updateSystems).then( r => {
-				resolve();
-			});
-
 		});
 
 	});
