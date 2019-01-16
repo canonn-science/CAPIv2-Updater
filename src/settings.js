@@ -1,3 +1,7 @@
+// Timedate formats for dates in updater
+// For more info see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString
+export const LOCALE = 'en-US';
+export const TIMEZONE = 'America/Phoenix';
 
 // max limit per one GraphQL query for Canonn API
 // consult with your nearest API admin

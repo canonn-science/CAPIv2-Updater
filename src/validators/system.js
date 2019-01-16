@@ -4,12 +4,17 @@
 
 export default function validateSystem(system) {
 
-	let valid = false;
+	// leave this as invalid == true by default
+	// invalid == true 	-> candidate for update
+	// invalid == false -> not a candidate
+	let invalid = true;
 
+	// implement logic to check if the object is a candidate
 	if(system.edsmCoordLocked) {
-		valid = true;
+		invalid = false;
 	}
 
-	return valid;
+	// return object state
+	return invalid;
 	
 }

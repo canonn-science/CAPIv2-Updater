@@ -1,28 +1,34 @@
+/*
+	This file contains all the Canonn API functions used to communicate with CAPI.
+	You SHOULD NOT use these functions in your scripts.
+*/
+
 const fetch = require("node-fetch");
-
-import systemsSchema from '../schemas/systems.js';
-import bodiesSchema from '../schemas/bodies.js';
-
-import validateSystem from '../validators/system.js';
-import validateBody from '../validators/body.js';
 
 import { 
 	API_CANONN_STEP,
 	API_CANONN_GRAPHQL,
-	API_CANONN_REST
+	API_CANONN_REST,
+	LOCALE, 
+	TIMEZONE
 } from '../settings.js';
 
-const API_AUTH = API_CANONN_REST+'/auth/local';
+import { printProgress } from '../utils.js';
+
+const API_AUTH = API_CANONN_REST+'/auth/local/';
+const API_APIUPDATES = API_CANONN_REST+'/apiupdates/';
 const API_UPDATE_SYSTEM = API_CANONN_REST+'/systems/';
 const API_UPDATE_BODY = API_CANONN_REST+'/bodies/';
 
-const pullData = {};
 var TOKEN = null;
 
-// Log in to API, check .env for login details
+
+// Authenticate with Canonn API
+// See auth login and pass in .env file
+
 export function authenticate(username, password) {
 
-	console.log('Authenticating with Canonn API...');
+	console.log('<- Authenticating with Canonn API...');
 
 	const options = {
 		method: 'POST',
@@ -42,8 +48,8 @@ export function authenticate(username, password) {
 				return r.json().then( r => {
 					TOKEN = r.jwt;
 
-					console.log('> ...OK');
-					console.log('> Hello '+r.user.username);
+					console.log('-> ...OK');
+					console.log('-> Hello '+r.user.username);
 					console.log('............................................');
 					return TOKEN;
 				});
@@ -69,186 +75,121 @@ export function authenticate(username, password) {
 	});
 }
 
-// fetch data from CAPI graphQL
-function fetchQLData(resolve, reject, counter = 0, query, qlNode) {
+
+// Get CAPI data from capi_get.js type
+// You should use CAPI_fetch() instead of this function.
+
+export function getCAPIData(type, data) {
+
+	// This promise gets resolved inside fetchSingle function
+	return new Promise(function(resolve, reject) {
+
+		// Check if there's custom data for graphQL query and apply it to schema
+		let whereFilter = QLWhereFilter(data);
+
+		if(whereFilter !== "{}") {
+			console.log('<- CAPI_fetch: ['+type.graphQLNode+'] where: '+whereFilter);
+		} else {
+			console.log('<- CAPI_fetch: ['+type.graphQLNode+']');
+		}
+
+		fetchSingle(resolve, reject, 0, type.schema, whereFilter, type.graphQLNode);
+
+	});
+
+}
+
+
+/* 
+-------------------------------------------------
+Internal functions - don't use outside this file. 
+-------------------------------------------------
+*/
+
+// Fetch data from CAPI graphQL in a loop
+// This function fires itself in a loop until all data has been downloaded
+// After all loops are completed it returns a cumulative data array with everything fetched.
+
+// resolve: resolve from parent Promise (getCAPIData)
+// reject: reject from parent Promise (getCAPIData)
+// counter: current loop counter for schema 'start, limit' attributes (see schemas)
+// schema: schema function for graphQL
+// qlNode: graphQL node which contains returned data (see capi_get.js graphQLNode)
+// data: cumulative array of data returned from CAPI. This is returned at the end of this function
+
+function fetchSingle(resolve, reject, counter = 0, schema, whereFilter, qlNode = [], data = []) {
 
 	const step = API_CANONN_STEP;
+	const query = schema(step, counter, whereFilter);
 
-	fetch(API_CANONN_GRAPHQL, {
+	return fetch(API_CANONN_GRAPHQL, {
 		
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
-			query: query(step, counter)
+			query: query
 		})
 
-	}).then( r => r.json() ).then( r => { 
-	
-		pullData[qlNode].push( ...r.data[qlNode] );
-
-		if(r.data[qlNode].length == step) {
-			fetchQLData(resolve, reject, counter+step, query, qlNode);
+	}).then( response => {
+		
+		if(response.ok) {
+			return response.json();
 		} else {
-			resolve(pullData[qlNode]);
+			throw new Error(response.status);
 		}
-	})
 
-}
+	}).then( response => {
 
+		data.push( ...response.data[qlNode] );
 
-// Pull bodies and systems data
-// TODO: refactor this so it accepts any combination of data from the api (bodies, reports, sites, etc)
+		if(response.data[qlNode].length == step) {
 
-const systems = [];
-const systemsUpdate = [];
+			// If there is more data to download than API_CANONN_STEP, run same function again
+			fetchSingle(resolve, reject, counter+step, schema, whereFilter, qlNode, data);
 
-const bodies = [];
-const bodiesUpdate = [];
+		} else {
 
-export function pullAPIData() {
-
-	console.log('Fetching Systems and Bodies from Canonn API...');
-
-	return Promise.all([ getSystems(), getBodies()] )
-	.then( result => {
-		systems.push(...result[0]);
-		bodies.push(...result[1]);
-		console.log('> ...OK');
-
-		console.log('Validating Systems and Bodies');
-
-		systems.forEach( system => {
-			if( !validateSystem(system) ) {
-				systemsUpdate.push(system);
+			if(whereFilter !== "{}") {
+				console.log('-> CAPI_fetch: ['+qlNode+'] where: '+whereFilter+' ... OK!');
+			} else {
+				console.log('-> CAPI_fetch: ['+qlNode+'] ... OK!');
 			}
-		});
 
-		bodies.forEach( body => {
-			if( !validateBody(body) ) {
-				bodiesUpdate.push(body);
-			}
-		});
-		console.log('> ...OK');
+			// Resolve getCAPIData promise with cumulative data
+			resolve(data);
+		}
 
-		return {
-			systems: systems,
-			systemsUpdate: systemsUpdate,
-
-			bodies: bodies,
-			bodiesUpdate: bodiesUpdate
-		};
+	}).catch( error => {
+		console.log('-> CAPI: Error in response: ', error);
 	});
 
 }
 
-// get systems from CAPI
-// TODO: Refactor this together with pullAPIData to pull any available schema
-export function getSystems() {
+// Creates a graphQL "where" filter from data for better query management
+// Example usage:
+//
+//	CAPI_fetch('systems', {
+//		where: {
+//			"systemName": "Maia"
+//		}
+//	});
 
-	return new Promise(function(resolve, reject) {
-		let qlNode = 'systems';
-		pullData[qlNode] = [];
+function QLWhereFilter(data) {
 
-		fetchQLData(resolve, reject, 0, systemsSchema, qlNode);
-	})
+	let whereFilter = '{';
 
-}
+		if(data) {
 
-// get bodies from CAPI
-// TODO: Refactor this together with pullAPIData to pull any available schema
-export function getBodies() {
+			if(data.where) {
 
-	return new Promise(function(resolve, reject) {
-		let qlNode = 'bodies';
-		pullData[qlNode] = [];
-
-		fetchQLData(resolve, reject, 0, bodiesSchema, qlNode);
-	})
-
-}
-
-// update single body in CAPI
-export function updateBody(body) {
-
-	// Get rid of unneeded fields.
-	const payload = {...body};
-		delete payload.bodyName;
-		delete payload.id;
-		delete payload.scripCheck;
-
-	const options = {
-		method: 'PUT',
-		headers: { 
-			'Content-Type': 'application/json',
-			'Authorization': 'Bearer '+TOKEN
-		},
-		body: JSON.stringify(payload)
-	}
-
-	return fetch(API_UPDATE_BODY+body.id, options).then(r => {
-
-		if(r.status == 200) {
-	
-			try {
-				console.log(' < [CANONN] ('+body.bodyName+') Ok...');
-				return r.json();
-
-			} catch(e) {
-				console.log(' < [CANONN] ERROR on saving to Canonn API: ');
-				console.log('');
-				console.log('  Error:', e);
-				console.log('');
-				console.log('  Payload:', payload);
-				console.log('');
+				Object.keys(data.where).forEach( key => {
+					whereFilter += key+': "'+data.where[key]+'",';
+				});
 			}
-	
-		} else {
-			console.log(' < [CANONN] ERROR Response status ', r.status);
 		}
 
-	});
+		whereFilter += '}';
 
-}
-
-// update single system in CAPI
-export function updateSystem(system) {
-
-	// Get rid of unneeded fields.
-	const payload = { ...system };
-		delete payload.systemName;
-		delete payload.id;
-		delete payload.scripCheck;
-
-	const options = {
-		method: 'PUT',
-		headers: { 
-			'Content-Type': 'application/json',
-			'Authorization': 'Bearer '+TOKEN
-		},
-		body: JSON.stringify(payload)
-	}
-
-	return fetch(API_UPDATE_SYSTEM+system.id, options).then(r => {
-
-		if(r.status == 200) {
-	
-			try {
-				console.log(' < [CANONN] ('+system.systemName+') Ok...');
-				return r.json();
-
-			} catch(e) {
-				console.log(' < [CANONN] ERROR on saving to Canonn API: ');
-				console.log('');
-				console.log('  Error:', e);
-				console.log('');
-				console.log('  Payload:', payload);
-				console.log('');
-			}
-	
-		} else {
-			console.log(' < [CANONN] ERROR Response status ', r.status);
-		}
-
-	});
+	return whereFilter;
 
 }

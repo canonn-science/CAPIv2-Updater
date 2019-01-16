@@ -1,230 +1,68 @@
 import 'dotenv/config';
 
-import { authenticate, pullAPIData } from './api/canonn.js';
-import { EDSM_DELAY, EDSM_MAX_CALL_STACK } from './settings.js';
+import ScriptManager from './ScriptManager.js';
 
-
-import queueUpdates from './updaters/queue.js';
-import updateBodies from './updaters/bodies.js';
-import updateSystems from './updaters/systems.js';
-
+import { authenticate } from './api/canonn.js';
+import { CAPI_fetch } from './api/api.js';
 
 import {
 	timeToUpdate,
 	parseArgArray
 } from './utils.js';
 
-import {
-	UPDATE_STATUS,
-	UPDATE_ALL,
-	UPDATE_SYSTEMS,
-	UPDATE_BODIES,
-	UPDATE_FORCE
-} from './settings.js';
+// nodes (systems, sites, bodies, etc.) to be updated
+// this is based on runtime arguments
+// you can also manually add nodeName to this list and the script will update them
 
+// new update object
+// contains all the data needed to run the script
+// it gets dynamically filled with data based on API nodes
+// this object can be updated during script run
 
+// NODE - type you want to update, for example: systems, bodies, sites, reports, etc
+// the format for all nodes is as follows:
+//	
+//	nodeName: {
+//		all: [] 				// All instances for this node (eg. all bodies/sites/etc.)
+//		updateCandidates: []	// You should .filter(validationFunction) all instances based on a validation function
+//		skipped: []				// If some update candidates are skipped (eg. missingSkipCount, or any other condition) you should place them here
+//		errors: []				// Use reportError('nodeName', error) to add errors to this node. They will be uploaded to Canonn API updateLog
+//  }
+//
 
-/* Run arguments */
-const runArgs = [];
-var forceUpdate = false;
+var UPDATE = {
 
-var systems = [];
-var systemsToUpdate = [];
+	// These properties get automatically filled
+	// Do NOT update them manually.
+	runArgs: [],
+	forceUpdate: false,
+	lastUpdate: {},
+	errors: []
+}
+export { UPDATE };
 
-var bodies = [];
-var bodiesToUpdate = [];
+// Script intro
+// some basic setings and argument parsing
 
-/* Script start */
-console.log('');
-console.log('EDSM => Canonn API updater.');
 console.log('');
 console.log('============================================');
-
-process.argv.forEach(function (val, index, array) {
-	runArgs.push(val);
-});
-
-// Override systems/bodies to update from command line.
-const updateOverride = parseArgArray(runArgs);
-
-console.log('Checking Canonn API status:');
+console.log('Canonn CAPI updater script.');
+console.log('============================================');
 console.log('');
 
-pullAPIData().then( result => {
-
-	systems = result.systems;
-	systemsToUpdate = result.systemsUpdate;
-
-	bodies = result.bodies;
-	bodiesToUpdate = result.bodiesUpdate;
+// Find and queue scripts to run
+// First two arguments are "node" and "PATH", so we slice them away.
+ScriptManager.queueScripts( process.argv.slice(2) );
+ScriptManager.runScripts();
 
 
-	if( runArgs.indexOf(UPDATE_STATUS) != -1 ) {
-		console.log('-------------------------------------');
-		/*console.log('+ LAST UPDATE (if we have the meta I mentioned)');
-		console.log('   When: TIMESTAMP');
-		console.log('   Forced: FALSE');
-		console.log('   Updated Systems: INT');
-		console.log('   Updated Bodies: INT');
-		console.log('');*/
-		console.log('+ SYSTEMS');
-		console.log('   Total: ', systems.length);
-		console.log('   Candidates for update: ', systemsToUpdate.length);
-		console.log('');
-		console.log('+ BODIES');
-		console.log('   Total: ', bodies.length);
-		console.log('   Candidates for update: ', bodiesToUpdate.length);
-		console.log('');
-		console.log('+ ROUGH TIME TO UPDATE');
-		console.log('   (update candidates)' );
-		console.log('   updateSystems: '+timeToUpdate(systemsToUpdate, [])+'+ min' );
-		console.log('   updateBodies: '+timeToUpdate([], bodiesToUpdate)+'+ min' );
-		console.log('   updateAll: '+timeToUpdate(systemsToUpdate, bodiesToUpdate)+'+ min' );
-		console.log('');
-		console.log('   + forceUpdate (update all systems/bodies)');
-		console.log('   updateSystems: '+timeToUpdate(systems, [])+'+ min' );
-		console.log('   updateBodies: '+timeToUpdate([], bodies)+'+ min' );
-		console.log('   updateAll: '+timeToUpdate(systems, bodies)+'+ min' );
-		console.log('-------------------------------------');
 
-	} else {
+/*CAPI_fetch('systems');
 
-		if( runArgs.indexOf(UPDATE_SYSTEMS) !== -1 	||
-			runArgs.indexOf(UPDATE_BODIES) !== -1 	||
-			runArgs.indexOf(UPDATE_ALL) !== -1
-		) {
-
-			authenticate(process.env.API_USERNAME, process.env.API_PASSWORD).then( (token) => {
-
-				if(!token) {
-					console.log('EXITING...');
-					return null;
-				}
-
-				// check for force update
-
-				if( runArgs.indexOf(UPDATE_FORCE) !== -1 ) {
-					console.log('[WARNING] forceUpdate triggered. ALL Systems and/or ALL Bodies will be updated (regardless of their status).');
-					console.log('');
-
-					systemsToUpdate = systems;
-					bodiesToUpdate = bodies;
-
-					forceUpdate = true;
-				}
-
-				// check for run parameters systems=[], bodies=[]
-
-				if(updateOverride.systems.length > 0) {
-
-					console.log('');
-					console.log('[WARNING] Systems override from runtime:');
-
-					systemsToUpdate = updateOverride.systems.reduce( (foundArray, systemId) => {
-
-						let found = false;
-
-						systems.forEach( system => {
-
-							if( system.id  == systemId ) {
-								console.log(' [Ok...] ID: '+systemId+' found as: '+system.systemName);
-								foundArray.push(system);
-								found = true;
-							}
-
-						});
-
-						if(!found) {
-							console.log(' [ERROR] ID: '+systemId+' not found in Canonn API');
-						}
-
-						return foundArray;
-
-					}, []);
-
-					console.log('');
-
-				}
-
-				if(updateOverride.bodies.length > 0) {
-
-					console.log('');
-					console.log('[WARNING] Bodies override from runtime:');
-			
-					bodiesToUpdate = updateOverride.bodies.reduce( (foundArray, bodyId) => {
-			
-						let found = false;
-			
-						bodies.forEach( body => {
-			
-							if( body.id  == bodyId ) {
-								console.log(' [Ok...] ID: '+bodyId+' found as: '+body.bodyName);
-								foundArray.push(body);
-								found = true;
-							}
-			
-						});
-			
-						if(!found) {
-							console.log(' [ERROR] ID: '+bodyId+' not found in Canonn API');
-						}
-			
-						return foundArray;
-			
-					}, []);
-			
-					console.log('');
-			
-				}
-
-				// Main script loop
-				// updateSystems
-				// updateBodies
-				// updateAll
-
-				if( runArgs.indexOf(UPDATE_ALL) !== -1 ) {
-
-					console.log('');
-					console.log('[i] Updating ['+systemsToUpdate.length+'] Systems and ['+bodiesToUpdate.length+'] Bodies');
-					console.log('Approximate time to finish: '+timeToUpdate(systemsToUpdate, bodiesToUpdate)+' min' );
-					console.log('');
-
-					queueUpdates('bodies', bodiesToUpdate, updateBodies).then( r=> {
-						console.log('');
-						console.log('~~~~ Bodies complete, proceeding to Systems');
-						console.log('');
-
-						queueUpdates('systems', systemsToUpdate, updateSystems);
-					});
-
-				} else if( runArgs.indexOf(UPDATE_SYSTEMS) !== -1 ) {
-
-					console.log('');
-					console.log('[i] Updating ['+systemsToUpdate.length+'] Systems.');
-					console.log('Approximate time to finish: '+timeToUpdate(systemsToUpdate, [])+' min' );
-					console.log('');
-
-					queueUpdates('systems', systemsToUpdate, updateSystems);
-
-				} else if( runArgs.indexOf(UPDATE_BODIES) !== -1 ) {
-
-					console.log('[i] Updating ['+bodiesToUpdate.length+'] Bodies.');
-					console.log('Approximate time to finish: '+timeToUpdate([], bodiesToUpdate)+' min' );
-					console.log('');
-
-					queueUpdates('bodies', bodiesToUpdate, updateBodies);
-
-				}
-
-			});
-
-		// No known script runtime mode passed
-		} else {
-			console.log('');
-			console.log('============================================');
-			console.log('Unknown runtime mode. Try: '+UPDATE_SYSTEMS+', '+UPDATE_BODIES+' or '+UPDATE_ALL);
-			console.log('============================================');
-		}
+CAPI_fetch('systems', {
+	where: {
+		"systemName": "Sol"
 	}
+});*/
 
-});
+
