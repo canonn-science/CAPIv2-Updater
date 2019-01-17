@@ -1,5 +1,5 @@
-import { EDSM_DELAY, EDSM_MAX_CALL_STACK } from '../settings.js';
-import { chunkArray } from '../utils.js';
+import { EDSM_DELAY, EDSM_MAX_CALL_STACK } from '../settings';
+import { chunkArray } from '../utils';
 
 /*
 	Set up a queue for updates

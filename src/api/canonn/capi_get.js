@@ -3,10 +3,10 @@
 */
 
 // Schemas for GET requests
-import lastApiUpdateSchema from './schemas/lastapiupdate.js';
+import lastApiUpdateSchema from '../schemas/lastapiupdate';
 
-import systemsSchema from './schemas/systems.js';
-import bodiesSchema from './schemas/bodies.js';
+import systemsSchema from '../schemas/systems';
+import bodiesSchema from '../schemas/bodies';
 
 /*
 	These are all the CAPI fetch methods to be used with CAPI_fetch(type, data) function.

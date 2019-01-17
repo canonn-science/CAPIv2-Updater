@@ -11,9 +11,9 @@ import {
 	API_CANONN_REST,
 	LOCALE, 
 	TIMEZONE
-} from '../settings.js';
+} from '../../settings';
 
-import { printProgress } from '../utils.js';
+import { printProgress } from '../../utils';
 
 const API_AUTH = API_CANONN_REST+'/auth/local/';
 const API_APIUPDATES = API_CANONN_REST+'/apiupdates/';

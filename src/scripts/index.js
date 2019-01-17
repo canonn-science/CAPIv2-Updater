@@ -6,7 +6,9 @@ Use 'status' as your template.
 
 */
 
-import statusScript from './status.js';
+import statusScript from './status';
+import systemsScript from './systems';
+import helpScript from './help';
 
 const SCRIPTS = {
 	'status': {
@@ -18,19 +20,24 @@ const SCRIPTS = {
 		script: statusScript
 	},
 
-	'updateSystems': {
-		runArgument: 'updateSystems',
-		script: function() { return new Promise( (r, e) => {console.log('Just a test - updateSystems done'); r(); }) }
+	'systems': {
+		runArgument: 'systems',
+		script: systemsScript
 	},
 
-	'updateBodies': {
-		runArgument: 'updateBodies',
+	'bodies': {
+		runArgument: 'bodies',
 		script: function() { return new Promise( (r, e) => {console.log('Just a test - updateBodies done'); r(); }) }
 	},
 
-	'updateBTReports': {
-		runArgument: 'updateBTReports',
+	'BTReports': {
+		runArgument: 'BTReports',
 		script: function() { return new Promise( (r, e) => {console.log('Just a test - updateBTReports done'); r(); }) }
+	},
+
+	'help': {
+		runArgument: 'help',
+		script: helpScript
 	}
 
 }

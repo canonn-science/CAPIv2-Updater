@@ -1,6 +1,6 @@
-import SCRIPTS from './scripts/index.js';
+import SCRIPTS from './scripts/index';
 
-import { UI_header, UI_footer } from './ui.js';
+import { UI_header, UI_footer } from './ui';
 /*
 
 This is the manager for all the scripts run via updater.
@@ -43,9 +43,23 @@ const ScriptManager = {
 
 	runScripts: async function() {
 
+		if( this.scriptsToRun.length < 1 ) {
+
+			this.scriptsToRun.push({
+				type: 'help',
+				fn: SCRIPTS.help.script,
+				runtime: {
+					force: false,
+					ids: false
+				}
+			});
+
+		}
+
 		for( const script of this.scriptsToRun ) {
 			await this.run( script );
 		}
+
 
 	}
 

@@ -3,10 +3,16 @@
 	You SHOULD ONLY use these functions to communicate with APIs in your scripts.
 */
 
-import { UPDATE } from '../index.js';
-import CAPI_GET from './capi_get.js';
+import CAPI_GET from './canonn/capi_get';
+import CAPI_UPDATE from './canonn/capi_update';
+import EDSM_GET from './edsm/edsm_get';
 
-import { getCAPIData } from './canonn.js';
+import { EDSM_MAX_CALL_STACK } from '../settings';
+
+import { getCAPIData } from './canonn/canonn';
+import { postEDSM } from './edsm/edsm';
+
+import { chunkArray } from '../utils';
 
 
 /*
@@ -36,6 +42,7 @@ export async function CAPI_fetch(type, data) {
 
 }
 
+
 /*
 	Update data in Canonn API
 	type: can be found in capi_update.js
@@ -53,6 +60,55 @@ export async function CAPI_update(type, data) {
 
 }
 
+
+/*
+	Fetch data from EDSM
+	type: can be found in edsm_get.js
+	data: should be according to edsm_get[type]
+*/
 export async function EDSM_fetch(type, data) {
+
+	if( EDSM_GET[type] ) {
+
+		console.log('<- Fetching ['+type+'] from EDSM ('+data.systemName.length+') entries.');
+
+		// If it's systems, we'll just chunk it up into EDSM_MAX_CALL_STACK sizes
+		// and fetch each chunk separately.
+		if(type === 'systems') {
+			
+			if( Array.isArray(data.systemName) && data.systemName.length > EDSM_MAX_CALL_STACK ) {
+				// Array needs to be split
+
+				let chunkedArray = chunkArray(data.systemName);
+				let responseData = [];
+
+				for(const stack in chunkedArray) {
+
+					let fetchData = Object.assign({}, EDSM_GET[type].baseData, { systemName: chunkedArray[stack] });
+					let r = await postEDSM( EDSM_GET[type].url, fetchData )
+
+					responseData.push( ...r );
+				}
+
+				return responseData;
+
+			} else {
+				// Array is below or equal to EDSM_MAX_CALL_STACK size
+
+				let fetchData = Object.assign({}, EDSM_GET[type].baseData, data);
+				return await postEDSM( EDSM_GET[type].url, fetchData );
+
+			}
+
+		} else {
+			// It's something else I tell you
+
+			let fetchData = Object.assign({}, EDSM_GET[type].baseData, data);
+			return await postEDSM( EDSM_GET[type].url, fetchData );
+
+		}
+		
+
+	}
 
 }

@@ -1,5 +1,5 @@
-import { queryEDSMBodies } from '../api/edsm.js';
-import { updateBody } from '../api/canonn.js';
+import { queryEDSMBodies } from '../api/edsm';
+import { updateBody } from '../api/canonn';
 
 /*
 	Bodies update logic.

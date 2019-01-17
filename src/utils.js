@@ -1,11 +1,10 @@
-import { getSystems, getBodies } from './api/canonn.js';
 
 import { 
 	EDSM_DELAY,
 	EDSM_MAX_CALL_STACK,
 	ARG_SYSTEMS_STRING,
 	ARG_BODIES_STRING
-} from './settings.js';
+} from './settings';
 
 
 // returns time in minutes

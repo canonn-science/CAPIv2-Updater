@@ -1,4 +1,4 @@
-import { API_CANONN_STEP } from '../../settings.js';
+import { API_CANONN_STEP } from '../../settings';
 
 /*
 	GraphQL query schema for API Updates to grab data from Canonn API

@@ -1,14 +1,14 @@
 // That's all the data fetching and data updating you should ever need.
-import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../api/api.js';
+import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../api/api';
 
 // Import all the needed settings and utilities for your script.
-import { timeToUpdate } from '../utils.js';
-import { LOCALE, TIMEZONE } from '../settings.js';
+import { timeToUpdate } from '../utils';
+import { LOCALE, TIMEZONE } from '../settings';
 
 // Import validators you use in the script.
 // TODO: This will later be unified into validate();
-import validateSystem from '../validators/system.js';
-import validateBody from '../validators/body.js';
+import validateSystem from '../validators/system';
+import validateBody from '../validators/body';
 
 // Import UI console printers for consistent script look
 import { 
@@ -16,7 +16,7 @@ import {
 	UI_footer, 
 	UI_h2,
 	UI_singleHr
-} from '../ui.js';
+} from '../ui';
 
 
 // Export your script

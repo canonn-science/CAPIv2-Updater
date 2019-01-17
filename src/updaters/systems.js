@@ -1,5 +1,5 @@
-import { queryEDSMSystems } from '../api/edsm.js';
-import { updateSystem } from '../api/canonn.js';
+import { queryEDSMSystems } from '../api/edsm';
+import { updateSystem } from '../api/canonn';
 
 /*
 	Systems update logic.
