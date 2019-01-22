@@ -93,8 +93,8 @@ export function getCAPIData(type, data) {
 
 }
 
-// Get CAPI data from capi_get.js type
-// You should use CAPI_fetch() instead of this function.
+// Update CAPI data
+// You should use CAPI_update() instead of this function.
 
 export function updateCAPIData(type, data, options) {
 
@@ -171,9 +171,7 @@ function fetchSingle(resolve, reject, counter = 0, schema, whereFilter, qlNode =
 
 }
 
-// Update data in CAPI REST in a loop
-// This function checks and updates
-// After all loops are completed it returns a cumulative data array with everything fetched.
+// Update data in CAPI REST
 
 // resolve: resolve from parent Promise (getCAPIData)
 // reject: reject from parent Promise (getCAPIData)
