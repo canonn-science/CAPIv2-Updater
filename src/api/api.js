@@ -9,7 +9,7 @@ import EDSM_GET from './edsm/edsm_get';
 
 import { EDSM_MAX_CALL_STACK } from '../settings';
 
-import { getCAPIData } from './canonn/canonn';
+import { getCAPIData, updateCAPIData } from './canonn/canonn';
 import { postEDSM } from './edsm/edsm';
 
 import { chunkArray } from '../utils';
@@ -25,11 +25,10 @@ export async function CAPI_fetch(type, data) {
 	if( CAPI_GET[type] ) {
 
 		// TODO in a future version:
-		// Sync local type data with Canonn API so there's no need
-		// for each script to dowload data again
-
-		// if( UPDATE.type.isDownloaded ) -> skip download
-		// requires syncing updaters data with API
+			// Sync local type data with Canonn API so there's no need
+			// for each script to dowload data again
+			// if( UPDATE.type.isDownloaded ) -> skip download
+			// requires syncing updaters data with API
 
 		let response = await getCAPIData(CAPI_GET[type], data);
 
@@ -47,14 +46,27 @@ export async function CAPI_fetch(type, data) {
 	Update data in Canonn API
 	type: can be found in capi_update.js
 	data: should be according to capi_update[type]
+	options: {
+		autoAdd: true - if the script should automatically check if an object exists, and if not, send a POST request to add it.
+		updater: custom updater for this update call. If not specified will use default from capi_update.js [type]
+	}
 */
-export async function CAPI_update(type, data) {
+export async function CAPI_update(type, data, options={ autoAdd: true, updater: null }) {
 
-	if( CAPI_GET[type] ) {
+	if( CAPI_UPDATE[type] ) {
 
+		if( Array.isArray(data) ) {
+			for(const dataPart in data) {
+				console.log('<- Update "'+type+'": ['+ (parseInt(dataPart)+1) +'/'+data.length+']');
+				await updateCAPIData(CAPI_UPDATE[type], data[dataPart], options)
+			}
+
+		} else {
+			await updateCAPIData(CAPI_UPDATE[type], data, options);
+		}		
 
 	} else {
-		console.log('- [ERROR] CAPI_fetch [type] argument "'+type+'" not found in capi_update.js file.');
+		console.log('- [ERROR] CAPI_update [type] argument "'+type+'" not found in capi_update.js file.');
 		return false;
 	}
 
@@ -70,8 +82,6 @@ export async function EDSM_fetch(type, data) {
 
 	if( EDSM_GET[type] ) {
 
-		console.log('<- Fetching ['+type+'] from EDSM ('+data.systemName.length+') entries.');
-
 		// If it's systems, we'll just chunk it up into EDSM_MAX_CALL_STACK sizes
 		// and fetch each chunk separately.
 		if(type === 'systems') {
@@ -81,6 +91,8 @@ export async function EDSM_fetch(type, data) {
 
 				let chunkedArray = chunkArray(data.systemName);
 				let responseData = [];
+
+				console.log('<- Fetching '+data.systemName.length+' [systems] in '+chunkedArray.length+' chunks from EDSM.');
 
 				for(const stack in chunkedArray) {
 
@@ -102,6 +114,8 @@ export async function EDSM_fetch(type, data) {
 
 		} else {
 			// It's something else I tell you
+
+			console.log('<- Fetching ['+type+'] from EDSM.');
 
 			let fetchData = Object.assign({}, EDSM_GET[type].baseData, data);
 			return await postEDSM( EDSM_GET[type].url, fetchData );

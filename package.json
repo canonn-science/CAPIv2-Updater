@@ -1,12 +1,11 @@
 {
-	"name": "canonn_edsm_updater",
+	"name": "capiv2-updater",
 	"version": "0.1.0",
-	"description": "Nodejs based tool to update the Canonn API with planetary and stellar data from EDSM",
+	"description": "Nodejs based tool to update the Canonn API with all manner of data",
 	"main": "index.js",
 	"scripts": {
 		"clean": "rimraf build",
 		"build": "npm run clean && babel src -d build",
-
 		"updater": "node build/index.js",
 		"updater:dev": "nodemon --exec babel-node src/index.js"
 	},

@@ -9,34 +9,36 @@
 	See API at: https://www.edsm.net/en/api-system-v1
 */
 
+import { API_EDSM_URL } from '../../settings';
+
 const EDSM_GET = {
 
 	'systems': {
-		url: 'https://www.edsm.net/api-v1/systems',
+		url: API_EDSM_URL+'/api-v1/systems',
 		baseData: { showCoordinates: true, showInformation: true, showId: true }
 		// EDSM_fetch(type, data) POST data required: { systemName: ["Sol", "Maia",...] }
 	},
 
 	'bodies': {
-		url: 'https://www.edsm.net/api-system-v1/bodies',
+		url: API_EDSM_URL+'/api-system-v1/bodies',
 		baseData: { showCoordinates: true, showInformation: true, showId: true }
 		// EDSM_fetch(type, data) POST data required: { systemName: "Sol" }
 	},
 
 	'stations': {
-		url: 'https://www.edsm.net/api-system-v1/stations',
+		url: API_EDSM_URL+'/api-system-v1/stations',
 		baseData: { showCoordinates: true, showInformation: true, showId: true }
 		// EDSM_fetch(type, data) POST data required: { systemName: "Sol" }
 	},
 
 	'factions': {
-		url: 'https://www.edsm.net/api-system-v1/factions',
+		url: API_EDSM_URL+'/api-system-v1/factions',
 		baseData: { showCoordinates: true, showInformation: true, showId: true }
 		// EDSM_fetch(type, data) POST data required: { systemName: "Sol" }
 	},
 
 	'systemsInRadius': {
-		url: 'https://www.edsm.net/api-v1/sphere-systems',
+		url: API_EDSM_URL+'/api-v1/sphere-systems',
 		baseData: { showCoordinates: true, showInformation: true, showId: true }
 		// EDSM_fetch(type, data) POST data required: { systemName: "Sol" }
 		// EDSM_fetch(type, data) POST data optional: { minRadius: 0, radius: 100, x: 0, y: 0, z: 0 }

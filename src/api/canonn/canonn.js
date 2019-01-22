@@ -9,17 +9,12 @@ import {
 	API_CANONN_STEP,
 	API_CANONN_GRAPHQL,
 	API_CANONN_REST,
+	API_CANONN_DELAY,
 	LOCALE, 
 	TIMEZONE
 } from '../../settings';
 
-import { printProgress } from '../../utils';
-
 const API_AUTH = API_CANONN_REST+'/auth/local/';
-const API_APIUPDATES = API_CANONN_REST+'/apiupdates/';
-const API_UPDATE_SYSTEM = API_CANONN_REST+'/systems/';
-const API_UPDATE_BODY = API_CANONN_REST+'/bodies/';
-
 var TOKEN = null;
 
 
@@ -48,8 +43,7 @@ export function authenticate(username, password) {
 				return r.json().then( r => {
 					TOKEN = r.jwt;
 
-					console.log('-> ...OK');
-					console.log('-> Hello '+r.user.username);
+					console.log('-> Hello, '+r.user.username);
 					console.log('............................................');
 					return TOKEN;
 				});
@@ -99,6 +93,19 @@ export function getCAPIData(type, data) {
 
 }
 
+// Get CAPI data from capi_get.js type
+// You should use CAPI_fetch() instead of this function.
+
+export function updateCAPIData(type, data, options) {
+
+	// This promise gets resolved inside updateSingle function
+	return new Promise(function(resolve, reject) {
+		updateSingle(resolve, reject, type, data, options);
+	});
+
+
+}
+
 
 /* 
 -------------------------------------------------
@@ -122,8 +129,7 @@ function fetchSingle(resolve, reject, counter = 0, schema, whereFilter, qlNode =
 	const step = API_CANONN_STEP;
 	const query = schema(step, counter, whereFilter);
 
-	return fetch(API_CANONN_GRAPHQL, {
-		
+	return fetch(API_CANONN_GRAPHQL, {	
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
@@ -162,6 +168,111 @@ function fetchSingle(resolve, reject, counter = 0, schema, whereFilter, qlNode =
 	}).catch( error => {
 		console.log('-> CAPI: Error in response: ', error);
 	});
+
+}
+
+// Update data in CAPI REST in a loop
+// This function checks and updates
+// After all loops are completed it returns a cumulative data array with everything fetched.
+
+// resolve: resolve from parent Promise (getCAPIData)
+// reject: reject from parent Promise (getCAPIData)
+// type: CAPI_update.js type
+// data: object you are trying to update or add
+// options: custom updater options, see CAPI_update in api.js
+
+async function updateSingle(resolve, reject, type, data, options) {
+
+	const defaultUpdater = type.updater;
+
+	let payload = data;
+	let check = null;
+
+	// Updaters for formatting data before sending
+	if(options.updater) {
+
+		// Custom updater from script
+		payload = options.updater(data);
+
+	} else {
+
+		// Fall back to default updater
+		if(defaultUpdater) {
+			payload = defaultUpdater(data);
+		}
+
+	}
+	
+	
+	/*console.log('<- Checking if data exists.')
+	// Check if object exists in CAPI
+	if(data.id) {
+
+		check = await new Promise(function(fetchResolve, fetchReject) {
+			fetchSingle(fetchResolve, fetchReject, 0, type.getter.schema, { id: data.id }, type.getter.graphQLNode, []);
+		});
+
+	}
+	console.log('-> Check: ', check);*/
+
+	if(payload) {
+
+		if(payload.id) {
+			// PUT
+
+			let url = type.url+'/'+payload.id;
+
+			delete payload.id;
+
+			console.log('');
+			console.log('');
+			console.log('');
+			console.log(' Payload', payload);
+			console.log(' URL', url);
+	
+			fetch(url, {
+				method: 'PUT',
+				headers: { 
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer '+TOKEN
+				},
+				body: JSON.stringify({
+					query: payload
+				})
+	
+			}).then( response => {
+			
+				console.log(' Reponse: ', response);
+
+				if(response.ok) {
+					console.log('-> Ok...');
+					return response.json();
+				} else {
+					throw new Error(response.status);
+				}
+		
+			}).then( response => {
+	
+				let t = setTimeout( () => {
+	
+					resolve(response);
+	
+				}, API_CANONN_DELAY);
+	
+			}).catch( error => {
+				console.log('-> CAPI: Error in response: ', error);
+			});
+
+		} else {
+			// POST
+	
+			console.log('POST REQUEST HERE');
+	
+		}
+
+	} else {
+		reject(' - Updater returned invalid.');
+	}
 
 }
 

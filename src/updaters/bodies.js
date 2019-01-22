@@ -1,11 +1,11 @@
-import { queryEDSMBodies } from '../api/edsm';
-import { updateBody } from '../api/canonn';
+import { queryEDSMBodies } from '../api/edsm/edsm';
+import { updateBody } from '../api/canonn/canonn';
 
 /*
 	Bodies update logic.
 */
 
-export default function updateBodies(systemName, bodies, errorsLog) {
+export default function bodiesUpdater(systemName, bodies, errorsLog) {
 
 	return new Promise(function(resolve, reject) {
 

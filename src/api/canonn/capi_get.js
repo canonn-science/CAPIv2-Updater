@@ -3,10 +3,14 @@
 */
 
 // Schemas for GET requests
+import apiupdatesSchema from '../schemas/apiupdates';
 import lastApiUpdateSchema from '../schemas/lastapiupdate';
 
 import systemsSchema from '../schemas/systems';
 import bodiesSchema from '../schemas/bodies';
+
+import btsitesSchema from '../schemas/btsites';
+import btreportsSchema from '../schemas/btreports';
 
 /*
 	These are all the CAPI fetch methods to be used with CAPI_fetch(type, data) function.
@@ -55,8 +59,30 @@ const CAPI_GET = {
 		//updaterNode: 'bodies'
 	},
 
+
+
+	'btsites': {
+		schema: btsitesSchema,
+		graphQLNode: 'btsites'
+		//updaterNode: 'bodies'
+	},
+
+	'btreports': {
+		schema: btreportsSchema,
+		graphQLNode: 'btsites'
+		//updaterNode: 'bodies'
+	},
+
+
+
 	'lastApiUpdate': {
 		schema: lastApiUpdateSchema,
+		graphQLNode: 'apiupdates'
+		//updaterNode: 'lastUpdate'
+	},
+
+	'apiupdates': {
+		schema: apiupdatesSchema,
 		graphQLNode: 'apiupdates'
 		//updaterNode: 'lastUpdate'
 	}

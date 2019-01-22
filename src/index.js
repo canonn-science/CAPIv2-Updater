@@ -30,9 +30,21 @@ console.log('Canonn CAPI updater script.');
 console.log('============================================');
 console.log('');
 
-// Find and queue scripts to run
-// First two arguments are "node" and "PATH", so we slice them away.
-ScriptManager.queueScripts( process.argv.slice(2) );
-ScriptManager.runScripts();
+
+authenticate(process.env.API_USERNAME, process.env.API_PASSWORD).then( (token) => {
+
+	if(!token) {
+		console.log('[ERROR] LOGIN FAILED, EXITING...');
+		return null;
+	}
+
+	// Find and queue scripts to run
+	// First two arguments are "node" and "PATH", so we slice them away.
+	ScriptManager.queueScripts( process.argv.slice(2) );
+
+	// Run scripts in order
+	ScriptManager.runScripts();
+
+});
 
 

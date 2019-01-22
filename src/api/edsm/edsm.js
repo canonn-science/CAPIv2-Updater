@@ -25,11 +25,11 @@ export function postEDSM(url, data) {
 	
 				} catch(e) {
 	
-					console.log('<- [EDSM] ERROR: ');
+					console.log('-> [EDSM] ERROR: ');
 					console.log('');
 					console.log(e);
 					console.log('');
-					console.log('<- [EDSM] on request:');
+					console.log('-> [EDSM] on request:');
 					console.log('');
 					console.log(r)
 					console.log('')
@@ -37,7 +37,7 @@ export function postEDSM(url, data) {
 				}
 	
 			}).then(r => {
-				console.log('<- [EDSM] Ok... ...Waiting '+EDSM_DELAY+'ms for next fetch.')
+				console.log('-> [EDSM] Ok... ...Waiting '+EDSM_DELAY+'ms for next fetch.')
 
 				let t = setTimeout( () => {
 					resolve(r);

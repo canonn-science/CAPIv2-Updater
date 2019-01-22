@@ -128,3 +128,159 @@ export const printProgress = {
 
 	
 }
+
+/*
+	Comparing string similarity and returning percentage of match.
+	Stolen sneakily from:
+	https://stackoverflow.com/questions/10473745/compare-strings-javascript-return-of-likely
+	https://en.wikipedia.org/wiki/Levenshtein_distance
+*/
+export function stringsSimilarity(s1, s2) {
+
+	let longer = s1;
+	let shorter = s2;
+
+	if (s1.length < s2.length) {
+		longer = s2;
+		shorter = s1;
+	}
+
+	let longerLength = longer.length;
+	if (longerLength == 0) {
+		return 1.0;
+	}
+
+	return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+}
+
+function editDistance(s1, s2) {
+	
+	s1 = s1.toLowerCase();
+	s2 = s2.toLowerCase();
+
+	const costs = new Array();
+	for (let i = 0; i <= s1.length; i++) {
+		
+		let lastValue = i;
+
+		for (let j = 0; j <= s2.length; j++) {
+			if (i == 0) {
+				costs[j] = j;
+
+			} else {
+
+				if (j > 0) {
+					var newValue = costs[j - 1];
+
+					if (s1.charAt(i - 1) != s2.charAt(j - 1)) {
+						newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+					}
+
+					costs[j - 1] = lastValue;
+					lastValue = newValue;
+				}
+			}
+		}
+
+		if (i > 0) {
+			costs[s2.length] = lastValue;
+		}
+
+	}
+
+	return costs[s2.length];
+}
+
+/*
+	mapFields(source, valueMap)
+
+	This function is used to copy (override) and track fields that changed between source and update objects.
+
+	source: source object (usually from CAPI)
+	
+	map: a map of fields in source and values to copy
+		Field names from source and update may differ, for example:
+		CAPI system name is in system.systemName
+		EDSM system name is in system.name
+
+		You can map these two so the function knows which fields to compare.
+		For example:
+
+		map: {
+		//	source			: 	update 
+			"systemName"	: 	edsmsystem.name  
+		}
+
+		Will copy map value to source fieldname.
+*/
+
+export function mapFields(source, map) {
+
+	console.log('Source: ', source);
+
+	let output = {};
+	let mapKeys = Object.keys(map);
+
+	mapKeys.forEach( key => {
+
+		if( !isSame(source[key], map[key]) ) {
+			// TODO: report to updateLog
+			console.log('	Field "'+key+'" is different. Source: "'+source[key]+'" | Value: "'+map[key]+'"');
+			output[key] = map[key];
+
+		} else {
+
+			if(source[key]) {
+				output[key] = source[key];
+			}
+		}
+
+	});
+
+	return output;
+
+}
+
+/*
+	Used to soft check if value v1 is same as value v2
+*/
+export function isSame(v1, v2) {
+
+	if( typeof v1 === typeof v2 ) {
+
+		switch( typeof v1 ) {
+			case 'string': {
+				return v1 == v2;
+			}
+
+			case 'number': {
+				return v1 === v2;
+			}
+
+			case 'boolean': {
+				return v1 === v2;
+			}
+
+			case 'object': {
+				//Oh boy... Shady territory.
+
+				try {
+					return JSON.stringify(v1) == JSON.stringify(v2);
+				} catch(e) {
+					console.log('[ERROR] in isDifferent(v1, v2), could not JSON.stringify objects');
+				}
+
+			}
+
+			default: {
+				return v1 == v2;
+			}
+
+
+		}
+
+	} else {
+		return false;
+	}
+
+}
