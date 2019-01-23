@@ -62,6 +62,10 @@ export default function system_from_edsm({capibody = {}, edsmbody = null}) {
 			output.id = capibody.id;
 		}
 
+		if(capibody && capibody.system) {
+			output.system = capibody.system;
+		}
+
 		return output;
 
 	} else {

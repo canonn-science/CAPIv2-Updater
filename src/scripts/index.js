@@ -10,6 +10,7 @@ import statusScript from './status';
 import systemsScript from './systems';
 import bodiesScript from './bodies';
 import helpScript from './help';
+import btReports2btSitesScript from './BTReports2BTSites';
 
 const SCRIPTS = {
 	'status': {
@@ -31,9 +32,9 @@ const SCRIPTS = {
 		script: bodiesScript
 	},
 
-	'BTReports': {
-		runArgument: 'BTReports',
-		script: function() { return new Promise( (r, e) => {console.log('Just a test - updateBTReports done'); r(); }) }
+	'btreports2btsites': {
+		runArgument: 'btreports2btsites',
+		script: btReports2btSitesScript
 	},
 
 	'help': {

@@ -37,17 +37,17 @@ export const API_CANONN_DELAY = 25;
 
 
 // Enums for report types and statuses - see Strapi CAPI (he_he_he) enums, they should be the same.
-export const REPORT_TYPES = [
-	"new",
-	"update",
-	"error"
-]
+export const REPORT_TYPES = {
+	new: "new",
+	update: "update",
+	error: "error"
+}
 
-export const REPORT_STATUS = [
-	"pending",
-	"updated",
-	"verified",
-	"accepted",
-	"declined",
-	"issue"
-]
+export const REPORT_STATUS = {
+	pending: "pending",
+	updated: "updated",
+	verified: "verified",
+	accepted: "accepted",
+	declined: "declined",
+	issue: "issue"
+}

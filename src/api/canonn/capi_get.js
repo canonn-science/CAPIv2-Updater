@@ -11,6 +11,11 @@ import bodiesSchema from '../schemas/bodies';
 
 import btsitesSchema from '../schemas/btsites';
 import btreportsSchema from '../schemas/btreports';
+import bttypesSchema from '../schemas/bttypes';
+
+import cmdrsSchema from '../schemas/cmdrs';
+import excludecmdrsSchema from '../schemas/excludecmdrs';
+import excludeclientsSchema from '../schemas/excludeclients';
 
 /*
 	These are all the CAPI fetch methods to be used with CAPI_fetch(type, data) function.
@@ -69,11 +74,17 @@ const CAPI_GET = {
 
 	'btreports': {
 		schema: btreportsSchema,
-		graphQLNode: 'btsites'
+		graphQLNode: 'btreports'
 		//updaterNode: 'bodies'
 	},
 
+	'bttypes': {
+		schema: bttypesSchema,
+		graphQLNode: 'bttypes'
+		//updaterNode: 'bodies'
+	},
 
+	/* API UPDATES */
 
 	'lastApiUpdate': {
 		schema: lastApiUpdateSchema,
@@ -85,7 +96,29 @@ const CAPI_GET = {
 		schema: apiupdatesSchema,
 		graphQLNode: 'apiupdates'
 		//updaterNode: 'lastUpdate'
-	}
+	},
+
+	/* CMDRS */
+
+	'cmdrs': {
+		schema: cmdrsSchema,
+		graphQLNode: 'cmdrs'
+		//updaterNode: 'bodies'
+	},
+
+	// blacklist
+	'excludecmdrs': {
+		schema: excludecmdrsSchema,
+		graphQLNode: 'excludecmdrs'
+		//updaterNode: 'bodies'
+	},
+
+	// Clients blacklist
+	'excludeclients': {
+		schema: excludeclientsSchema,
+		graphQLNode: 'excludeclients'
+		//updaterNode: 'bodies'
+	},
 
 
 };

@@ -55,15 +55,22 @@ export async function CAPI_update(type, data, options={ autoAdd: true, updater: 
 
 	if( CAPI_UPDATE[type] ) {
 
+		let response = [];
+
 		if( Array.isArray(data) ) {
 			for(const dataPart in data) {
 				console.log('<- Update "'+type+'": ['+ (parseInt(dataPart)+1) +'/'+data.length+']');
-				await updateCAPIData(CAPI_UPDATE[type], data[dataPart], options)
+				let r = await updateCAPIData(CAPI_UPDATE[type], data[dataPart], options);
+
+				response.push(r);
 			}
 
 		} else {
-			await updateCAPIData(CAPI_UPDATE[type], data, options);
-		}		
+			let r = await updateCAPIData(CAPI_UPDATE[type], data, options);
+			response.push(r);
+		}
+
+		return response;		
 
 	} else {
 		console.log('- [ERROR] CAPI_update [type] argument "'+type+'" not found in capi_update.js file.');

@@ -200,30 +200,26 @@ async function updateSingle(resolve, reject, type, data, options) {
 		}
 
 	}
-	
-	
-	/*console.log('<- Checking if data exists.')
-	// Check if object exists in CAPI
-	if(data.id) {
-
-		check = await new Promise(function(fetchResolve, fetchReject) {
-			fetchSingle(fetchResolve, fetchReject, 0, type.getter.schema, { id: data.id }, type.getter.graphQLNode, []);
-		});
-
-	}
-	console.log('-> Check: ', check);*/
 
 	if(payload) {
 
+		let method = 'PUT';
+		let url = type.url;
+
+		// POST or PUT, POST or PUT, POST... or... PUT...
 		if(payload.id) {
 			// PUT
-
-			let url = type.url+'/'+payload.id;
-
+			method = 'PUT';
+			url = type.url+'/'+payload.id;
 			delete payload.id;
-	
-			fetch(url, {
-				method: 'PUT',
+
+		} else {
+			// POST
+			method = 'POST'
+		}
+
+		fetch(url, {
+				method: method,
 				headers: { 
 					'Content-Type': 'application/json',
 					'Authorization': 'Bearer '+TOKEN
@@ -250,13 +246,6 @@ async function updateSingle(resolve, reject, type, data, options) {
 			}).catch( error => {
 				console.log('-> CAPI: Error in response: ', error);
 			});
-
-		} else {
-			// POST
-	
-			console.log('POST REQUEST HERE');
-	
-		}
 
 	} else {
 		reject(' - Updater returned invalid.');
