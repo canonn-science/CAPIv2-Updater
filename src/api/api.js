@@ -117,8 +117,31 @@ export async function EDSM_fetch(type, data) {
 
 			console.log('<- Fetching ['+type+'] from EDSM.');
 
-			let fetchData = Object.assign({}, EDSM_GET[type].baseData, data);
-			return await postEDSM( EDSM_GET[type].url, fetchData );
+			let responseData = [];
+
+			if( Array.isArray(data.systemName) ) {
+
+				for(const system in data.systemName) {
+
+					let fetchData = Object.assign({}, EDSM_GET[type].baseData, { systemName: data.systemName[system] });
+					let r = await postEDSM( EDSM_GET[type].url, fetchData )
+
+					responseData.push( r );
+				}
+
+			} else {
+
+				let fetchData = Object.assign({}, EDSM_GET[type].baseData, data);
+				let r = await postEDSM( EDSM_GET[type].url, fetchData );
+
+				responseData.push( r );
+
+			}
+
+			console.log('responseData', responseData);
+
+			return responseData;
+			
 
 		}
 		

@@ -14,6 +14,7 @@ export default function validateBody(body) {
 
 	if( !body.id || !body.bodyName ) {
 		console.log('[ERROR]: Missing ID or bodyName for: ', body);
+		return false;
 	}
 
 	// basics check

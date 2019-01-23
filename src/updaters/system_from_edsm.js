@@ -33,8 +33,6 @@ export default function system_from_edsm({capisystem = {}, edsmsystem = null}) {
 			output.id = capisystem.id;
 		}
 
-		console.log('Output', output);
-
 		return output;
 
 	} else {

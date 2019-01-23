@@ -62,7 +62,7 @@ export default function systemsScript(runtime) {
 			});
 		});
 
-		await CAPI_update('system_from_edsm', payload);			
+		await CAPI_update('systems', payload);			
 
 		resolve(true);
 	});

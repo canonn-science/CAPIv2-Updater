@@ -221,12 +221,6 @@ async function updateSingle(resolve, reject, type, data, options) {
 			let url = type.url+'/'+payload.id;
 
 			delete payload.id;
-
-			console.log('');
-			console.log('');
-			console.log('');
-			console.log(' Payload', payload);
-			console.log(' URL', url);
 	
 			fetch(url, {
 				method: 'PUT',
@@ -234,13 +228,9 @@ async function updateSingle(resolve, reject, type, data, options) {
 					'Content-Type': 'application/json',
 					'Authorization': 'Bearer '+TOKEN
 				},
-				body: JSON.stringify({
-					query: payload
-				})
+				body: JSON.stringify(payload)
 	
 			}).then( response => {
-			
-				console.log(' Reponse: ', response);
 
 				if(response.ok) {
 					console.log('-> Ok...');

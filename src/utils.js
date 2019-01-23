@@ -216,17 +216,18 @@ function editDistance(s1, s2) {
 
 export function mapFields(source, map) {
 
-	console.log('Source: ', source);
-
 	let output = {};
 	let mapKeys = Object.keys(map);
 
 	mapKeys.forEach( key => {
 
 		if( !isSame(source[key], map[key]) ) {
-			// TODO: report to updateLog
-			console.log('	Field "'+key+'" is different. Source: "'+source[key]+'" | Value: "'+map[key]+'"');
-			output[key] = map[key];
+			
+			if( typeof map[key] != 'undefined' ) {
+				// TODO: report to updateLog
+				console.log('	Field "'+key+'" is different. Source: "'+source[key]+'" | Value: "'+map[key]+'"');
+				output[key] = map[key];
+			}
 
 		} else {
 
@@ -246,41 +247,19 @@ export function mapFields(source, map) {
 */
 export function isSame(v1, v2) {
 
-	if( typeof v1 === typeof v2 ) {
+	if( typeof v1 == 'object' ) {
 
-		switch( typeof v1 ) {
-			case 'string': {
-				return v1 == v2;
-			}
+		//Oh boy... Shady territory.
 
-			case 'number': {
-				return v1 === v2;
-			}
-
-			case 'boolean': {
-				return v1 === v2;
-			}
-
-			case 'object': {
-				//Oh boy... Shady territory.
-
-				try {
-					return JSON.stringify(v1) == JSON.stringify(v2);
-				} catch(e) {
-					console.log('[ERROR] in isDifferent(v1, v2), could not JSON.stringify objects');
-				}
-
-			}
-
-			default: {
-				return v1 == v2;
-			}
-
-
+		try {
+			return JSON.stringify(v1) == JSON.stringify(v2);
+		} catch(e) {
+			console.log('[ERROR] in isDifferent(v1, v2), could not JSON.stringify objects');
 		}
 
 	} else {
-		return false;
+		return v1 == v2;
 	}
+
 
 }

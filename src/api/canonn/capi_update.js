@@ -7,12 +7,7 @@ import CAPI_GET from './capi_get';
 import { API_CANONN_REST } from '../../settings';
 
 import system_from_edsm from '../../updaters/system_from_edsm';
-
-/*import apiupdatesUpdater from '../../updaters/apiupdates';
-import systemsUpdater from '../../updaters/systems';
-import bodiesUpdater from '../../updaters/bodies';
-import btsitesUpdater from '../../updaters/btsites';
-import btreportsUpdater from '../../updaters/btreports';*/
+import body_from_edsm from '../../updaters/body_from_edsm';
 
 const CAPI_UPDATE = {
 
@@ -22,18 +17,19 @@ const CAPI_UPDATE = {
 		getter: CAPI_GET['apiupdates']
 	},*/
 
-	'system_from_edsm': {
+	'systems': {
 		url: API_CANONN_REST+'/systems',
 		updater:  system_from_edsm,
 		getter: CAPI_GET['systems']
 	},
 
-	/*'bodies': {
+	'bodies': {
 		url: API_CANONN_REST+'/bodies',
-		updater:  bodiesUpdater,
+		updater:  body_from_edsm,
 		getter: CAPI_GET['bodies']
 	},
 
+	/*
 	'btreports': {
 		url: API_CANONN_REST+'/btreports',
 		updater:  btreportsUpdater,

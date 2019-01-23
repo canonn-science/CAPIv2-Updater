@@ -8,6 +8,7 @@ Use 'status' as your template.
 
 import statusScript from './status';
 import systemsScript from './systems';
+import bodiesScript from './bodies';
 import helpScript from './help';
 
 const SCRIPTS = {
@@ -27,7 +28,7 @@ const SCRIPTS = {
 
 	'bodies': {
 		runArgument: 'bodies',
-		script: function() { return new Promise( (r, e) => {console.log('Just a test - updateBodies done'); r(); }) }
+		script: bodiesScript
 	},
 
 	'BTReports': {
