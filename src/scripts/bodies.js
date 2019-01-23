@@ -44,46 +44,46 @@ export default function bodiesScript(runtime) {
 
 		UI_h2('Finding systems to ask EDSM about '+update.length+' bodies.');
 
-		let querySystemNames = [];
+		const querySystems = [];
 
 		update.forEach( body => {
-			if( querySystemNames.indexOf(body.system.systemName) === -1 ) {
-				querySystemNames.push(body.system.systemName);
+			if( querySystems.indexOf(body.system.systemName) === -1 ) {
+				querySystems.push(body.system.systemName);
 			}
 		});
 
-		console.log('Query EDSM for '+querySystemNames.length+' full system info.');
+		console.log('Query EDSM for '+querySystems.length+' full system info:');
 
-		UI_h2('Fetching Candidate Systems from EDSM');		
-		let edsm_systems = await EDSM_fetch('bodies', { 
-			systemName: querySystemNames
-		});
+		let counter = 1;
+		for( let systemName of querySystems ) {
 
-		UI_header('EDSM full system info fetched: '+edsm_systems.length);
-		console.log('<- Updating ['+update.length+'] bodies in CAPI');
+			UI_h2('Fetching bodies info from EDSM ['+counter+'/'+querySystems.length+']: '+systemName.toUpperCase());
 
-		// Loop over EDSM systems, then
-		edsm_systems.forEach( edsmsystem => {
+			let edsm_response = await EDSM_fetch('bodies', { systemName: systemName });
 
-			// Filter out only the bodies we're looking for
-			let bodies = edsmsystem.bodies;
-			bodies.forEach( body => {
+			if(edsm_response && edsm_response.length > 0) {
 
-				console.log('Body name: ', body.name);
-
-				let capiBody = update.find( capibody => {
-					return capibody.bodyName.toLowerCase() == body.name.toLowerCase();
-				});
-
-				if(capiBody) {
-					payload.push({ capibody: capiBody, edsmbody: body })
+				let bodies = edsm_response[0].bodies;
+				for(let body of bodies) {
+	
+					let capiBody = update.find( capibody => {
+						return capibody.bodyName.toLowerCase() == body.name.toLowerCase();
+					});
+	
+					if(capiBody) {
+						console.log('<- Updating ['+capiBody.bodyName.toUpperCase()+'] body in CAPI');
+						await CAPI_update('bodies', { capibody: capiBody, edsmbody: body });
+					}
+	
 				}
 
-			});
+			} else {
+				console.log('-> [EDSM] Could not find system.')
+			}
 
-		});
+			counter++;
 
-		console.log('------- payload', payload);
+		}
 
 		await CAPI_update('bodies', payload);			
 

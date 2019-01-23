@@ -138,8 +138,6 @@ export async function EDSM_fetch(type, data) {
 
 			}
 
-			console.log('responseData', responseData);
-
 			return responseData;
 			
 

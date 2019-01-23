@@ -62,9 +62,9 @@ export default function validateBody(body) {
 	}
 
 	if(valid.indexOf(false) != -1) {
-		return false;
+		return true;
 
 	} else {
-		return true;
+		return false;
 	}
 }
