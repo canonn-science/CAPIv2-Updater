@@ -236,9 +236,16 @@ export default function btReports2btSitesScript(runtime) {
 						discoveredBy: cmdr.id
 					}
 
-					console.log('Payload for new site:', payload_btsite);
-
 					let newSite = await CAPI_update('btsites', { btsite: payload_btsite, btreport: report });
+
+					// Add new site locally
+					btsites.push({
+						...newSite[0],
+						body: body,
+						system: system,
+						type: type,
+						discoveredBy: cmdr
+					});
 
 					console.log();
 					console.log('Updating BT Report...');
@@ -253,10 +260,15 @@ export default function btReports2btSitesScript(runtime) {
 
 				}
 
+
+				/*
+				// Uncomment this for a delay after report pushing
+				// useful for anlysis of data
 				console.log('(for testing purposes) Waiting 20s...');
 				await new Promise( (resolve) => {
 					setTimeout(resolve, 20000);
 				});
+				*/
 
 			}
 
