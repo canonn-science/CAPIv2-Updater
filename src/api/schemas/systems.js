@@ -1,8 +1,6 @@
 import { API_CANONN_STEP } from '../../settings';
 
 /*
-	GraphQL query schema for Bodies to grab data from Canonn API
-
 	query { } is omited on purpose
 */
 

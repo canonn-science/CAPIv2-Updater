@@ -11,6 +11,7 @@ import systemsScript from './systems';
 import bodiesScript from './bodies';
 import helpScript from './help';
 import btReports2btSitesScript from './BTReports2BTSites';
+import generateBTReports from './generateBTReports';
 
 const SCRIPTS = {
 	'status': {
@@ -36,6 +37,12 @@ const SCRIPTS = {
 		runArgument: 'btreports2btsites',
 		script: btReports2btSitesScript
 	},
+
+		// For testing only
+		'generatebtreports': {
+			runArgument: 'generatebtreports',
+			script: generateBTReports
+		},
 
 	'help': {
 		runArgument: 'help',

@@ -15,10 +15,6 @@ export default function btreportUpdater(report) {
 
 		const output = report;
 
-		if(!report.id) {
-			console.log('[ERROR] btreportUpdater missing report.id');
-		}
-
 		return output;
 
 	} else {

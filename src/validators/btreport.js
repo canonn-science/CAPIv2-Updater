@@ -1,7 +1,7 @@
 import { EDSM_fetch } from '../api/api';
 
 /*
-	Validates if a BTReport is valid
+	Checks if a BTReport is valid
 */
 
 export default async function validateBTReport(report, { systems = [], bodies = [], cmdrs = [], excludecmdrs = [], excludeclients = [], bttypes = [] } ) {

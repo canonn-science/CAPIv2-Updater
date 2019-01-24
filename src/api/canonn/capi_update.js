@@ -8,7 +8,7 @@ import { API_CANONN_REST } from '../../settings';
 
 import system_from_edsm from '../../updaters/system_from_edsm';
 import body_from_edsm from '../../updaters/body_from_edsm';
-import btreportUpdater from '../../updaters/btreportUpdater';
+import btreportUpdater from '../../updaters/btreport';
 
 const CAPI_UPDATE = {
 

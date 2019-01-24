@@ -1,9 +1,3 @@
-/*
-	Systems updater
-	Input: System (EDSM)
-	Output: System (CAPI)
-*/
-
 import { mapFields } from '../utils';
 
 export default function system_from_edsm({capibody = {}, edsmbody = null}) {
