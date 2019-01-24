@@ -12,6 +12,10 @@ import bodiesScript from './bodies';
 import helpScript from './help';
 import btReports2btSitesScript from './BTReports2BTSites';
 import generateBTReports from './generateBTReports';
+import resetBTReportStatus from './resetBTReportStatus';
+
+
+import testScript from './test';
 
 const SCRIPTS = {
 	'status': {
@@ -20,33 +24,54 @@ const SCRIPTS = {
 		runArgument: 'status',
 
 		// script to run from /scripts/ directory, UPDATE object with all the data requested will be passed to it.
-		script: statusScript
+		script: statusScript,
+
+		// should this script be run when updater is run with 'npm run updater !runall'
+		runAll: false
 	},
 
 	'systems': {
 		runArgument: 'systems',
-		script: systemsScript
+		script: systemsScript,
+		runAll: true
 	},
 
 	'bodies': {
 		runArgument: 'bodies',
-		script: bodiesScript
+		script: bodiesScript,
+		runAll: true
 	},
 
 	'btreports2btsites': {
 		runArgument: 'btreports2btsites',
-		script: btReports2btSitesScript
+		script: btReports2btSitesScript,
+		runAll: true
 	},
 
 		// For testing only
 		'generatebtreports': {
 			runArgument: 'generatebtreports',
-			script: generateBTReports
+			script: generateBTReports,
+			runAll: false
+		},
+
+		// For manual use only
+		'resetbtreportstatus': {
+			runArgument: 'resetbtreportstatus',
+			script: resetBTReportStatus,
+			runAll: false
 		},
 
 	'help': {
 		runArgument: 'help',
-		script: helpScript
+		script: helpScript,
+		runAll: false
+	},
+
+	'test': {
+		runArgument: 'test',
+		script: testScript,
+		runAll: false
 	}
 
 }
