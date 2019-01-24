@@ -31,9 +31,9 @@ const INCORRECT_FIELDS = [
 export default function generateBTReports(runtime) {
 	return new Promise(async function(resolve,reject) {
 
-		const incorrectChance = 0.25; // [0-1] chance of report being incorrect
-		const duplicateChance = 0.15; // [0-1] chance of report being a duplicate
-		let reportsToGenerate = 20;
+		const incorrectChance = 0.25; 	// [0-1] chance of report being incorrect
+		const duplicateChance = 0.15; 	// [0-1] chance of report being a duplicate
+		let reportsToGenerate = 20;		// this is overriden by :[X] filter on runtime
 
 			if(runtime.ids) {
 				reportsToGenerate = runtime.ids[0];
@@ -98,7 +98,7 @@ export default function generateBTReports(runtime) {
 					userType: 'pc',
 					cmdrName: 'Vall',
 					reportType: 'new',
-					clientVersion: 'Updater - RANDOM GENERATOR',
+					clientVersion: 'Updater RRG - Duplicate',
 					reportStatus: 'pending',
 
 					type: '',
@@ -108,24 +108,30 @@ export default function generateBTReports(runtime) {
 					longitude: 0
 				}
 
-				let sourceBT = btsites[ Math.round(random*btsites.length) ];
+				let sourceBT = btsites[ Math.floor(random*btsites.length) ];
 				console.log('BT Site used as source = ID:'+sourceBT.id);
 
 				report.systemName = sourceBT.system.systemName;
 				report.bodyName = sourceBT.body.bodyName;
-				report.type = sourceBT.type.journalID;
+				
+				let newType = bttypes[ Math.floor(random*bttypes.length) ].journalName;
+				console.log('Type for this report: ', newType);
+				report.type = newType;
 
 				report.latitude = sourceBT.latitude;
 				report.longitude = sourceBT.longitude;
 
 				if(!duplicate) {
+					report.clientVersion = 'Updater RRG - New';
 					report.latitude = random*sourceBT.latitude;
 					report.longitude = random*sourceBT.longitude;
 				}
 
 				if(incorrect) {
-					let incorrectField = INCORRECT_FIELDS[ Math.round(random*INCORRECT_FIELDS.length) ];
+					let incorrectField = INCORRECT_FIELDS[ Math.floor(random*INCORRECT_FIELDS.length) ];
 					console.log('Incorrect field: '+incorrectField);
+
+					report.clientVersion = 'Updater RRG - Incorrect';
 
 					if(incorrectField == 'cmdrName') {
 						report['cmdrName'] = 'test';

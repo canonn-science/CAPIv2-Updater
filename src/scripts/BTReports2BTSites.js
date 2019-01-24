@@ -12,6 +12,10 @@ import {
 	UI_singleHr
 } from '../ui';
 
+// Max allowed difference between report and site lat/lng for the report to be 
+// considered a duplicate of existing site.
+const LATITUDE_DIFF = 1;
+const LONGITUDE_DIFF = 1;
 
 export default function btReports2btSitesScript(runtime) {
 	return new Promise(async function(resolve,reject) {
@@ -80,6 +84,7 @@ export default function btReports2btSitesScript(runtime) {
 			if(!precheck.valid) {
 				console.log();
 				console.log('Precheck complete. Report is INVALID.');
+				console.log('Changing report status to "declined"...');
 
 				// Update btreport status here.
 				await CAPI_update('btreports', {
@@ -102,11 +107,12 @@ export default function btReports2btSitesScript(runtime) {
 				let system;
 				let body;
 				let cmdr;
+				let type;
 
 				// Check system and add it if needed
 				if( precheck.missingData.system ) {
 					console.log(' [MISS] EDSM System: ', precheck.missingData.system.name);
-					let newsystem = await CAPI_update('system', { edsmsystem: precheck.missingData.system });
+					let newsystem = await CAPI_update('systems', { edsmsystem: precheck.missingData.system });
 
 					// Update local systems
 					systems.push(newsystem);
@@ -155,19 +161,106 @@ export default function btReports2btSitesScript(runtime) {
 					});
 				}
 
-
-				// Step 7 starts here.
-				console.log();
-				console.log('Ready for duplicates and sites searching.');
-				console.log('This is it for now. WIP.');
 				console.log();
 
-				/*await CAPI_update('btreports', {
-					id: report.id,
-					reportStatus: REPORT_STATUS.accepted
-				})*/
+				// Loop over sites and check duplicates
+				UI_h2('Looking for duplicates in existing sites');
+				console.log();
+
+				let duplicate = false;
+
+				let sameBody = btsites.filter( site => {
+					return site.body.bodyName == report.bodyName;
+				});
+
+				console.log('Sites found on the same body ['+report.bodyName+']: '+sameBody.length);
+				if(sameBody.length > 0) {
+					// May still be a duplicate
+
+					sameBody.forEach( site => {
+
+						if( Math.abs(site.latitude - report.latitude) <= LATITUDE_DIFF ) {
+
+							if( Math.abs(site.longitude - report.longitude) <= LONGITUDE_DIFF ) {
+
+								duplicate = site;
+
+							}
+
+						}
+
+					});
+
+				}
+
+				if(duplicate) {
+
+					UI_h2('[DUPLICATE] Site was found to be a duplicate of site ID:'+duplicate.id);
+					console.log('Updating BT report...');
+					await CAPI_update('btreports', {
+						id: report.id,
+						site: duplicate.id,
+						reportStatus: REPORT_STATUS.accepted,
+						reportComment: 'Report points to an existing site: #'+duplicate.id
+					})
+
+				} else {
+
+					UI_h2('[NEW SITE] Site is not a duplicate.');
+					console.log('Adding new BT site...');
+
+					// Get max site ID number
+					let maxSiteID = 0;
+					btsites.forEach( site => {
+						if(site.siteID > maxSiteID) {
+							maxSiteID = site.siteID;
+						}
+					});
+
+					// Then add one.
+					maxSiteID++;
+
+					// Set correct type for this report
+					type = bttypes.find( type => {
+						if( type.type.toLowerCase() == report.type.toLowerCase() || type.journalName.toLowerCase() == report.type.toLowerCase() ) {
+							return type;
+						}
+					});
+
+					// Prepare basics for new site
+					let payload_btsite = {
+						siteID: maxSiteID,
+						system: system.id,
+						body: body.id,
+						type: type.id,
+						discoveredBy: cmdr.id
+					}
+
+					console.log('Payload for new site:', payload_btsite);
+
+					let newSite = await CAPI_update('btsites', { btsite: payload_btsite, btreport: report });
+
+					console.log();
+					console.log('Updating BT Report...');
+
+					// Set report to accepted
+					await CAPI_update('btreports', {
+						id: report.id,
+						reportStatus: REPORT_STATUS.accepted
+					});
+
+					console.log();
+
+				}
+
+				console.log('(for testing purposes) Waiting 20s...');
+				await new Promise( (resolve) => {
+					setTimeout(resolve, 20000);
+				});
 
 			}
+
+			UI_h2('[COMPLETE] Report ID:'+report.id+' is complete.');
 
 		}
 

@@ -216,7 +216,7 @@ function editDistance(s1, s2) {
 
 export function mapFields(source, map) {
 
-	let output = {};
+	let output = { ...source };
 	let mapKeys = Object.keys(map);
 
 	mapKeys.forEach( key => {

@@ -232,7 +232,7 @@ async function updateSingle(resolve, reject, type, data, options) {
 					console.log('-> Ok...');
 					return response.json();
 				} else {
-					throw new Error(response.status);
+					throw response;
 				}
 		
 			}).then( response => {
@@ -243,8 +243,13 @@ async function updateSingle(resolve, reject, type, data, options) {
 	
 				}, API_CANONN_DELAY);
 	
-			}).catch( error => {
+			}).catch( async (error) => {
+
 				console.log('-> CAPI: Error in response: ', error);
+				await error.text().then( msg => {
+					console.log('-> CAPI: ', msg);
+				});
+
 			});
 
 	} else {
