@@ -65,8 +65,7 @@ export default function btReports2btSitesScript(runtime) {
 		for( const report of btreports ) {
 
 			UI_h2('Processing "'+report.reportType+'" report ID:'+report.id+' by CMDR '+report.cmdrName);
-			console.log('Prechecking validity:');
-			console.log();
+			console.log('Prechecking validity...');
 
 			//
 			// Preprocessing checks for report validity
@@ -127,7 +126,7 @@ export default function btReports2btSitesScript(runtime) {
 
 
 				// Check body and add it if needed
-				if( precheck.missingData.body ) {
+				if( precheck.missingData.body && system ) {
 					console.log(' [MISS] EDSM body: ', precheck.missingData.body.name);
 
 					let newbody = await CAPI_update('bodies', { capibody: { system: system.id }, edsmbody: precheck.missingData.body });
@@ -253,6 +252,7 @@ export default function btReports2btSitesScript(runtime) {
 					// Set report to accepted
 					await CAPI_update('btreports', {
 						id: report.id,
+						site: newSite[0].id,
 						reportStatus: REPORT_STATUS.accepted
 					});
 
