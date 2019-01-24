@@ -133,7 +133,7 @@ export default async function validateBTReport(report, { systems = [], bodies = 
 			let edsm_check = await EDSM_fetch('bodies', { systemName: report.systemName });
 			console.log();
 		
-			if(edsm_check && edsm_check.id) {
+			if(edsm_check && edsm_check[0] && edsm_check[0].id) {
 				let edsm_system = edsm_check[0];
 		
 				if(missingData.system) {
