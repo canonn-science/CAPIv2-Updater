@@ -15,7 +15,7 @@ import generateBTReports from './generateBTReports';
 import resetBTReportStatus from './resetBTReportStatus';
 
 
-import testScript from './test';
+//import testScript from './test';
 
 const SCRIPTS = {
 	'status': {
@@ -68,11 +68,11 @@ const SCRIPTS = {
 		runAll: false
 	},
 
-	'test': {
-		runArgument: 'test',
-		script: testScript,
-		runAll: false
-	}
+//	'test': {
+//		runArgument: 'test',
+//		script: testScript,
+//		runAll: false
+//	}
 
 }
 
