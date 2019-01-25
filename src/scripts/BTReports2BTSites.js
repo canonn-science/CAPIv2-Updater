@@ -238,7 +238,7 @@ export default function btReports2btSitesScript(runtime) {
 						discoveredBy: cmdr.id
 					}
 
-					let newSite = await CAPI_update('btsites', { btsite: payload_btsite, btreport: report });
+					let newSite = await CAPI_update('btsites', { btsite: payload_btsite, btreport: report }, { updater: site_from_report });
 
 					// Add new site locally
 					btsites.push({
