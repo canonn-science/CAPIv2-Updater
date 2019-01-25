@@ -32,16 +32,58 @@ const CAPI_UPDATE = {
 		getter: CAPI_GET['bodies']
 	},
 
+	'bmreports': {
+		url: API_CANONN_REST+'/bmreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['bmreports']
+	},
+
 	'btreports': {
 		url: API_CANONN_REST+'/btreports',
 		updater:  reportUpdater,
 		getter: CAPI_GET['btreports']
 	},
 
-	'btsites': {
-		url: API_CANONN_REST+'/btsites',
-		updater:  site_from_report,
-		getter: CAPI_GET['btsites']
+	'csreports': {
+		url: API_CANONN_REST+'/csreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['csreports']
+	},
+
+	'fgreports': {
+		url: API_CANONN_REST+'/fgreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['fgreports']
+	},
+
+	'fmreports': {
+		url: API_CANONN_REST+'/fmreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['fmreports']
+	},
+
+	'gvreports': {
+		url: API_CANONN_REST+'/gvreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['gvreports']
+	},
+
+	'gyreports': {
+		url: API_CANONN_REST+'/gyreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['gyreports']
+	},
+
+	'lsreports': {
+		url: API_CANONN_REST+'/lsreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['lsreports']
+	},
+
+	'twreports': {
+		url: API_CANONN_REST+'/twreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['twreports']
 	}
 
 };
