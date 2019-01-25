@@ -21,8 +21,8 @@ export const EDSM_MAX_CALL_STACK = 25;
 // CANONN & CAPI
 
 // Canonn API urls - This is currently configured to work on a temporary test server
-//export const API_CANONN_GRAPHQL = 'https://api.canonn.tech:2053/graphql';
-//export const API_CANONN_REST = 'https://api.canonn.tech:2053';
+export const API_CANONN_GRAPHQL = 'https://api.canonn.tech:2083/graphql';
+export const API_CANONN_REST = 'https://api.canonn.tech:2083';
 
 // max limit per one GraphQL query for Canonn API
 // consult with your nearest Canonn API admin
@@ -32,8 +32,8 @@ export const API_CANONN_STEP = 1000;
 export const API_CANONN_DELAY = 25;
 
 // For local copy of Canonn API v2 Only, uncomment if you are building a seed file
-export const API_CANONN_GRAPHQL = 'http://localhost:1337/graphql';
-export const API_CANONN_REST = 'http://localhost:1337';
+//export const API_CANONN_GRAPHQL = 'http://localhost:1337/graphql';
+//export const API_CANONN_REST = 'http://localhost:1337';
 
 
 // Enums for report types and statuses - see Strapi CAPI (he_he_he) enums, they should be the same.
