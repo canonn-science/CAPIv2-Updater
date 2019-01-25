@@ -9,9 +9,9 @@ import { API_CANONN_REST } from '../../settings';
 import apiupdatesUpdater from '../../updaters/apiupdates';
 import system_from_edsm from '../../updaters/system_from_edsm';
 import body_from_edsm from '../../updaters/body_from_edsm';
-import btreportUpdater from '../../updaters/btreport';
-import btsiteUpdater from '../../updaters/btsite';
-import btsite_from_btreport from '../../updaters/btsite_from_btreport';
+import reportUpdater from '../../updaters/report';
+import siteUpdater from '../../updaters/site';
+import site_from_report from '../../updaters/site_from_report';
 
 const CAPI_UPDATE = {
 
@@ -33,16 +33,58 @@ const CAPI_UPDATE = {
 		getter: CAPI_GET['bodies']
 	},
 
+	'bmreports': {
+		url: API_CANONN_REST+'/bmreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['bmreports']
+	},
+
 	'btreports': {
 		url: API_CANONN_REST+'/btreports',
-		updater:  btreportUpdater,
+		updater:  reportUpdater,
 		getter: CAPI_GET['btreports']
 	},
 
-	'btsites': {
-		url: API_CANONN_REST+'/btsites',
-		updater:  btsite_from_btreport,
-		getter: CAPI_GET['btsites']
+	'csreports': {
+		url: API_CANONN_REST+'/csreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['csreports']
+	},
+
+	'fgreports': {
+		url: API_CANONN_REST+'/fgreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['fgreports']
+	},
+
+	'fmreports': {
+		url: API_CANONN_REST+'/fmreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['fmreports']
+	},
+
+	'gvreports': {
+		url: API_CANONN_REST+'/gvreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['gvreports']
+	},
+
+	'gyreports': {
+		url: API_CANONN_REST+'/gyreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['gyreports']
+	},
+
+	'lsreports': {
+		url: API_CANONN_REST+'/lsreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['lsreports']
+	},
+
+	'twreports': {
+		url: API_CANONN_REST+'/twreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['twreports']
 	}
 
 };

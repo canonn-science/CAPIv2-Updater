@@ -1,10 +1,10 @@
 /*
-	BT Sites updater
+	Sites updater
 */
 
 import { mapFields } from '../utils';
 
-export default function btsiteUpdater(report) {
+export default function siteUpdater(report) {
 
 	if(report) {
 
