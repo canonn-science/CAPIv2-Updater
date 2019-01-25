@@ -8,9 +8,9 @@ import { API_CANONN_REST } from '../../settings';
 
 import system_from_edsm from '../../updaters/system_from_edsm';
 import body_from_edsm from '../../updaters/body_from_edsm';
-import btreportUpdater from '../../updaters/btreport';
-import btsiteUpdater from '../../updaters/btsite';
-import btsite_from_btreport from '../../updaters/btsite_from_btreport';
+import reportUpdater from '../../updaters/report';
+import siteUpdater from '../../updaters/site';
+import site_from_report from '../../updaters/site_from_report';
 
 const CAPI_UPDATE = {
 
@@ -34,13 +34,13 @@ const CAPI_UPDATE = {
 
 	'btreports': {
 		url: API_CANONN_REST+'/btreports',
-		updater:  btreportUpdater,
+		updater:  reportUpdater,
 		getter: CAPI_GET['btreports']
 	},
 
 	'btsites': {
 		url: API_CANONN_REST+'/btsites',
-		updater:  btsite_from_btreport,
+		updater:  site_from_report,
 		getter: CAPI_GET['btsites']
 	}
 
