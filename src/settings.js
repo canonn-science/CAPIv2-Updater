@@ -6,6 +6,12 @@ export const LOCALE = 'en-US';
 export const TIMEZONE = 'America/Phoenix';
 
 
+// APIs in general
+
+// Time to wait if 429 code is encountered
+export const ERR429_DELAY = 300000 // 5 min
+
+
 // EDSM
 
 // EDSM API url
@@ -34,7 +40,6 @@ export const API_CANONN_DELAY = 25;
 // For local copy of Canonn API v2 Only, uncomment if you are building a seed file
 //export const API_CANONN_GRAPHQL = 'http://localhost:1337/graphql';
 //export const API_CANONN_REST = 'http://localhost:1337';
-
 
 // Enums for report types and statuses - see Strapi CAPI (he_he_he) enums, they should be the same.
 export const REPORT_TYPES = {
