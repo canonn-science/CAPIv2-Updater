@@ -4,6 +4,8 @@ import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../api/api';
 import validateBTReport from '../validators/btreport';
 import { REPORT_STATUS } from '../settings';
 
+import { LOCALE, TIMEZONE } from '../settings';
+
 // Import UI console printers for consistent script look
 import { 
 	UI_header, 
@@ -88,7 +90,8 @@ export default function btReports2btSitesScript(runtime) {
 				// Update btreport status here.
 				await CAPI_update('btreports', {
 					id: report.id,
-					reportStatus: REPORT_STATUS.declined
+					reportStatus: REPORT_STATUS.declined,
+					reportComment: precheck.invalidReason.join("\r\n")
 				})
 			} else {
 
@@ -169,7 +172,7 @@ export default function btReports2btSitesScript(runtime) {
 				let duplicate = false;
 
 				let sameBody = btsites.filter( site => {
-					return site.body.bodyName == report.bodyName;
+					return site.body.bodyName.toLowerCase() == report.bodyName.toLowerCase();
 				});
 
 				console.log('Sites found on the same body ['+report.bodyName+']: '+sameBody.length);
@@ -200,7 +203,7 @@ export default function btReports2btSitesScript(runtime) {
 						id: report.id,
 						site: duplicate.id,
 						reportStatus: REPORT_STATUS.accepted,
-						reportComment: 'Report points to an existing site: #'+duplicate.id
+						reportComment: '[DUPLICATE] Report points to an existing site: #'+duplicate.id
 					})
 
 				} else {
@@ -253,7 +256,8 @@ export default function btReports2btSitesScript(runtime) {
 					await CAPI_update('btreports', {
 						id: report.id,
 						site: newSite[0].id,
-						reportStatus: REPORT_STATUS.accepted
+						reportStatus: REPORT_STATUS.accepted,
+						reportComment: '[ACCEPTED] On: '+ (new Date().toLocaleString(LOCALE, { timeZone: TIMEZONE }) )+' / '+TIMEZONE
 					});
 
 					console.log();
@@ -269,6 +273,7 @@ export default function btReports2btSitesScript(runtime) {
 					setTimeout(resolve, 20000);
 				});
 				*/
+				
 
 			}
 
