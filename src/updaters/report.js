@@ -1,10 +1,10 @@
 /*
-	BTReports updater
+	Reports updater
 */
 
 import { mapFields } from '../utils';
 
-export default function btreportUpdater(report) {
+export default function reportUpdater(report) {
 
 	if(report) {
 

@@ -9,13 +9,45 @@ import lastApiUpdateSchema from '../schemas/lastapiupdate';
 import systemsSchema from '../schemas/systems';
 import bodiesSchema from '../schemas/bodies';
 
+import cmdrsSchema from '../schemas/cmdrs';
+import excludecmdrsSchema from '../schemas/excludecmdrs';
+import excludeclientsSchema from '../schemas/excludeclients';
+
+import bmsitesSchema from '../schemas/bmsites';
+import bmreportsSchema from '../schemas/bmreports';
+import bmtypesSchema from '../schemas/bmtypes';
+
 import btsitesSchema from '../schemas/btsites';
 import btreportsSchema from '../schemas/btreports';
 import bttypesSchema from '../schemas/bttypes';
 
-import cmdrsSchema from '../schemas/cmdrs';
-import excludecmdrsSchema from '../schemas/excludecmdrs';
-import excludeclientsSchema from '../schemas/excludeclients';
+import cssitesSchema from '../schemas/cssites';
+import csreportsSchema from '../schemas/csreports';
+import cstypesSchema from '../schemas/cstypes';
+
+import fgsitesSchema from '../schemas/fgsites';
+import fgreportsSchema from '../schemas/fgreports';
+import fgtypesSchema from '../schemas/fgtypes';
+
+import fmsitesSchema from '../schemas/fmsites';
+import fmreportsSchema from '../schemas/fmreports';
+import fmtypesSchema from '../schemas/fmtypes';
+
+import gvsitesSchema from '../schemas/gvsites';
+import gvreportsSchema from '../schemas/gvreports';
+import gvtypesSchema from '../schemas/gvtypes';
+
+import gysitesSchema from '../schemas/gysites';
+import gyreportsSchema from '../schemas/gyreports';
+import gytypesSchema from '../schemas/gytypes';
+
+import lssitesSchema from '../schemas/lssites';
+import lsreportsSchema from '../schemas/lsreports';
+import lstypesSchema from '../schemas/lstypes';
+
+import twsitesSchema from '../schemas/twsites';
+import twreportsSchema from '../schemas/twreports';
+import twtypesSchema from '../schemas/twtypes';
 
 /*
 	These are all the CAPI fetch methods to be used with CAPI_fetch(type, data) function.
@@ -64,26 +96,6 @@ const CAPI_GET = {
 		//updaterNode: 'bodies'
 	},
 
-
-
-	'btsites': {
-		schema: btsitesSchema,
-		graphQLNode: 'btsites'
-		//updaterNode: 'bodies'
-	},
-
-	'btreports': {
-		schema: btreportsSchema,
-		graphQLNode: 'btreports'
-		//updaterNode: 'bodies'
-	},
-
-	'bttypes': {
-		schema: bttypesSchema,
-		graphQLNode: 'bttypes'
-		//updaterNode: 'bodies'
-	},
-
 	/* API UPDATES */
 
 	'lastApiUpdate': {
@@ -120,6 +132,176 @@ const CAPI_GET = {
 		//updaterNode: 'bodies'
 	},
 
+	// Bark Mounds
+	'bmsites': {
+		schema: bmsitesSchema,
+		graphQLNode: 'bmsites'
+		//updaterNode: 'bodies'
+	},
+
+	'bmreports': {
+		schema: bmreportsSchema,
+		graphQLNode: 'bmreports'
+		//updaterNode: 'bodies'
+	},
+
+	'bmtypes': {
+		schema: bmtypesSchema,
+		graphQLNode: 'bmtypes'
+		//updaterNode: 'bodies'
+	},
+
+	// Brain Trees
+	'btsites': {
+		schema: btsitesSchema,
+		graphQLNode: 'btsites'
+		//updaterNode: 'bodies'
+	},
+
+	'btreports': {
+		schema: btreportsSchema,
+		graphQLNode: 'btreports'
+		//updaterNode: 'bodies'
+	},
+
+	'bttypes': {
+		schema: bttypesSchema,
+		graphQLNode: 'bttypes'
+		//updaterNode: 'bodies'
+	},
+
+	// Crystalline Shards
+	'cssites': {
+		schema: cssitesSchema,
+		graphQLNode: 'cssites'
+		//updaterNode: 'bodies'
+	},
+
+	'csreports': {
+		schema: csreportsSchema,
+		graphQLNode: 'csreports'
+		//updaterNode: 'bodies'
+	},
+
+	'cstypes': {
+		schema: cstypesSchema,
+		graphQLNode: 'cstypes'
+		//updaterNode: 'bodies'
+	},
+
+	// Fungal Gourds
+	'fgsites': {
+		schema: fgsitesSchema,
+		graphQLNode: 'fgsites'
+		//updaterNode: 'bodies'
+	},
+
+	'fgreports': {
+		schema: fgreportsSchema,
+		graphQLNode: 'fgreports'
+		//updaterNode: 'bodies'
+	},
+
+	'fgtypes': {
+		schema: fgtypesSchema,
+		graphQLNode: 'fgtypes'
+		//updaterNode: 'bodies'
+	},
+
+	// Fumaroles
+	'fmsites': {
+		schema: fmsitesSchema,
+		graphQLNode: 'fmsites'
+		//updaterNode: 'bodies'
+	},
+
+	'fmreports': {
+		schema: fmreportsSchema,
+		graphQLNode: 'fmreports'
+		//updaterNode: 'bodies'
+	},
+
+	'fmtypes': {
+		schema: fmtypesSchema,
+		graphQLNode: 'fmtypes'
+		//updaterNode: 'bodies'
+	},
+
+	// Gas Vents
+	'gvsites': {
+		schema: gvsitesSchema,
+		graphQLNode: 'gvsites'
+		//updaterNode: 'bodies'
+	},
+
+	'gvreports': {
+		schema: gvreportsSchema,
+		graphQLNode: 'gvreports'
+		//updaterNode: 'bodies'
+	},
+
+	'gvtypes': {
+		schema: gvtypesSchema,
+		graphQLNode: 'gvtypes'
+		//updaterNode: 'bodies'
+	},
+
+	// Geysers
+	'gysites': {
+		schema: gysitesSchema,
+		graphQLNode: 'gysites'
+		//updaterNode: 'bodies'
+	},
+
+	'gyreports': {
+		schema: gyreportsSchema,
+		graphQLNode: 'gyreports'
+		//updaterNode: 'bodies'
+	},
+
+	'gytypes': {
+		schema: gytypesSchema,
+		graphQLNode: 'gytypes'
+		//updaterNode: 'bodies'
+	},
+
+	// Lava Spouts
+	'lssites': {
+		schema: lssitesSchema,
+		graphQLNode: 'lssites'
+		//updaterNode: 'bodies'
+	},
+
+	'lsreports': {
+		schema: lsreportsSchema,
+		graphQLNode: 'lsreports'
+		//updaterNode: 'bodies'
+	},
+
+	'lstypes': {
+		schema: lstypesSchema,
+		graphQLNode: 'lstypes'
+		//updaterNode: 'bodies'
+	},
+
+	// Tube Worms
+	'twsites': {
+		schema: twsitesSchema,
+		graphQLNode: 'twsites'
+		//updaterNode: 'bodies'
+	},
+
+	'twreports': {
+		schema: twreportsSchema,
+		graphQLNode: 'twreports'
+		//updaterNode: 'bodies'
+	},
+
+	'twtypes': {
+		schema: twtypesSchema,
+		graphQLNode: 'twtypes'
+		//updaterNode: 'bodies'
+	}
 
 };
 
