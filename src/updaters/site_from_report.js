@@ -31,7 +31,7 @@ export default function site_from_report({site = {}, report = null}) {
 		return output;
 
 	} else {
-		console.log('[ERROR] [UPDATER] btsite_from_btreport: btreport not defined or wrong: ', report);
+		console.log('[ERROR] [UPDATER] site_from_report: report not defined or wrong: ', report);
 		return null;
 	}
 
