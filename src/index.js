@@ -1,14 +1,8 @@
 require('dotenv').config();
 
 import ScriptManager from './ScriptManager';
-
 import { authenticate } from './api/canonn/canonn';
-import { CAPI_fetch } from './api/api';
-
-import {
-	timeToUpdate,
-	parseArgArray
-} from './utils';
+import Update from './UpdateManager';
 
 /*
 // NOT YET IMPLEMENTED
@@ -46,5 +40,3 @@ authenticate(process.env.API_USERNAME, process.env.API_PASSWORD).then( (token) =
 	ScriptManager.runScripts();
 
 });
-
-

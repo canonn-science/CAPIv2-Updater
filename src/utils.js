@@ -88,6 +88,24 @@ export function parseArgArray(update) {
 
 }
 
+/*
+	This is a promisified setTimeout
+*/
+
+export function sleep(fn, delay) {
+
+	return new Promise( function(resolve, reject) {
+
+		setTimeout(() => {
+			resolve( fn() );
+		}, delay);
+
+	}).catch( e => {
+		console.log('[ERROR] Sleep error: ', e);
+	});
+
+}
+
 // find an element with specific field and value in an array of objects
 // ex: findInArray(systems, 'id', 6) will return a system with id = 6 (or null if not found)
 export function findInArray(objectsArray, fieldname, value) {

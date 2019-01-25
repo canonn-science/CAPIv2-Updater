@@ -3,16 +3,20 @@
 	You SHOULD ONLY use these functions to communicate with APIs in your scripts.
 */
 
+const fetch = require("node-fetch");
+
+import Update from '../UpdateManager';
+
 import CAPI_GET from './canonn/capi_get';
 import CAPI_UPDATE from './canonn/capi_update';
 import EDSM_GET from './edsm/edsm_get';
 
-import { EDSM_MAX_CALL_STACK } from '../settings';
+import { API_CANONN_DELAY, EDSM_MAX_CALL_STACK, ERR429_DELAY } from '../settings';
 
 import { getCAPIData, updateCAPIData } from './canonn/canonn';
 import { postEDSM } from './edsm/edsm';
 
-import { chunkArray } from '../utils';
+import { sleep, chunkArray, printProgress } from '../utils';
 
 
 /*
@@ -35,7 +39,10 @@ export async function CAPI_fetch(type, data) {
 		return response;
 
 	} else {
-		console.log('- [ERROR] CAPI_fetch [type] argument "'+type+'" not found in capi_get.js file.');
+		Update.log({
+			type: 'error', 
+			msg: 'CAPI_fetch [type] argument "'+type+'" not found in capi_get.js file.'
+		});
 		return false;
 	}
 
@@ -54,26 +61,29 @@ export async function CAPI_fetch(type, data) {
 export async function CAPI_update(type, data, options={ autoAdd: true, updater: null }) {
 
 	if( CAPI_UPDATE[type] ) {
-
+	
 		let response = [];
-
+	
 		if( Array.isArray(data) ) {
 			for(const dataPart in data) {
 				console.log('<- Update "'+type+'": ['+ (parseInt(dataPart)+1) +'/'+data.length+']');
 				let r = await updateCAPIData(CAPI_UPDATE[type], data[dataPart], options);
-
+	
 				response.push(r);
 			}
-
+	
 		} else {
 			let r = await updateCAPIData(CAPI_UPDATE[type], data, options);
 			response.push(r);
 		}
-
+	
 		return response;		
-
+	
 	} else {
-		console.log('- [ERROR] CAPI_update [type] argument "'+type+'" not found in capi_update.js file.');
+		Update.log({
+			type: 'error', 
+			msg: 'CAPI_update [type] argument "'+type+'" not found in capi_update.js file.'
+		});
 		return false;
 	}
 
@@ -103,6 +113,8 @@ export async function EDSM_fetch(type, data) {
 
 				for(const stack in chunkedArray) {
 
+					console.log('<- Fetching ['+type+']');
+
 					let fetchData = Object.assign({}, EDSM_GET[type].baseData, { systemName: chunkedArray[stack] });
 					let r = await postEDSM( EDSM_GET[type].url, fetchData )
 
@@ -130,6 +142,8 @@ export async function EDSM_fetch(type, data) {
 
 				for(const system in data.systemName) {
 
+					console.log('<- Fetching ['+type+']');
+
 					let fetchData = Object.assign({}, EDSM_GET[type].baseData, { systemName: data.systemName[system] });
 					let r = await postEDSM( EDSM_GET[type].url, fetchData )
 
@@ -152,5 +166,92 @@ export async function EDSM_fetch(type, data) {
 		
 
 	}
+
+}
+
+
+/*
+	Fetch data from anywhere.
+	Just make sure you pass parameters accordingly.
+*/
+
+export async function API_fetch({ url, method, headers, payload={}, delay=API_CANONN_DELAY }) {
+
+	if(
+		url &&
+		method &&
+		headers &&
+		payload
+	) {
+
+		let response = null;
+
+		try {
+
+			response = await fetch(url, {
+				method: method,
+				headers: headers,
+				body: JSON.stringify(payload)
+			
+			});
+
+		} catch(e) {
+
+			Update.log({
+				type: 'networkerror',
+				msg: 'Fetch error occured',
+				object: e,
+				submit: true
+			});
+
+			process.exit();
+
+		}
+
+		if(response.ok) {
+
+			let jsonresponse = await response.json();
+			return await sleep( () => jsonresponse, delay );
+
+
+		} else {
+
+
+			if( response.status == 429 ) {
+				console.log('-> [NETWORK ERROR] 429 Too Many Requests.');
+				console.log('   On accessing: "'+url+'"');
+				console.log('   Waiting '+(ERR429_DELAY/1000)/60+' [minutes] and trying again.');
+
+				printProgress.start();
+
+				await sleep(async () =>{
+
+					printProgress.stop();
+
+					console.log('[RETRY] Trying again...');
+					console.log();
+
+					return await API_fetch({
+						url: url,
+						method: method,
+						headers: headers,
+						payload: payload,
+						delay: delay
+					});
+
+				}, ERR429_DELAY);
+
+
+			} else {
+
+			}
+
+
+		}
+
+	} else {
+		console.log('[ERROR]');
+	}
+
 
 }

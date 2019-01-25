@@ -1,6 +1,7 @@
 import SCRIPTS from './scripts/index';
 
 import { UI_header, UI_footer } from './ui';
+
 /*
 
 This is the manager for all the scripts run via updater.
@@ -14,6 +15,7 @@ This is the manager for all the scripts run via updater.
 
 const ScriptManager = {
 
+	activeScript: null,
 	scriptsToRun: [],
 	scriptsCompleted: [],
 
@@ -28,15 +30,22 @@ const ScriptManager = {
 
 			let totalScripts = this.scriptsToRun.length;
 			let doneScripts = this.scriptsCompleted.length+1;
+
+			this.activeScript = script;
 	
 			UI_header('Running script ['+doneScripts+'/'+totalScripts+']: '+script.type);
+
 			await script.fn(script.runtime);
+
 			UI_footer('Script ['+doneScripts+'/'+totalScripts+'] finished.');
 
 			this.scriptsCompleted.push(script);
+			this.activeScript = null;
 
 			resolve();
 
+		}).catch( function(e) {
+			console.log('ScriptManager error: ', e);
 		});
 
 	},

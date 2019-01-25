@@ -2,9 +2,9 @@
 	This is a script used for testing purpuses only
 */
 
+import Update from '../UpdateManager';
 
-
-import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../api/api';
+import { CAPI_fetch, CAPI_update, EDSM_fetch, API_fetch } from '../api/api';
 
 import SCRIPTS from './index';
 import CAPI_GET from '../api/canonn/capi_get';
@@ -21,10 +21,6 @@ export default function testScript(runtime) {
 
 		console.log('Test script. Break stuff here.');
 
-		let systems = await CAPI_fetch('systems');
-		console.log('# Systems: ', systems.length);
-
-		
 
 		resolve(true);
 	})

@@ -13,6 +13,8 @@ export default async function validateBTReport(report, { systems = [], bodies = 
 		cmdr: true
 	}
 
+	const invalidReason = [];
+
 	console.log('Validating Report:');
 	console.log();
 	console.log(report);
@@ -36,11 +38,13 @@ export default async function validateBTReport(report, { systems = [], bodies = 
 			console.log(' - [PASS] BT type OK');
 		} else {
 			reportValid = false;
+			invalidReason.push('[DECLINE] Type not found in BTTypes');
 			console.log(' - [DECLINE] Type not found in BTTypes');
 		}
 
 	} else {
 		reportValid = false;
+		invalidReason.push('[DECLINE] Missing type');
 		console.log(' - [DECLINE] Missing type');
 	}
 
@@ -69,6 +73,7 @@ export default async function validateBTReport(report, { systems = [], bodies = 
     		//		1.2.2) `reportComment` = `CMDR is blacklisted`
 	
     		reportValid = false;
+    		invalidReason.push('[DECLINE] CMDR is blacklisted');
     		console.log(' - [DECLINE] CMDR is blacklisted');
 		} else {
 			console.log(' - [PASS] CMDR is not blacklisted');
@@ -76,6 +81,7 @@ export default async function validateBTReport(report, { systems = [], bodies = 
 
 	} else {
 		reportValid = false;
+		invalidReason.push('[DECLINE] Missing cmdrName');
 		console.log(' - [DECLINE] Missing cmdrName');
 	}
 
@@ -92,6 +98,7 @@ export default async function validateBTReport(report, { systems = [], bodies = 
     		//		1.2.2) `reportComment` = `Client Version is blacklisted`
 	
     		reportValid = false;
+    		invalidReason.push('[DECLINE] Client version is blacklisted');
     		console.log(' - [DECLINE] Client version is blacklisted');
 		} else {
 			console.log(' - [PASS] Client is not blacklisted');
@@ -99,6 +106,7 @@ export default async function validateBTReport(report, { systems = [], bodies = 
 
 	} else {
 		reportValid = false;
+		invalidReason.push('[DECLINE] Missing clientVersion');
 		console.log(' - [DECLINE] Missing clientVersion');
 	}
 
@@ -154,12 +162,14 @@ export default async function validateBTReport(report, { systems = [], bodies = 
     					console.log(' - [PASS] Body exists in EDSM.');
 					} else {
 						reportValid = false;
+						invalidReason.push('[DECLINE] Body does not exist in EDSM.');
     					console.log(' - [DECLINE] Body does not exist in EDSM.');
 					}
 				}
 		
 			} else {
 				reportValid = false;
+				invalidReason.push('[DECLINE] System does not exist in EDSM.');
     			console.log(' - [DECLINE] System does not exist in EDSM.');
 			}
 	
@@ -167,13 +177,15 @@ export default async function validateBTReport(report, { systems = [], bodies = 
 
 	} else {
 		reportValid = false;
+		invalidReason.push('[DECLINE] Missing systemName / bodyName.');
 		console.log(' - [DECLINE] Missing systemName / bodyName.');
 	}
 
 
 	return {
 		valid: reportValid,
-		missingData: missingData
+		missingData: missingData,
+		invalidReason: invalidReason
 	}
 	
 }

@@ -32,7 +32,7 @@ export default function generateBTReports(runtime) {
 	return new Promise(async function(resolve,reject) {
 
 		const incorrectChance = 0.25; 	// [0-1] chance of report being incorrect
-		const duplicateChance = 0.15; 	// [0-1] chance of report being a duplicate
+		const duplicateChance = 0; 	// [0-1] chance of report being a duplicate
 		let reportsToGenerate = 20;		// this is overriden by :[X] filter on runtime
 
 			if(runtime.ids) {

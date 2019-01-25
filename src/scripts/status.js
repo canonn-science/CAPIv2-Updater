@@ -45,7 +45,7 @@ export default function statusScript(runtime) {
 		]);
 
 		let lastUpdate = data[0][0]; // This is an array containing only one entry - see capi_get.js : lastApiUpdate
-		let systems = data[1];
+		let systems = data[0];
 		let bodies = data[2];
 
 		// Example of using validators to chech which systems/bodies need updating

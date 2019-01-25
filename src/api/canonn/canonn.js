@@ -5,6 +5,8 @@
 
 const fetch = require("node-fetch");
 
+import { API_fetch } from '../api';
+
 import { 
 	API_CANONN_STEP,
 	API_CANONN_GRAPHQL,
@@ -20,6 +22,8 @@ var TOKEN = null;
 
 // Authenticate with Canonn API
 // See auth login and pass in .env file
+
+// TODO: Migrate this to API_fetch
 
 export function authenticate(username, password) {
 
@@ -66,6 +70,8 @@ export function authenticate(username, password) {
 			return false;
 		}
 
+	}).catch( function(e) {
+		console.log('Error in Authenticate', e);
 	});
 }
 
@@ -124,50 +130,46 @@ Internal functions - don't use outside this file.
 // qlNode: graphQL node which contains returned data (see capi_get.js graphQLNode)
 // data: cumulative array of data returned from CAPI. This is returned at the end of this function
 
-function fetchSingle(resolve, reject, counter = 0, schema, whereFilter, qlNode = [], data = []) {
+async function fetchSingle(resolve, reject, counter = 0, schema, whereFilter, qlNode = [], data = []) {
 
 	const step = API_CANONN_STEP;
 	const query = schema(step, counter, whereFilter);
 
-	return fetch(API_CANONN_GRAPHQL, {	
+	let response = await API_fetch({
+		
+		url: API_CANONN_GRAPHQL,
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({
-			query: query
-		})
+		payload: { query: query }
 
-	}).then( response => {
-		
-		if(response.ok) {
-			return response.json();
-		} else {
-			throw new Error(response.status);
-		}
 
-	}).then( response => {
+	});
+
+	if(response && response.data) {
 
 		data.push( ...response.data[qlNode] );
-
+	
 		if(response.data[qlNode].length == step) {
-
+	
 			// If there is more data to download than API_CANONN_STEP, run same function again
 			fetchSingle(resolve, reject, counter+step, schema, whereFilter, qlNode, data);
-
+	
 		} else {
-
+	
 			if(whereFilter !== "{}") {
 				console.log('-> CAPI_fetch: ['+qlNode+'] where: '+whereFilter+' ... OK!');
 			} else {
 				console.log('-> CAPI_fetch: ['+qlNode+'] ... OK!');
 			}
-
+	
 			// Resolve getCAPIData promise with cumulative data
 			resolve(data);
 		}
 
-	}).catch( error => {
-		console.log('-> CAPI: Error in response: ', error);
-	});
+	} else {
+		resolve([]);
+	}
+
 
 }
 
@@ -215,42 +217,23 @@ async function updateSingle(resolve, reject, type, data, options) {
 
 		} else {
 			// POST
-			method = 'POST'
+			method = 'POST';
 		}
 
-		fetch(url, {
-				method: method,
-				headers: { 
-					'Content-Type': 'application/json',
-					'Authorization': 'Bearer '+TOKEN
-				},
-				body: JSON.stringify(payload)
-	
-			}).then( response => {
-
-				if(response.ok) {
-					console.log('-> Ok...');
-					return response.json();
-				} else {
-					throw response;
-				}
+		let response = await API_fetch({
 		
-			}).then( response => {
-	
-				let t = setTimeout( () => {
-	
-					resolve(response);
-	
-				}, API_CANONN_DELAY);
-	
-			}).catch( async (error) => {
+			url: url,
+			method: method,
+			headers: { 
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer '+TOKEN
+			},
+			payload: payload,
+			delay: API_CANONN_DELAY
 
-				console.log('-> CAPI: Error in response: ', error);
-				await error.text().then( msg => {
-					console.log('-> CAPI: ', msg);
-				});
+		});
 
-			});
+		resolve(response);
 
 	} else {
 		reject(' - Updater returned invalid.');
