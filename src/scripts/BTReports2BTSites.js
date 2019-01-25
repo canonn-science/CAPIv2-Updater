@@ -6,6 +6,8 @@ import { REPORT_STATUS } from '../settings';
 
 import { LOCALE, TIMEZONE } from '../settings';
 
+import site_from_report from '../../updaters/site_from_report';
+
 // Import UI console printers for consistent script look
 import { 
 	UI_header, 
