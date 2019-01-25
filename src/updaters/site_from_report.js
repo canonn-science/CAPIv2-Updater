@@ -15,7 +15,7 @@ export default function site_from_report({site = {}, report = null}) {
 
 		const output = mapFields(site, {
 
-		//	btsite fields		: 	btreport fields
+		//	site fields		: 	report fields
 			"latitude"			: 	report.latitude, 
 			"longitude"			: 	report.longitude
 
