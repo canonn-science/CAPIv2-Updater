@@ -9,13 +9,13 @@ import lastApiUpdateSchema from '../schemas/lastapiupdate';
 import systemsSchema from '../schemas/systems';
 import bodiesSchema from '../schemas/bodies';
 
-import btsitesSchema from '../schemas/btsites';
-import btreportsSchema from '../schemas/btreports';
-import bttypesSchema from '../schemas/bttypes';
-
 import cmdrsSchema from '../schemas/cmdrs';
 import excludecmdrsSchema from '../schemas/excludecmdrs';
 import excludeclientsSchema from '../schemas/excludeclients';
+
+import btsitesSchema from '../schemas/btsites';
+import btreportsSchema from '../schemas/btreports';
+import bttypesSchema from '../schemas/bttypes';
 
 /*
 	These are all the CAPI fetch methods to be used with CAPI_fetch(type, data) function.
