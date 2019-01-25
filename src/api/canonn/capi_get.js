@@ -141,7 +141,7 @@ const CAPI_GET = {
 
 	'bmreports': {
 		schema: bmreportsSchema,
-		graphQLNode: 'bmtreports'
+		graphQLNode: 'bmreports'
 		//updaterNode: 'bodies'
 	},
 
