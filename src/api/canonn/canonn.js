@@ -258,6 +258,7 @@ async function updateSingle(resolve, reject, type, data, options) {
 					type: type.getter.graphQLNode,
 					method: 'POST',
 					updater: type.updater.prototype.constructor.name,
+					payload: payload,
 					response: response
 				}
 			});
