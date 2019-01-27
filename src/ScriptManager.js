@@ -54,7 +54,7 @@ const ScriptManager = {
 
 	runScripts: async function() {
 		return new Promise( async (resolve, reject) => {
-			
+
 			if( this.scriptsToRun.length < 1 ) {
 	
 				this.scriptsToRun.push({
@@ -97,8 +97,8 @@ function parseArguments(scripts, runtimeArguments) {
 
 	runtimeArguments.forEach( arg => {
 
-		let scriptName = arg.split(';')[0];
-		let argumentModifiers = arg.split(';').slice(1);
+		let scriptName = arg.split('@')[0];
+		let argumentModifiers = arg.split('@').slice(1);
 
 		if( SCRIPTS[scriptName] ) {
 
