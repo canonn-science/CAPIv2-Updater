@@ -91,8 +91,8 @@ function parseArguments(scripts, runtimeArguments) {
 
 	runtimeArguments.forEach( arg => {
 
-		let scriptName = arg.split(':')[0];
-		let argumentModifiers = arg.split(':').slice(1);
+		let scriptName = arg.split(';')[0];
+		let argumentModifiers = arg.split(';').slice(1);
 
 		if( SCRIPTS[scriptName] ) {
 
@@ -101,7 +101,8 @@ function parseArguments(scripts, runtimeArguments) {
 				fn: SCRIPTS[scriptName].script,
 				runtime: {
 					force: false,
-					ids: false
+					ids: false,
+					params: {}
 				}
 			}
 
@@ -114,6 +115,23 @@ function parseArguments(scripts, runtimeArguments) {
 				// Please someone help with the regexp :P
 				if( mod.indexOf('[') !== -1 && mod.indexOf(']') !== -1 ) {
 					scriptObject.runtime.ids = mod.replace('[','').replace(']','').split(',');
+				}
+
+				if( mod.indexOf('{') !== -1 && mod.indexOf('}') !== -1 ) {
+
+					let params = mod.replace('{','').replace('}','').split(',');
+
+					if( params && params.length > 0) {
+
+						params.forEach( param => {
+							let paramName = param.split(':')[0];
+							let paramValue = param.split(':')[1];
+
+							scriptObject.runtime.params[paramName] = paramValue;
+
+						});
+
+					}
 				}
 
 			});

@@ -10,10 +10,13 @@ import statusScript from './status';
 import systemsScript from './systems';
 import bodiesScript from './bodies';
 import helpScript from './help';
-import btReports2btSitesScript from './BTReports2BTSites';
-import generateBTReports from './generateBTReports';
-import resetBTReportStatus from './resetBTReportStatus';
 
+import generateReports from './generateReports';
+
+import resetBTReportStatus from './resetBTReportStatus';
+import btReports2btSitesScript from './BTReports2BTSites';
+
+//import site_from_reportScript from './site_from_report';
 
 import testScript from './test';
 
@@ -42,16 +45,23 @@ const SCRIPTS = {
 		runAll: true
 	},
 
-	'btreports2btsites': {
-		runArgument: 'btreports2btsites',
-		script: btReports2btSitesScript,
-		runAll: true
-	},
+	/*'site_from_report': {
+		runArgument: 'site_from_report',
+		script: site_from_reportScript,
+		runAll: false
+	},*/
+
+		// Remove when report2site works
+		'btreports2btsites': {
+			runArgument: 'btreports2btsites',
+			script: btReports2btSitesScript,
+			runAll: true
+		},
 
 		// For testing only
-		'generatebtreports': {
-			runArgument: 'generatebtreports',
-			script: generateBTReports,
+		'generatereports': {
+			runArgument: 'generatereports',
+			script: generateReports,
 			runAll: false
 		},
 

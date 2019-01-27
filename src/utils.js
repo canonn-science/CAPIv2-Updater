@@ -29,65 +29,6 @@ export function chunkArray(array, chunk_size = EDSM_MAX_CALL_STACK){
     return tempArray;
 }
 
-// parse runtime arguments logic
-// if new runtime parameters are added you should revisit this function
-
-// TODO:
-// - 
-export function parseArgArray(update) {
-
-	let systemsToUpdate = [];
-	let bodiesToUpdate = [];
-
-	update.runArgs.forEach( arg => {
-
-		if(arg.indexOf(ARG_SYSTEMS_STRING) !== -1 ) {
-
-			let arrayString = arg.replace(ARG_SYSTEMS_STRING, '').trim();
-				arrayString = arrayString.replace('[', '').replace(']','');
-
-			let arrayIds = arrayString.split(',');
-
-			systemsToUpdate = arrayIds.filter( systemId => {
-				
-				let id = parseInt(systemId, 10);
-				let system = findInArray(update.systems.all, 'id', id);
-
-				if( system ) {
-					return system;
-				}
-
-			});
-
-		}
-
-		if( arg.indexOf(ARG_BODIES_STRING) !== -1) {
-
-			let arrayString = arg.replace(ARG_BODIES_STRING, '').trim();
-				arrayString = arrayString.replace('[', '').replace(']','');
-
-			let arrayIds = arrayString.split(',');
-
-			bodiesToUpdate = arrayIds.filter( bodyId => {
-				
-				let id = parseInt(bodyId, 10);
-				let body = findInArray(update.bodies.all, 'id', id);
-
-				if( body ) {
-					return body;
-				}
-
-			});
-
-		}
-
-	});
-
-	update.systems.updateCandidates = systemsToUpdate;
-	update.bodies.updateCandidates = bodiesToUpdate;
-
-}
-
 /*
 	This is a promisified setTimeout
 */

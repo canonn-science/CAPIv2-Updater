@@ -9,7 +9,7 @@ export const TIMEZONE = 'America/Phoenix';
 // APIs in general
 
 // Time to wait if 429 code is encountered
-export const ERR429_DELAY = 300000 // 5 min
+export const ERR429_DELAY =  300000; // 5 min
 
 
 // EDSM
