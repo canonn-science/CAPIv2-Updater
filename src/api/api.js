@@ -224,7 +224,7 @@ export async function API_fetch({ url, method, headers, payload={}, delay=API_CA
 
 				printProgress.start();
 
-				await sleep(async () =>{
+				return await sleep(async () =>{
 
 					printProgress.stop();
 
