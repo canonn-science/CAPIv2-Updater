@@ -16,6 +16,7 @@ import {
 
 
 const LOG_TYPES = {
+	'console': '',
 	'update': '-> [UPDATE]: ',
 	'error': '-> [ERROR]: ',
 	'networkerror': '-> [NETWORK ERROR]: ',
@@ -24,6 +25,9 @@ const LOG_TYPES = {
 
 const Update = {
 
+	runtime: null,
+
+	scriptLog: [],
 	errorLog: [],
 	updateLog: [],
 
@@ -32,11 +36,13 @@ const Update = {
 	submit: function() {
 
 		let log = {
+			runtime: this.runtime,
+			scriptLog: this.scriptLog,
 			errorLog: this.errorLog,
 			updateLog: this.updateLog
 		}
 
-		UI_header('Submitting UpdateLog to CAPI');
+		UI_header('Submitting UpdateLog to CAPI.');
 		CAPI_update('apiupdates', log);
 
 	}
@@ -51,20 +57,29 @@ export default Update;
 
 */
 
-function log({type="error", msg ='', object={}, submit=false}) {
+function log({type="console", msg ='', object={}, submit=false}) {
 
 	if( type == "error" || type == "networkerror" ) {
 
-		logError({type: type, msg: msg, object: object, submit: false});
+		logError({type: type, msg: msg, object: object, submit: submit});
 
 	} else if( type == "update" ) {
 
-		logUpdate({type: type, msg: msg, object: object, submit: false});
+		logUpdate({type: type, msg: msg, object: object, submit: submit});
+
+	} else if( type == "console") {
+
+		console.log(msg, object);
+		Update.scriptLog.push([msg,object]);
 
 	} else {
 		console.log();
 		console.log('[WARNING]: You are trying to log a type that isn\'t available. See UpdateManager.js LOG_TYPES for more info.');
 		console.log();
+	}
+
+	if(submit) {
+		Update.submit();
 	}
 
 }
@@ -88,16 +103,35 @@ function logError({type="error", msg ='', object={}, submit=false}) {
 
 	Update.errorLog.push(newError);
 
-	if(submit) {
-		Update.submit();
-	}
-
 
 }
 
 function logUpdate({type="update", msg ='', object={}, submit=false}) {
 
-	const DT = new Date().toLocaleString(LOCALE, { timeZone: TIMEZONE });
-	const script = Object.assign({}, ScriptManager.activeScript);
+	const DT = new Date().toLocaleTimeString(LOCALE, { timeZone: TIMEZONE });
+	const activeScript = Object.assign({}, ScriptManager.activeScript);
+
+	let updateLogScript = Update.updateLog.find( log => {
+		return log.script.type == activeScript.type;
+	});
+
+	let update = {
+		dateTime: DT+' '+TIMEZONE,
+		...object
+	}
+
+	if(updateLogScript) {
+		
+		updateLogScript.updates.push(update);
+
+	} else {
+
+		Update.updateLog.push({
+			script: activeScript,
+			updates: [update]
+		});
+
+	}
+
 
 }

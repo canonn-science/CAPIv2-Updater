@@ -33,6 +33,9 @@ const CAPI_UPDATE = {
 		getter: CAPI_GET['bodies']
 	},
 
+
+	/* Reports */
+
 	'bmreports': {
 		url: API_CANONN_REST+'/bmreports',
 		updater:  reportUpdater,
@@ -85,6 +88,63 @@ const CAPI_UPDATE = {
 		url: API_CANONN_REST+'/twreports',
 		updater:  reportUpdater,
 		getter: CAPI_GET['twreports']
+	},
+
+
+	/* Sites */
+
+	'bmsites': {
+		url: API_CANONN_REST+'/bmsites',
+		updater:  siteUpdater,
+		getter: CAPI_GET['bmsites']
+	},
+
+	'btsites': {
+		url: API_CANONN_REST+'/btsites',
+		updater:  siteUpdater,
+		getter: CAPI_GET['btsites']
+	},
+
+	'cssites': {
+		url: API_CANONN_REST+'/cssites',
+		updater:  siteUpdater,
+		getter: CAPI_GET['cssites']
+	},
+
+	'fgsites': {
+		url: API_CANONN_REST+'/fgsites',
+		updater:  siteUpdater,
+		getter: CAPI_GET['fgsites']
+	},
+
+	'fmsites': {
+		url: API_CANONN_REST+'/fmsites',
+		updater:  siteUpdater,
+		getter: CAPI_GET['fmsites']
+	},
+
+	'gvsites': {
+		url: API_CANONN_REST+'/gvsites',
+		updater:  siteUpdater,
+		getter: CAPI_GET['gvsites']
+	},
+
+	'gysites': {
+		url: API_CANONN_REST+'/gysites',
+		updater:  siteUpdater,
+		getter: CAPI_GET['gysites']
+	},
+
+	'lssites': {
+		url: API_CANONN_REST+'/lssites',
+		updater:  siteUpdater,
+		getter: CAPI_GET['lssites']
+	},
+
+	'twsites': {
+		url: API_CANONN_REST+'/twsites',
+		updater:  siteUpdater,
+		getter: CAPI_GET['twsites']
 	}
 
 };

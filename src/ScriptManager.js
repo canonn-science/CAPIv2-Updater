@@ -33,11 +33,13 @@ const ScriptManager = {
 
 			this.activeScript = script;
 	
-			UI_header('Running script ['+doneScripts+'/'+totalScripts+']: '+script.type);
+			UI_header('SCRIPT MANAGER: Running ['+doneScripts+'/'+totalScripts+']: "'+script.type+'"');
 
 			await script.fn(script.runtime);
 
-			UI_footer('Script ['+doneScripts+'/'+totalScripts+'] finished.');
+			console.log('');
+			UI_footer('SCRIPT MANAGER: ['+doneScripts+'/'+totalScripts+'] "'+script.type+'" finished.');
+			console.log('');
 
 			this.scriptsCompleted.push(script);
 			this.activeScript = null;
@@ -51,24 +53,28 @@ const ScriptManager = {
 	},
 
 	runScripts: async function() {
+		return new Promise( async (resolve, reject) => {
+			
+			if( this.scriptsToRun.length < 1 ) {
+	
+				this.scriptsToRun.push({
+					type: 'help',
+					fn: SCRIPTS.help.script,
+					runtime: {
+						force: false,
+						ids: false
+					}
+				});
+	
+			}
+	
+			for( const script of this.scriptsToRun ) {
+				await this.run( script );
+			}
 
-		if( this.scriptsToRun.length < 1 ) {
+			resolve();
 
-			this.scriptsToRun.push({
-				type: 'help',
-				fn: SCRIPTS.help.script,
-				runtime: {
-					force: false,
-					ids: false
-				}
-			});
-
-		}
-
-		for( const script of this.scriptsToRun ) {
-			await this.run( script );
-		}
-
+		});
 
 	}
 

@@ -6,6 +6,7 @@
 const fetch = require("node-fetch");
 
 import { API_fetch } from '../api';
+import Update from '../../UpdateManager';
 
 import { 
 	API_CANONN_STEP,
@@ -48,30 +49,31 @@ export function authenticate(username, password) {
 					TOKEN = r.jwt;
 
 					console.log('-> Hello, '+r.user.username);
-					console.log('............................................');
+					console.log('');
 					return TOKEN;
 				});
 
 			} catch(e) {
 				console.log('[ERROR] ', e);
-				console.log('...........................................');
+				console.log('');
 			}
 	
 		} else if(r.status == 400) {
 			console.log('[FORBIDDEN] Authentication failed. Check your username/password in .env');
 			console.log('[FORBIDDEN] or contact someone somewhere.');
-			console.log('............................................');
+			console.log('');
 
 			return false;
 		} else {
 			console.log('[ERROR] Status code: ', r.status);
-			console.log('...........................................');
+			console.log('');
 
 			return false;
 		}
 
 	}).catch( function(e) {
 		console.log('Error in Authenticate', e);
+		console.log('');
 	});
 }
 
@@ -208,6 +210,8 @@ async function updateSingle(resolve, reject, type, data, options) {
 		let method = 'PUT';
 		let url = type.url;
 
+		let id = payload.id;
+
 		// POST or PUT, POST or PUT, POST... or... PUT...
 		if(payload.id) {
 			// PUT
@@ -232,6 +236,32 @@ async function updateSingle(resolve, reject, type, data, options) {
 			delay: API_CANONN_DELAY
 
 		});
+
+		if(method == 'PUT') {
+
+			Update.log({
+				type: 'update',
+				object: {
+					type: type.getter.graphQLNode,
+					method: 'PUT',
+					updater: type.updater.prototype.constructor.name,
+					payload: payload
+				}
+			});
+
+		} else {
+
+			Update.log({
+				type: 'update',
+				object: {
+					type: type.getter.graphQLNode,
+					method: 'POST',
+					updater: type.updater.prototype.constructor.name,
+					payload: payload
+				}
+			});
+
+		}
 
 		resolve(response);
 

@@ -1,12 +1,9 @@
-// That's all the data fetching and data updating you should ever need.
-import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../api/api';
 
-import validateBTReport from '../validators/btreport';
-import { REPORT_STATUS } from '../settings';
+import validateReport from '../../validators/report';
+import site_from_report from '../../updaters/site_from_report';
 
-import { LOCALE, TIMEZONE } from '../settings';
-
-import site_from_report from '../updaters/site_from_report';
+import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../../api/api';
+import { LOCALE, TIMEZONE, REPORT_STATUS } from '../../settings';
 
 // Import UI console printers for consistent script look
 import { 
@@ -14,59 +11,68 @@ import {
 	UI_footer, 
 	UI_h2,
 	UI_singleHr
-} from '../ui';
+} from '../../ui';
 
 // Max allowed difference between report and site lat/lng for the report to be 
 // considered a duplicate of existing site.
 const LATITUDE_DIFF = 1;
 const LONGITUDE_DIFF = 1;
 
-export default function btReports2btSitesScript(runtime) {
+export default function site_from_reportScript( 
+	runtime, 
+	{
+		code = null,
+		reports = [], 
+		types = [], 
+		sites = [],
+		validator = validateReport,
+		updater = site_from_report 
+	}
+) {
+
 	return new Promise(async function(resolve,reject) {
 
-		console.log('O, hai.');
+		if( !code ) {
+			console.log('[ERROR] Code not specified (bt, fm, etc...).');
+			resolve(true);
+		}
+
+		let reportsEndpoint = code+'reports';
+		let sitesEndpoint = code+'sites';
 
 		UI_h2('Fetching data from CAPI');
 
 		const data = await Promise.all([
 
-			CAPI_fetch('btreports', {
-				where: {
-					"reportStatus": "pending",
-    				//"isBeta": "false"			// uncomment this once it's confirmed working.
-				}
-			}),
-			CAPI_fetch('btsites'),
 			CAPI_fetch('cmdrs'),
 			CAPI_fetch('excludecmdrs'),
 			CAPI_fetch('excludeclients'),
 			CAPI_fetch('systems'),
-			CAPI_fetch('bodies'),
-			CAPI_fetch('bttypes'),
+			CAPI_fetch('bodies')
 
 		]);
 
 		UI_h2('Data fetched:');
 
-		const btreports = data[0];
-		const btsites = data[1];
-		const cmdrs = data[2];
-		const excludecmdrs = data[3];
-		const excludeclients = data[4];
-		const systems = data[5];
-		const bodies = data[6];
-		const bttypes = data[7];
+		const cmdrs = data[0];
+		const excludecmdrs = data[1];
+		const excludeclients = data[2];
+		const systems = data[3];
+		const bodies = data[4];
 
 		console.log('Systems: '+systems.length);
 		console.log('Bodies: '+bodies.length);
+		
 		console.log();
-		console.log('BT Reports: '+btreports.length);
-		console.log('BT Sites: '+btsites.length);
+		console.log('Pending reports: '+reports.length);
+		console.log('Sites: '+sites.length);
+
+		console.log();
 		console.log('CMDRS: '+cmdrs.length);
 		console.log('CMDRS (Blacklisted): '+excludecmdrs.length);
 		console.log('Clients (Blacklisted): '+excludeclients.length);
 
-		for( const report of btreports ) {
+		for( const report of reports ) {
 
 			UI_h2('Processing "'+report.reportType+'" report ID:'+report.id+' by CMDR '+report.cmdrName);
 			console.log('Prechecking validity...');
@@ -75,13 +81,13 @@ export default function btReports2btSitesScript(runtime) {
 			// Preprocessing checks for report validity
 			//
 
-			let precheck = await validateBTReport(report, {
+			let precheck = await validateReport(report, {
 				systems: systems, 
 				bodies: bodies, 
 				cmdrs: cmdrs, 
 				excludecmdrs: excludecmdrs, 
 				excludeclients: excludeclients,
-				bttypes: bttypes
+				types: types
 			})
 
 			if(!precheck.valid) {
@@ -89,8 +95,8 @@ export default function btReports2btSitesScript(runtime) {
 				console.log('Precheck complete. Report is INVALID.');
 				console.log('Changing report status to "declined"...');
 
-				// Update btreport status here.
-				await CAPI_update('btreports', {
+				// Update report status here.
+				await CAPI_update(reportsEndpoint, {
 					id: report.id,
 					reportStatus: REPORT_STATUS.declined,
 					reportComment: precheck.invalidReason.join("\r\n")
@@ -173,7 +179,7 @@ export default function btReports2btSitesScript(runtime) {
 
 				let duplicate = false;
 
-				let sameBody = btsites.filter( site => {
+				let sameBody = sites.filter( site => {
 					return site.body.bodyName.toLowerCase() == report.bodyName.toLowerCase();
 				});
 
@@ -200,8 +206,8 @@ export default function btReports2btSitesScript(runtime) {
 				if(duplicate) {
 
 					UI_h2('[DUPLICATE] Site was found to be a duplicate of site ID:'+duplicate.id);
-					console.log('Updating BT report...');
-					await CAPI_update('btreports', {
+					console.log('Updating report...');
+					await CAPI_update(reportsEndpoint, {
 						id: report.id,
 						site: duplicate.id,
 						reportStatus: REPORT_STATUS.accepted,
@@ -211,11 +217,11 @@ export default function btReports2btSitesScript(runtime) {
 				} else {
 
 					UI_h2('[NEW SITE] Site is not a duplicate.');
-					console.log('Adding new BT site...');
+					console.log('Adding new site...');
 
 					// Get max site ID number
 					let maxSiteID = 0;
-					btsites.forEach( site => {
+					sites.forEach( site => {
 						if(site.siteID > maxSiteID) {
 							maxSiteID = site.siteID;
 						}
@@ -225,14 +231,14 @@ export default function btReports2btSitesScript(runtime) {
 					maxSiteID++;
 
 					// Set correct type for this report
-					type = bttypes.find( type => {
+					type = types.find( type => {
 						if( type.type.toLowerCase() == report.type.toLowerCase() || type.journalName.toLowerCase() == report.type.toLowerCase() ) {
 							return type;
 						}
 					});
 
 					// Prepare basics for new site
-					let payload_btsite = {
+					let payload_site = {
 						siteID: maxSiteID,
 						system: system.id,
 						body: body.id,
@@ -240,10 +246,10 @@ export default function btReports2btSitesScript(runtime) {
 						discoveredBy: cmdr.id
 					}
 
-					let newSite = await CAPI_update('btsites', { btsite: payload_btsite, btreport: report }, { updater: site_from_report });
+					let newSite = await CAPI_update(sitesEndpoint, { site: payload_site, report: report }, { updater: site_from_report });
 
 					// Add new site locally
-					btsites.push({
+					sites.push({
 						...newSite[0],
 						body: body,
 						system: system,
@@ -252,10 +258,10 @@ export default function btReports2btSitesScript(runtime) {
 					});
 
 					console.log();
-					console.log('Updating BT Report...');
+					console.log('Updating Report...');
 
 					// Set report to accepted
-					await CAPI_update('btreports', {
+					await CAPI_update(reportsEndpoint, {
 						id: report.id,
 						site: newSite[0].id,
 						reportStatus: REPORT_STATUS.accepted,

@@ -3,7 +3,7 @@ import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../api/api';
 
 // Import all the needed settings and utilities for your script.
 import { timeToUpdate } from '../utils';
-import { LOCALE, TIMEZONE } from '../settings';
+import { LOCALE, TIMEZONE, REPORT_STATUS } from '../settings';
 
 // Import validators you use in the script.
 // TODO: This will later be unified into validate();
@@ -39,14 +39,92 @@ export default function statusScript(runtime) {
 		// If you have more than one fetch use await Promise.all([ CAPI_fetch(...), CAPI_fetch(...), ...])
 
 		let data = await Promise.all([
-			CAPI_fetch('lastApiUpdate'),	// data[0]
-			CAPI_fetch('systems'),			// data[1]
-			CAPI_fetch('bodies')			// data[2] ... etc
+			CAPI_fetch('lastApiUpdate'),
+			CAPI_fetch('systems'),
+			CAPI_fetch('bodies'),
+
+			CAPI_fetch('bmsites'),
+			CAPI_fetch('bmreports'),
+
+			CAPI_fetch('btsites'),
+			CAPI_fetch('btreports'),
+
+			CAPI_fetch('cssites'),
+			CAPI_fetch('csreports'),
+
+			CAPI_fetch('fgsites'),
+			CAPI_fetch('fgreports'),
+
+			CAPI_fetch('fmsites'),
+			CAPI_fetch('fmreports'),
+
+			CAPI_fetch('gvsites'),
+			CAPI_fetch('gvreports'),
+
+			CAPI_fetch('gysites'),
+			CAPI_fetch('gyreports'),
+
+			CAPI_fetch('lssites'),
+			CAPI_fetch('lsreports'),
+
+			CAPI_fetch('twsites'),
+			CAPI_fetch('twreports')
+
 		]);
 
-		let lastUpdate = data[0][0]; // This is an array containing only one entry - see capi_get.js : lastApiUpdate
-		let systems = data[0];
-		let bodies = data[2];
+		let lastUpdate 	= 	data[0][0]; // This is an array containing only one entry - see capi_get.js : lastApiUpdate
+		let systems 	= 	data[1];
+		let bodies 		= 	data[2];
+
+		let sitesReports = [
+			{
+				name: '[BM] Bark Mounds',
+				sites: data[3],
+				reports: data[4]
+			},
+			{
+				name: '[BT] Brain Trees',
+				sites: data[5],
+				reports: data[6]
+			},
+			{
+				name: '[CS] Crystaline Shards',
+				sites: data[7],
+				reports: data[8]
+			},
+			{
+				name: '[FG] Fungal Gourds',
+				sites: data[9],
+				reports: data[10]
+			},
+			{
+				name: '[FM] Fumaroles',
+				sites: data[11],
+				reports: data[12]
+			},
+			{
+				name: '[GV] Gas Vents',
+				sites: data[13],
+				reports: data[14]
+			},
+			{
+				name: '[GY] Geysers',
+				sites: data[15],
+				reports: data[16]
+			},
+			{
+				name: '[LS] Lava Sprouts',
+				sites: data[17],
+				reports: data[18]
+			},
+			{
+				name: '[TW] Tube Worms',
+				sites: data[19],
+				reports: data[20]
+			}
+
+		];
+
 
 		// Example of using validators to chech which systems/bodies need updating
 		// TODO: Move this to validator once its done
@@ -64,26 +142,39 @@ export default function statusScript(runtime) {
 		
 		UI_singleHr();
 
-		console.log('+ SYSTEMS');
+		UI_h2('-> SYSTEMS');
 		console.log('   Total: ', systems.length);
 		console.log('   Candidates for update: ', systemsToUpdate.length);
 
 		console.log('');
 
-		console.log('+ BODIES');
+		UI_h2('-> BODIES');
 		console.log('   Total: ', bodies.length);
 		console.log('   Candidates for update: ', bodiesToUpdate.length);
 
 		console.log('');
 
-		console.log('+ ROUGH TIME TO UPDATE');
+		sitesReports.forEach( sr => {
+
+			let pending = sr.reports.filter( r => {
+				return r.reportStatus == REPORT_STATUS.pending;
+			})
+
+			UI_h2('-> '+sr.name);
+			console.log('   Sites:     '+sr.sites.length);
+			console.log('   Reports:   '+sr.reports.length);
+			console.log('   Pending:   '+pending.length);
+
+		});
+
+		/*console.log('+ ROUGH TIME TO UPDATE');
 		console.log('   [ systems ] '+timeToUpdate(systemsToUpdate, [])+'+ min' );
 		console.log('   [ systems:force ] '+timeToUpdate(systems, [])+'+ min' );
 		console.log('   [ bodies ] '+timeToUpdate([], bodiesToUpdate)+'+ min' );
-		console.log('   [ bodies:force ] '+timeToUpdate([], bodies)+'+ min' );
+		console.log('   [ bodies:force ] '+timeToUpdate([], bodies)+'+ min' );*/
 
-
-		UI_h2('Last update');
+		console.log('');
+		UI_h2('-> LAST UPDATE');
 		if(lastUpdate) {
 
 			let lastUpdateDate = new Date(lastUpdate.updateTime).toLocaleString(LOCALE, { timeZone: TIMEZONE });

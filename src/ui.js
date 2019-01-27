@@ -2,16 +2,16 @@
 // Please use these functions to keep consistent display across all scripts.
 
 export function UI_header(text) {
-	console.log('==============================================');
+	console.log('========================================================');
 	console.log(text);
-	console.log('----------------------------------------------');
+	console.log('--------------------------------------------------------');
 	console.log();
 }
 
 export function UI_footer(text) {
-	console.log('----------------------------------------------');
+	console.log('--------------------------------------------------------');
 	console.log(text);
-	console.log('==============================================');
+	console.log('========================================================');
 	console.log();
 }
 

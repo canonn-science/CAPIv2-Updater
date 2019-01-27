@@ -21,6 +21,12 @@ export default function testScript(runtime) {
 
 		console.log('Test script. Break stuff here.');
 
+		let t = await CAPI_update('btreports', {
+			id: 52,
+			latitude: -23.3821
+		});
+
+		console.log(t);
 
 		resolve(true);
 	})

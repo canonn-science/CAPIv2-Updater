@@ -1,12 +1,13 @@
 import { EDSM_fetch } from '../api/api';
 
 /*
-	Checks if a BTReport is valid
+	Checks if a Report is valid
 */
 
-export default async function validateBTReport(report, { systems = [], bodies = [], cmdrs = [], excludecmdrs = [], excludeclients = [], bttypes = [] } ) {
+export default async function validateReport(report, { types = [], systems = [], bodies = [], cmdrs = [], excludecmdrs = [], excludeclients = [] } ) {
 
 	let reportValid = true;
+	let isDuplicate = false;
 	let missingData = {
 		system: true,
 		body: true,
@@ -24,7 +25,7 @@ export default async function validateBTReport(report, { systems = [], bodies = 
 	if(report.type) {
 
 		//Verify correct BT type
-		if( report.type && bttypes.find( type => {
+		if( report.type && types.find( type => {
 	
 			if( type.type.toLowerCase() == report.type.toLowerCase() ) {
 				return type;
@@ -35,17 +36,17 @@ export default async function validateBTReport(report, { systems = [], bodies = 
 			}
 	
 		})) {
-			console.log(' - [PASS] BT type OK');
+			console.log(' - [PASS] "type" OK');
 		} else {
 			reportValid = false;
-			invalidReason.push('[DECLINE] Type not found in BTTypes');
-			console.log(' - [DECLINE] Type not found in BTTypes');
+			invalidReason.push('[DECLINE] Type not found in "types"');
+			console.log(' - [DECLINE] Type not found in "types"');
 		}
 
 	} else {
 		reportValid = false;
-		invalidReason.push('[DECLINE] Missing type');
-		console.log(' - [DECLINE] Missing type');
+		invalidReason.push('[DECLINE] Missing "type"');
+		console.log(' - [DECLINE] Missing "type"');
 	}
 
 
@@ -185,7 +186,8 @@ export default async function validateBTReport(report, { systems = [], bodies = 
 	return {
 		valid: reportValid,
 		missingData: missingData,
-		invalidReason: invalidReason
+		invalidReason: invalidReason,
+		isDuplicate: isDuplicate
 	}
 	
 }

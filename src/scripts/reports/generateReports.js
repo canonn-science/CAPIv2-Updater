@@ -1,16 +1,14 @@
 // That's all the data fetching and data updating you should ever need.
-import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../api/api';
+import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../../api/api';
 
-import validateBTReport from '../validators/btreport';
-import { REPORT_STATUS } from '../settings';
+import validateBTReport from '../../validators/report';
+import { REPORT_STATUS } from '../../settings';
 
 // Import UI console printers for consistent script look
 import { 
-	UI_header, 
-	UI_footer, 
 	UI_h2,
 	UI_singleHr
-} from '../ui';
+} from '../../ui';
 
 /*
 	THIS IS FOR TESTING ONLY
@@ -36,9 +34,9 @@ const INCORRECT_FIELDS = [
 export default function generateReports(runtime) {
 	return new Promise(async function(resolve,reject) {
 
-		let incorrectChance = 0.25; 	// [0-1] chance of report being incorrect
-		let duplicateChance = 0.1; 	// [0-1] chance of report being a duplicate
-		let reportsToGenerate = 20;		// this is overriden by :[X] filter on runtime
+		let incorrectChance = 0.35; 	// [0-1] chance of report being incorrect
+		let duplicateChance = 0.15; 	// [0-1] chance of report being a duplicate
+		let reportsToGenerate = 5;		// this is overriden by :[X] filter on runtime
 
 		if(runtime.params) {
 
@@ -57,7 +55,7 @@ export default function generateReports(runtime) {
 
 		if(runtime.ids && runtime.ids.length > 0) {
 
-			UI_header('Random Reports generator');
+			UI_h2('Random Reports generator');
 			console.log('Reports to generate: '+reportsToGenerate);
 			console.log('Chance of incorrect report: '+(incorrectChance*100)+'%');
 			console.log('Chance of duplicate report: '+(duplicateChance*100)+'%');

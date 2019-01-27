@@ -11,12 +11,12 @@ import systemsScript from './systems';
 import bodiesScript from './bodies';
 import helpScript from './help';
 
-import generateReports from './generateReports';
+// Reports
+import reportsScript from './reports';
+import site_from_reportScript from './reports/site_from_report';
 
-import resetBTReportStatus from './resetBTReportStatus';
-import btReports2btSitesScript from './BTReports2BTSites';
-
-//import site_from_reportScript from './site_from_report';
+import generateReports from './reports/generateReports';
+import resetReportStatus from './reports/resetReportStatus';
 
 import testScript from './test';
 
@@ -45,17 +45,18 @@ const SCRIPTS = {
 		runAll: true
 	},
 
-	/*'site_from_report': {
-		runArgument: 'site_from_report',
-		script: site_from_reportScript,
-		runAll: false
-	},*/
+	/* Reports */
 
-		// Remove when report2site works
-		'btreports2btsites': {
-			runArgument: 'btreports2btsites',
-			script: btReports2btSitesScript,
-			runAll: true
+	'reports': {
+		runArgument: 'reports',
+		script: reportsScript,
+		runAll: false
+	},
+
+		'site_from_report': {
+			runArgument: 'site_from_report',
+			script: site_from_reportScript,
+			runAll: false
 		},
 
 		// For testing only
@@ -66,11 +67,13 @@ const SCRIPTS = {
 		},
 
 		// For manual use only
-		'resetbtreportstatus': {
-			runArgument: 'resetbtreportstatus',
-			script: resetBTReportStatus,
+		'resetreportstatus': {
+			runArgument: 'resetreportstatus',
+			script: resetReportStatus,
 			runAll: false
 		},
+
+	/* Misc */
 
 	'help': {
 		runArgument: 'help',
