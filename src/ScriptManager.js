@@ -98,15 +98,7 @@ function parseArguments(scripts, runtimeArguments) {
 
     runtimeArguments.forEach( arg => {
 
-        console.log('');
-        console.log('');
-        console.log('');
-
-        console.log('ARG: ', arg);
-
         let scriptName = arg.split(splitter)[0];
-
-        console.log('scriptName: ', scriptName);
 
         // Regex thanks to AdmlAdama. :)
 
@@ -129,8 +121,6 @@ function parseArguments(scripts, runtimeArguments) {
                     params: {}
                 }
             }
-
-            console.log('argumentModifiers', argumentModifiers);
 
             argumentModifiers.forEach( mod => {
 

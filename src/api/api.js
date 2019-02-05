@@ -60,6 +60,8 @@ export async function CAPI_fetch(type, data) {
 */
 export async function CAPI_update(type, data, options={ autoAdd: true, updater: null }) {
 
+	console.log('<- Updating ['+type+'] in CAPI');
+
 	if( CAPI_UPDATE[type] ) {
 	
 		let response = [];
@@ -99,6 +101,8 @@ export async function EDSM_fetch(type, data) {
 
 	if( EDSM_GET[type] ) {
 
+		console.log('<- Fetching ['+type+'] from EDSM.');
+
 		// If it's systems, we'll just chunk it up into EDSM_MAX_CALL_STACK sizes
 		// and fetch each chunk separately.
 		if(type === 'systems') {
@@ -133,8 +137,6 @@ export async function EDSM_fetch(type, data) {
 
 		} else {
 			// It's something else I tell you
-
-			console.log('<- Fetching ['+type+'] from EDSM.');
 
 			let responseData = [];
 
@@ -243,7 +245,7 @@ export async function API_fetch({ url, method, headers, payload={}, delay=API_CA
 
 
 			} else {
-				console.log('-> Network Error: '+response.status);
+				console.log( '-> Network Error: '+response.status+' on URL: '+url+' with PAYLOAD: '+JSON.stringify(payload) );
 				return null;
 			}
 

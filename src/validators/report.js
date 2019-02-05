@@ -1,5 +1,8 @@
 import { EDSM_fetch } from '../api/api';
 
+import validateSystem from './system';
+import validateBody from './body';
+
 /*
 	Checks if a Report is valid
 */
@@ -7,7 +10,10 @@ import { EDSM_fetch } from '../api/api';
 export default async function validateReport(report, { types = [], systems = [], bodies = [], cmdrs = [], excludecmdrs = [], excludeclients = [] } ) {
 
 	let reportValid = true;
-	let isDuplicate = false;
+
+	let capiSystemToUpdate = false;
+	let capiBodyToUpdate = false;
+
 	let missingData = {
 		system: true,
 		body: true,
@@ -115,18 +121,36 @@ export default async function validateReport(report, { types = [], systems = [],
 	if(report.systemName && report.bodyName) {
 
 		// Check if the 'systemName' and 'bodyName' exists in our database
-		if( systems.find( system => {
+		let capiSystem = systems.find( system => {
 			return system.systemName.toLowerCase() == report.systemName.toLowerCase();
-		})) {
-    		console.log(' - [PASS] System in CAPI');
-    		missingData.system = false;
+		});
+
+		if( capiSystem ) {
+
+			if( validateSystem(capiSystem) ) {
+				console.log(' - [PASS] System in CAPI');
+				missingData.system = false;
+
+			} else {
+				console.log(' - [NEED] System is in CAPI but needs an update');
+				capiSystemToUpdate = capiSystem;
+			}
 	
     		// Check if the `bodyName` exists in our database
-			if( bodies.find( body => {
+    		let capiBody = bodies.find( body => {
 				return body.bodyName.toLowerCase() == report.bodyName.toLowerCase();
-			})) {
-    			console.log(' - [PASS] Body in CAPI');
-    			missingData.body = false;
+			});
+
+    		if( capiBody ) {
+
+				if( validateBody(capiBody) ) {
+    				console.log(' - [PASS] Body in CAPI and is valid');
+    				missingData.body = false;
+    			} else {
+    				console.log(' - [NEED] Body is in CAPI but needs an update');
+    				capiBodyToUpdate = capiBody;
+    			}
+
 			} else {
 				console.log(' - [SKIP] Body not in CAPI');
 			}
@@ -139,11 +163,12 @@ export default async function validateReport(report, { types = [], systems = [],
 		if(missingData.system || missingData.body) {
 	
 			console.log();
-			let edsm_check = await EDSM_fetch('bodies', { systemName: report.systemName });
+			let edsm_system_check = await EDSM_fetch('systems', { systemName: report.systemName });
+			let edsm_body_check = await EDSM_fetch('bodies', { systemName: report.systemName });
 			console.log();
 		
-			if(edsm_check && edsm_check[0] && edsm_check[0].id) {
-				let edsm_system = edsm_check[0];
+			if(edsm_system_check && edsm_system_check[0] && edsm_system_check[0].id) {
+				let edsm_system = edsm_system_check[0];
 		
 				if(missingData.system) {
 					missingData.system = edsm_system;
@@ -151,8 +176,9 @@ export default async function validateReport(report, { types = [], systems = [],
 		
 				console.log(' - [PASS] System exists in EDSM.');
 		
-				if(edsm_system.bodies && edsm_system.bodies.length > 0) {
-					let edsm_body = edsm_system.bodies.find( body => {
+				if(edsm_body_check && edsm_body_check[0] && edsm_body_check[0].bodies && edsm_body_check[0].bodies.length > 0) {
+					
+					let edsm_body = edsm_body_check[0].bodies.find( body => {
 						return body.name.toLowerCase() == report.bodyName.toLowerCase();
 					});
 		
@@ -185,9 +211,13 @@ export default async function validateReport(report, { types = [], systems = [],
 
 	return {
 		valid: reportValid,
+
+		capiSystemToUpdate: capiSystemToUpdate,
+		capiBodyToUpdate: capiBodyToUpdate,
+
 		missingData: missingData,
-		invalidReason: invalidReason,
-		isDuplicate: isDuplicate
+
+		invalidReason: invalidReason
 	}
 	
 }

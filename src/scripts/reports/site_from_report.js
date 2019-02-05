@@ -1,5 +1,9 @@
 
+import validateSystem from '../../validators/system';
+import validateBody from '../../validators/body';
 import validateReport from '../../validators/report';
+import validateDuplicateSite from '../../validators/duplicateSite';
+
 import site_from_report from '../../updaters/site_from_report';
 
 import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../../api/api';
@@ -15,8 +19,6 @@ import {
 
 // Max allowed difference between report and site lat/lng for the report to be 
 // considered a duplicate of existing site.
-const LATITUDE_DIFF = 1;
-const LONGITUDE_DIFF = 1;
 
 export default function site_from_reportScript( 
 	runtime, 
@@ -121,12 +123,26 @@ export default function site_from_reportScript(
 
 				// Check system and add it if needed
 				if( precheck.missingData.system ) {
-					console.log(' [MISS] EDSM System: ', precheck.missingData.system.name);
-					let newsystem = await CAPI_update('systems', { edsmsystem: precheck.missingData.system });
+
+					let newsystem;
+
+					// The system exists in CAPI and just needs an update
+					if(precheck.capiSystemToUpdate) {
+
+						console.log(' [NEED] Updating system: ', precheck.missingData.system.name);
+						newsystem = await CAPI_update('systems', { capisystem: precheck.capiSystemToUpdate, edsmsystem: precheck.missingData.system });
+
+					// This is a new system
+					} else {
+
+						console.log(' [MISS] Adding system: ', precheck.missingData.system.name);
+						newsystem = await CAPI_update('systems', { edsmsystem: precheck.missingData.system });
+
+					}
 
 					// Update local systems
-					systems.push(newsystem);
-					system = newsystem;
+					systems.push(newsystem[0]);
+					system = newsystem[0];
 
 				} else {
 					console.log(' [OK] System is in CAPI');
@@ -138,13 +154,26 @@ export default function site_from_reportScript(
 
 				// Check body and add it if needed
 				if( precheck.missingData.body && system ) {
-					console.log(' [MISS] EDSM body: ', precheck.missingData.body.name);
 
-					let newbody = await CAPI_update('bodies', { capibody: { system: system.id }, edsmbody: precheck.missingData.body });
+					let newbody;
+
+					// The body exists in CAPI and just needs an update
+					if(precheck.capiBodyToUpdate) {
+
+						console.log(' [NEED] Updating body: ', precheck.missingData.body.name);						
+						newbody = await CAPI_update('bodies', { capibody: precheck.capiBodyToUpdate, edsmbody: precheck.missingData.body });
+
+					// This is a new body
+					} else {
+
+						console.log(' [MISS] Adding body: ', precheck.missingData.body.name);
+						newbody = await CAPI_update('bodies', { capibody: { system: system.id }, edsmbody: precheck.missingData.body });
+
+					}
 
 					// Update local bodies
-					bodies.push(newbody);
-					body = newbody;
+					bodies.push(newbody[0]);
+					body = newbody[0];
 
 				} else {
 					console.log(' [OK] Body is in CAPI');
@@ -177,105 +206,94 @@ export default function site_from_reportScript(
 				UI_h2('Looking for duplicates in existing sites');
 				console.log();
 
-				let duplicate = false;
-
-				let sameBody = sites.filter( site => {
+				let bodySites = sites.filter( site => {
 					return site.body.bodyName.toLowerCase() == report.bodyName.toLowerCase();
 				});
 
-				console.log('Sites found on the same body ['+report.bodyName+']: '+sameBody.length);
-				if(sameBody.length > 0) {
-					// May still be a duplicate
+				console.log('Sites found on the same body ['+report.bodyName+']: '+bodySites.length);
+				// May still be a duplicate
 
-					sameBody.forEach( site => {
+				let duplicates = validateDuplicateSite(bodySites, body, { latitude: report.latitude, longitude: report.longitude });
 
-						if( Math.abs(site.latitude - report.latitude) <= LATITUDE_DIFF ) {
+				if(duplicates) {
 
-							if( Math.abs(site.longitude - report.longitude) <= LONGITUDE_DIFF ) {
-
-								duplicate = site;
-
+					if(duplicates.length > 0) {
+	
+						UI_h2('[DUPLICATE] Site was found to be a duplicate of sites [ID]: '+duplicates.map( dupe => { return dupe.id+' ' }));
+						console.log('Updating report...');
+						await CAPI_update(reportsEndpoint, {
+							id: report.id,
+							site: duplicates[0].id,
+							reportStatus: REPORT_STATUS.accepted,
+							reportComment: '[DUPLICATE] Report points to an existing site: #'+duplicates[0].id
+						})
+	
+					} else {
+	
+						UI_h2('[NEW SITE] Site is not a duplicate.');
+						console.log('Adding new site...');
+	
+						// Get max site ID number
+						let maxSiteID = 0;
+						sites.forEach( site => {
+							if(site.siteID > maxSiteID) {
+								maxSiteID = site.siteID;
 							}
-
+						});
+	
+						// Then add one.
+						maxSiteID++;
+	
+						// Set correct type for this report
+						type = types.find( type => {
+							if( type.type.toLowerCase() == report.type.toLowerCase() || type.journalName.toLowerCase() == report.type.toLowerCase() ) {
+								return type;
+							}
+						});
+	
+						// Prepare basics for new site
+						let payload_site = {
+							siteID: maxSiteID,
+							system: system.id,
+							body: body.id,
+							type: type.id,
+							discoveredBy: cmdr.id
 						}
-
-					});
-
-				}
-
-				if(duplicate) {
-
-					UI_h2('[DUPLICATE] Site was found to be a duplicate of site ID:'+duplicate.id);
-					console.log('Updating report...');
-					await CAPI_update(reportsEndpoint, {
-						id: report.id,
-						site: duplicate.id,
-						reportStatus: REPORT_STATUS.accepted,
-						reportComment: '[DUPLICATE] Report points to an existing site: #'+duplicate.id
-					})
-
-				} else {
-
-					UI_h2('[NEW SITE] Site is not a duplicate.');
-					console.log('Adding new site...');
-
-					// Get max site ID number
-					let maxSiteID = 0;
-					sites.forEach( site => {
-						if(site.siteID > maxSiteID) {
-							maxSiteID = site.siteID;
-						}
-					});
-
-					// Then add one.
-					maxSiteID++;
-
-					// Set correct type for this report
-					type = types.find( type => {
-						if( type.type.toLowerCase() == report.type.toLowerCase() || type.journalName.toLowerCase() == report.type.toLowerCase() ) {
-							return type;
-						}
-					});
-
-					// Prepare basics for new site
-					let payload_site = {
-						siteID: maxSiteID,
-						system: system.id,
-						body: body.id,
-						type: type.id,
-						discoveredBy: cmdr.id
+	
+						let newSite = await CAPI_update(sitesEndpoint, { site: payload_site, report: report }, { updater: site_from_report });
+	
+						// Add new site locally
+						sites.push({
+							...newSite[0],
+							body: body,
+							system: system,
+							type: type,
+							discoveredBy: cmdr
+						});
+	
+						console.log();
+						console.log('Updating Report...');
+	
+						// Set report to accepted
+						await CAPI_update(reportsEndpoint, {
+							id: report.id,
+							site: newSite[0].id,
+							reportStatus: REPORT_STATUS.accepted,
+							reportComment: '[ACCEPTED] On: '+ (new Date().toLocaleString(LOCALE, { timeZone: TIMEZONE }) )+' / '+TIMEZONE
+						});
+	
+						console.log();
+	
 					}
 
-					let newSite = await CAPI_update(sitesEndpoint, { site: payload_site, report: report }, { updater: site_from_report });
-
-					// Add new site locally
-					sites.push({
-						...newSite[0],
-						body: body,
-						system: system,
-						type: type,
-						discoveredBy: cmdr
-					});
-
-					console.log();
-					console.log('Updating Report...');
-
-					// Set report to accepted
-					await CAPI_update(reportsEndpoint, {
-						id: report.id,
-						site: newSite[0].id,
-						reportStatus: REPORT_STATUS.accepted,
-						reportComment: '[ACCEPTED] On: '+ (new Date().toLocaleString(LOCALE, { timeZone: TIMEZONE }) )+' / '+TIMEZONE
-					});
-
-					console.log();
+				} else {
 
 				}
 
 
 				/*
 				// Uncomment this for a delay after report pushing
-				// useful for anlysis of data
+				// useful for testing
 				console.log('(for testing purposes) Waiting 20s...');
 				await new Promise( (resolve) => {
 					setTimeout(resolve, 20000);

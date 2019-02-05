@@ -17,11 +17,9 @@ export default function apiupdatesSchema(limit = API_CANONN_STEP, start = 0, whe
 			sort: "UpdateTime:desc"
 		) {
 			id
-			forced
+			notes
 			updateTime
 			updateLog
-			bodiesUpdated
-			systemsUpdated
 		}
 	}`;
 }

@@ -10,11 +10,9 @@ export default function lastApiUpdateSchema() {
 	{
 		apiupdates(limit: 1, sort: "UpdateTime:desc") {
 			id
-			forced
+			notes
 			updateTime
 			updateLog
-			bodiesUpdated
-			systemsUpdated
 		}
 	}`;
 }

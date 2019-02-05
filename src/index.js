@@ -23,7 +23,7 @@ console.log('========================================================');
 console.log('');
 console.log('                Canonn CAPI Updater');
 console.log('');
-console.log('                  Version: 0.96.7');
+console.log('                  Version: 0.97.0');
 console.log('');
 console.log('========================================================');
 console.log('');

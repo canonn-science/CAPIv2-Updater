@@ -10,8 +10,6 @@
 
 export default function validateBody(body) {
 
-	let valid = [];
-
 	if( !body.id || !body.bodyName ) {
 		console.log('[ERROR]: Missing ID or bodyName for: ', body);
 		return false;
@@ -27,12 +25,12 @@ export default function validateBody(body) {
 		body.distanceToArrival == null		||
 		body.surfaceTemperature == null
 	) {
-		valid.push(false);
+		return false;
 	}
 
 	// checks based on body types
 	if(!body.type) {
-		valid.push(false);
+		return false;
 	}
 
 	if( body.type && body.type.toLowerCase() == 'planet' ) {
@@ -42,7 +40,7 @@ export default function validateBody(body) {
 			body.radius == null 			||
 			body.solidComposition == null
 		) {
-			valid.push(false);
+			return false;
 		}
 		
 	} else if( body.type && body.type.toLowerCase() == 'star' ) {
@@ -54,17 +52,13 @@ export default function validateBody(body) {
     		body.solarMasses == null		||
     		body.solarRadius == null
 		) {
-			valid.push(false);
+			return false;
 		}
-
-	} else {
-		valid.push(false);
-	}
-
-	if(valid.indexOf(false) != -1) {
-		return true;
 
 	} else {
 		return false;
 	}
+
+	return true;
+
 }

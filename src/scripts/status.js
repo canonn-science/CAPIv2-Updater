@@ -185,15 +185,10 @@ export default function statusScript(runtime) {
 	
 			console.log('> LAST UPDATE');
 			console.log('Timedate: '+lastUpdateDate+' ['+TIMEZONE+']');
-			console.log('Forced: '+lastUpdate.forced);
 	
-			console.log('');
-			console.log('Updated Systems: '+lastUpdate.systemsUpdated.length);
-			console.log(lastUpdate.systemsUpdated);
-	
-			console.log('');
-			console.log('Updated Bodies: '+lastUpdate.bodiesUpdated.length);
-			console.log(lastUpdate.bodiesUpdated);
+			console.log();
+			console.log('DUMP:');
+			console.log(lastUpdate.updateLog);
 
 		} else {
 			console.log('No last update found.')
