@@ -243,7 +243,8 @@ export async function API_fetch({ url, method, headers, payload={}, delay=API_CA
 
 
 			} else {
-
+				console.log('-> Network Error: '+response.status);
+				return null;
 			}
 
 
