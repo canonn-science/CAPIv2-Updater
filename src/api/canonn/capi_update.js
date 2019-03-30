@@ -36,6 +36,18 @@ const CAPI_UPDATE = {
 
 	/* Reports */
 
+	'apreports': {
+		url: API_CANONN_REST+'/apreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['apreports']
+	},
+
+	'btreports': {
+		url: API_CANONN_REST+'/btreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['btreports']
+	},
+
 	'bmreports': {
 		url: API_CANONN_REST+'/bmreports',
 		updater:  reportUpdater,
@@ -92,6 +104,12 @@ const CAPI_UPDATE = {
 
 
 	/* Sites */
+
+	'apsites': {
+		url: API_CANONN_REST+'/apsites',
+		updater:  siteUpdater,
+		getter: CAPI_GET['apsites']
+	},
 
 	'bmsites': {
 		url: API_CANONN_REST+'/bmsites',
