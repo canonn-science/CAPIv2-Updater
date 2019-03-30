@@ -54,5 +54,6 @@ export const REPORT_STATUS = {
 	verified: "verified",
 	accepted: "accepted",
 	declined: "declined",
-	issue: "issue"
+	issue: "issue",
+	duplicate: "duplicate"
 }
