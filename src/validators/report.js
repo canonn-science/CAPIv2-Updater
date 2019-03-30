@@ -144,7 +144,7 @@ export default async function validateReport(report, { types = [], systems = [],
 
     		if( capiBody ) {
 
-				if( validateBody(capiBody) ) {
+				if( !invalidBody(capiBody) ) {
     				console.log(' - [PASS] Body in CAPI and is valid');
     				missingData.body = false;
     			} else {
