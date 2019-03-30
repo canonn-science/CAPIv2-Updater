@@ -13,6 +13,10 @@ import cmdrsSchema from '../schemas/cmdrs';
 import excludecmdrsSchema from '../schemas/excludecmdrs';
 import excludeclientsSchema from '../schemas/excludeclients';
 
+import apsitesSchema from '../schemas/apsites';
+import apreportsSchema from '../schemas/apreports';
+import aptypesSchema from '../schemas/aptypes';
+
 import bmsitesSchema from '../schemas/bmsites';
 import bmreportsSchema from '../schemas/bmreports';
 import bmtypesSchema from '../schemas/bmtypes';
@@ -129,6 +133,25 @@ const CAPI_GET = {
 	'excludeclients': {
 		schema: excludeclientsSchema,
 		graphQLNode: 'excludeclients'
+		//updaterNode: 'bodies'
+	},
+
+	// Amphora Plants
+	'apsites': {
+		schema: apsitesSchema,
+		graphQLNode: 'apsites'
+		//updaterNode: 'bodies'
+	},
+
+	'apreports': {
+		schema: apreportsSchema,
+		graphQLNode: 'apreports'
+		//updaterNode: 'bodies'
+	},
+
+	'aptypes': {
+		schema: aptypesSchema,
+		graphQLNode: 'aptypes'
 		//updaterNode: 'bodies'
 	},
 

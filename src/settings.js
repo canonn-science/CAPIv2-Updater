@@ -30,6 +30,10 @@ export const EDSM_MAX_CALL_STACK = 25;
 export const API_CANONN_GRAPHQL = 'https://api.canonn.tech:2083/graphql';
 export const API_CANONN_REST = 'https://api.canonn.tech:2083';
 
+// For local copy of Canonn API v2 Only, uncomment if you are building a seed file
+//export const API_CANONN_GRAPHQL = 'http://localhost:1337/graphql';
+//export const API_CANONN_REST = 'http://localhost:1337';
+
 // max limit per one GraphQL query for Canonn API
 // consult with your nearest Canonn API admin
 export const API_CANONN_STEP = 1000; 
@@ -37,9 +41,8 @@ export const API_CANONN_STEP = 1000;
 // delay in [ms] for CAPI calls
 export const API_CANONN_DELAY = 25;
 
-// For local copy of Canonn API v2 Only, uncomment if you are building a seed file
-//export const API_CANONN_GRAPHQL = 'http://localhost:1337/graphql';
-//export const API_CANONN_REST = 'http://localhost:1337';
+// Duplication checking distance in kilometers
+export const MIN_DISTANCE = 5;
 
 // Enums for report types and statuses - see Strapi CAPI (he_he_he) enums, they should be the same.
 export const REPORT_TYPES = {
@@ -54,5 +57,6 @@ export const REPORT_STATUS = {
 	verified: "verified",
 	accepted: "accepted",
 	declined: "declined",
-	issue: "issue"
+	issue: "issue",
+	duplicate: "duplicate"
 }

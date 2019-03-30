@@ -68,7 +68,10 @@ export default function statusScript(runtime) {
 			CAPI_fetch('lsreports'),
 
 			CAPI_fetch('twsites'),
-			CAPI_fetch('twreports')
+			CAPI_fetch('twreports'),
+
+			CAPI_fetch('apsites'),
+			CAPI_fetch('apreports')
 
 		]);
 
@@ -77,6 +80,11 @@ export default function statusScript(runtime) {
 		let bodies 		= 	data[2];
 
 		let sitesReports = [
+			{
+				name: '[AP] Amphora Plants',
+				sites: data[21],
+				reports: data[22]
+			},
 			{
 				name: '[BM] Bark Mounds',
 				sites: data[3],
