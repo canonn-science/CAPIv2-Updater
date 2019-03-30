@@ -3,9 +3,7 @@
 */
 
 import Update from '../UpdateManager';
-
-// Distance in kilometers below which a site is considered a duplicate.
-const MIN_DISTANCE = 5;
+import MIN_DISTANCE from '../settings';
 
 export default function validateDuplicateSite(sitesToCheck = [], body = null, {latitude = null, longitude = null}) {
 

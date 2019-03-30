@@ -50,7 +50,7 @@ export default function reportsScript(runtime) {
 
 			console.log();
 			console.log('No reports to update specified at runtime.');
-			console.log('Use: "npm run updater report2site;[bt,fm,...]" ');
+			console.log('Use: "npm run updater reports:[bt,fm,...]" ');
 			console.log();
 
 		}
