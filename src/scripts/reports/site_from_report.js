@@ -290,15 +290,13 @@ export default function site_from_reportScript(
 
 				}
 
-
-				/*
 				// Uncomment this for a delay after report pushing
 				// useful for testing
 				console.log('(for testing purposes) Waiting 20s...');
 				await new Promise( (resolve) => {
 					setTimeout(resolve, 20000);
 				});
-				*/
+				
 				
 
 			}

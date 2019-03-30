@@ -1,7 +1,7 @@
 // That's all the data fetching and data updating you should ever need.
 import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../api/api';
 
-import validateBody from '../validators/body';
+import invalidBody from '../validators/body';
 
 // Import UI console printers for consistent script look
 import { 
@@ -20,7 +20,7 @@ export default function bodiesScript(runtime) {
 
 		UI_h2('Fetching Bodies from CAPI');
 		let capi_bodies = await CAPI_fetch('bodies');
-		let candidates = capi_bodies.filter(validateBody);
+		let candidates = capi_bodies.filter(invalidBody);
 
 		console.log('Total:', capi_bodies.length);
 		console.log('Candidates:', candidates.length);

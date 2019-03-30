@@ -7,8 +7,8 @@ import { LOCALE, TIMEZONE, REPORT_STATUS } from '../settings';
 
 // Import validators you use in the script.
 // TODO: This will later be unified into validate();
-import validateSystem from '../validators/system';
-import validateBody from '../validators/body';
+import invalidSystem from '../validators/system';
+import invalidBody from '../validators/body';
 
 // Import UI console printers for consistent script look
 import { 
@@ -128,8 +128,8 @@ export default function statusScript(runtime) {
 
 		// Example of using validators to chech which systems/bodies need updating
 		// TODO: Move this to validator once its done
-		let systemsToUpdate = systems.filter(validateSystem);
-		let bodiesToUpdate = bodies.filter(validateBody);
+		let systemsToUpdate = systems.filter(invalidSystem);
+		let bodiesToUpdate = bodies.filter(invalidBody);
 
 		// Local script variables setup
 		let currentDate = new Date().toLocaleString(LOCALE, { timeZone: TIMEZONE });
@@ -157,7 +157,11 @@ export default function statusScript(runtime) {
 		sitesReports.forEach( sr => {
 
 			let pending = sr.reports.filter( r => {
-				return r.reportStatus == REPORT_STATUS.pending;
+
+				if(r && r.reportStatus) {
+					return r.reportStatus == REPORT_STATUS.pending;
+				}
+
 			})
 
 			UI_h2('-> '+sr.name);
@@ -166,12 +170,6 @@ export default function statusScript(runtime) {
 			console.log('   Pending:   '+pending.length);
 
 		});
-
-		/*console.log('+ ROUGH TIME TO UPDATE');
-		console.log('   [ systems ] '+timeToUpdate(systemsToUpdate, [])+'+ min' );
-		console.log('   [ systems:force ] '+timeToUpdate(systems, [])+'+ min' );
-		console.log('   [ bodies ] '+timeToUpdate([], bodiesToUpdate)+'+ min' );
-		console.log('   [ bodies:force ] '+timeToUpdate([], bodies)+'+ min' );*/
 
 		console.log('');
 		UI_h2('-> LAST UPDATE');

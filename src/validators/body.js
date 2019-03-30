@@ -8,11 +8,11 @@
 	- stuff
 */
 
-export default function validateBody(body) {
+export default function invalidBody(body) {
 
 	if( !body.id || !body.bodyName ) {
 		console.log('[ERROR]: Missing ID or bodyName for: ', body);
-		return false;
+		return true;
 	}
 
 	// basics check
@@ -25,12 +25,12 @@ export default function validateBody(body) {
 		body.distanceToArrival == null		||
 		body.surfaceTemperature == null
 	) {
-		return false;
+		return true;
 	}
 
 	// checks based on body types
 	if(!body.type) {
-		return false;
+		return true;
 	}
 
 	if( body.type && body.type.toLowerCase() == 'planet' ) {
@@ -40,7 +40,7 @@ export default function validateBody(body) {
 			body.radius == null 			||
 			body.solidComposition == null
 		) {
-			return false;
+			return true;
 		}
 		
 	} else if( body.type && body.type.toLowerCase() == 'star' ) {
@@ -52,13 +52,13 @@ export default function validateBody(body) {
     		body.solarMasses == null		||
     		body.solarRadius == null
 		) {
-			return false;
+			return true;
 		}
 
 	} else {
-		return false;
+		return true;
 	}
 
-	return true;
+	return false;
 
 }

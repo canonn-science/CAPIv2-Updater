@@ -1,7 +1,7 @@
 // That's all the data fetching and data updating you should ever need.
 import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../api/api';
 
-import validateSystem from '../validators/system';
+import invalidSystem from '../validators/system';
 
 // Import UI console printers for consistent script look
 import { 
@@ -20,7 +20,7 @@ export default function systemsScript(runtime) {
 
 		UI_h2('Fetching Systems from CAPI');
 		let capi_systems = await CAPI_fetch('systems');
-		let candidate_systems = capi_systems.filter(validateSystem);
+		let candidate_systems = capi_systems.filter(invalidSystem);
 
 		console.log('Total:', capi_systems.length);
 		console.log('Candidates:', candidate_systems.length);

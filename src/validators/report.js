@@ -1,7 +1,7 @@
 import { EDSM_fetch } from '../api/api';
 
-import validateSystem from './system';
-import validateBody from './body';
+import invalidSystem from './system';
+import invalidBody from './body';
 
 /*
 	Checks if a Report is valid

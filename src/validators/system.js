@@ -2,12 +2,12 @@
 	Validates if System is a suspect for update
 */
 
-export default function validateSystem(system) {
+export default function invalidSystem(system) {
 
 	if(system.edsmCoordLocked) {
-		return true;
+		return false;
 	}
 
-	return false;
+	return true;
 	
 }
