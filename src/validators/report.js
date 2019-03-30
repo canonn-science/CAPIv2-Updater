@@ -61,8 +61,9 @@ export default async function validateReport(report, { types = [], systems = [],
 
 		// Verify CMDR is in our db
 		if( report.cmdrName && cmdrs.find( cmdr => {
-			return cmdr.cmdrName.toLowerCase() == report.cmdrName.toLowerCase();
-		})) {
+				return cmdr.cmdrName.toLowerCase() == report.cmdrName.toLowerCase();
+			})
+		) {
     		console.log(' - [PASS] CMDR is in CAPI');
     		missingData.cmdr = false;
 		} else {
@@ -127,7 +128,7 @@ export default async function validateReport(report, { types = [], systems = [],
 
 		if( capiSystem ) {
 
-			if( validateSystem(capiSystem) ) {
+			if( !invalidSystem(capiSystem) ) {
 				console.log(' - [PASS] System in CAPI');
 				missingData.system = false;
 
