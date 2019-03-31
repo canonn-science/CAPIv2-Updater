@@ -1,5 +1,7 @@
 import { EDSM_fetch } from '../api/api';
 
+import { DEFAULT_CMDR } from '../settings';
+
 import invalidSystem from './system';
 import invalidBody from './body';
 
@@ -59,7 +61,7 @@ export default async function validateReport(report, { types = [], systems = [],
 
 	if(report.cmdrName) {
 
-		// Verify CMDR is in our db
+		// Verify CMDR is in CAPI
 		if( report.cmdrName && cmdrs.find( cmdr => {
 				return cmdr.cmdrName.toLowerCase() == report.cmdrName.toLowerCase();
 			})
@@ -67,8 +69,23 @@ export default async function validateReport(report, { types = [], systems = [],
     		console.log(' - [PASS] CMDR is in CAPI');
     		missingData.cmdr = false;
 		} else {
-			console.log(' - [SKIP] CMDR is not in CAPI');
-			missingData.cmdr = { cmdrName: report.cmdr }
+
+			// If report has a CMDR name add a new one
+			if(report.cmdrName) {
+
+				console.log(' - [SKIP] CMDR is not in CAPI');
+				missingData.cmdr = { cmdrName: report.cmdrName }
+
+			// Use a placeholder CMDR
+			} else {
+
+				console.log(' - [WARN] CMDR name not specified in report. Using "zzz_Unknown"');
+				report.cmdrName = DEFAULT_CMDR;
+				missingData.cmdr = false;
+
+			}
+
+			
 		}
 	
 	
@@ -116,6 +133,14 @@ export default async function validateReport(report, { types = [], systems = [],
 		reportValid = false;
 		invalidReason.push('[DECLINE] Missing clientVersion');
 		console.log(' - [DECLINE] Missing clientVersion');
+	}
+
+
+	if( report.latitude == 0 && report.longitude == 0 ) {
+
+		reportValid = false;
+		invalidReason.push('[DECLINE] lat/lng both equal 0');
+
 	}
 
 

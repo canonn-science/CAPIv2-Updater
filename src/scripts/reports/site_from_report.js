@@ -121,6 +121,20 @@ export default function site_from_reportScript(
 				let cmdr;
 				let type;
 
+				// Check CMDR and add it if needed
+				if( precheck.missingData.cmdr ) {
+
+					let newcmdr;
+
+					console.log(' [NEED] Adding new CMDR to CAPI: '+precheck.missingData.cmdr);
+					newcmdr = await CAPI_update('cmdr', precheck.missingData.cmdr);
+
+					cmdrs.push(newcmdr[0]);
+					cmdr = newcmdr;
+
+				}
+
+
 				// Check system and add it if needed
 				if( precheck.missingData.system ) {
 
@@ -182,23 +196,6 @@ export default function site_from_reportScript(
 					});
 				}
 
-
-				// Check CMDR and add it if needed
-				// Fix this in the morning, look at above
-				if( precheck.missingData.cmdr ) {
-					console.log(' [MISS] EDSM CMDR: ', precheck.missingData.cmdr);
-					let newcmdr = await CAPI_update('cmdr', { cmdr: precheck.missingData.cmdr });
-
-					// Update local cmdr
-					cmdrs.push(newcmdr);
-					cmdr = newcmdr;
-
-				} else {
-					console.log(' [OK] CMDR is in CAPI');
-					cmdr = cmdrs.find( capicmdr => {
-						return capicmdr.cmdrName.toLowerCase() == report.cmdrName.toLowerCase();
-					});
-				}
 
 				console.log();
 

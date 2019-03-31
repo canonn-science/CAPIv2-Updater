@@ -3,7 +3,7 @@
 */
 
 import Update from '../UpdateManager';
-import MIN_DISTANCE from '../settings';
+import { MIN_DISTANCE } from '../settings';
 
 export default function validateDuplicateSite(sitesToCheck = [], body = null, {latitude = null, longitude = null}) {
 

@@ -12,6 +12,7 @@ import body_from_edsm from '../../updaters/body_from_edsm';
 import reportUpdater from '../../updaters/report';
 import siteUpdater from '../../updaters/site';
 import site_from_report from '../../updaters/site_from_report';
+import cmdrUpdater from '../../updaters/cmdr';
 
 const CAPI_UPDATE = {
 
@@ -19,6 +20,12 @@ const CAPI_UPDATE = {
 		url: API_CANONN_REST+'/apiupdates',
 		updater:  apiupdatesUpdater,
 		getter: CAPI_GET['apiupdates']
+	},
+
+	'cmdr': {
+		url: API_CANONN_REST+'/cmdrs',
+		updater:  cmdrUpdater,
+		getter: CAPI_GET['cmdrs']
 	},
 
 	'systems': {
