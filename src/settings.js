@@ -60,3 +60,5 @@ export const REPORT_STATUS = {
 	issue: "issue",
 	duplicate: "duplicate"
 }
+
+export const DEFAULT_CMDR = 'zzz_Unknown';
