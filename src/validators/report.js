@@ -32,7 +32,7 @@ export default async function validateReport(report, { types = [], systems = [],
 
 	if(report.type) {
 
-		//Verify correct BT type
+		//Verify correct type
 		if( report.type && types.find( type => {
 	
 			if( type.type.toLowerCase() == report.type.toLowerCase() ) {

@@ -2,8 +2,6 @@
 	Sites updater
 */
 
-import { mapFields } from '../utils';
-
 export default function siteUpdater(report) {
 
 	if(report) {

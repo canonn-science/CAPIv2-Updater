@@ -1,8 +1,7 @@
 // That's all the data fetching and data updating you should ever need.
-import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../api/api';
+import { CAPI_fetch } from '../api/api';
 
 // Import all the needed settings and utilities for your script.
-import { timeToUpdate } from '../utils';
 import { LOCALE, TIMEZONE, REPORT_STATUS } from '../settings';
 
 // Import validators you use in the script.
@@ -12,8 +11,6 @@ import invalidBody from '../validators/body';
 
 // Import UI console printers for consistent script look
 import { 
-	UI_header, 
-	UI_footer, 
 	UI_h2,
 	UI_singleHr
 } from '../ui';

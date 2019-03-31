@@ -1,19 +1,22 @@
-// SCRIPT
+/* 
+===================
+= Script Settings =
+===================
+*/
 
-// Timedate formats for dates in updater
-// For more info see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString
+//Timedate formats for dates in updater
+//For more info see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString
 export const LOCALE = 'en-US';
 export const TIMEZONE = 'America/Phoenix';
 
 
-// APIs in general
+/* 
+================
+= API Settings =
+================
+*/
 
-// Time to wait if 429 code is encountered
-export const ERR429_DELAY =  300000; // 5 min
-
-
-// EDSM
-
+/* EDSM Options */
 // EDSM API url
 export const API_EDSM_URL = 'https://www.edsm.net';
 
@@ -23,14 +26,15 @@ export const EDSM_DELAY = 1500;
 // max number of systems in one call for EDSM
 export const EDSM_MAX_CALL_STACK = 25;
 
+// Time to wait if 429 code is encountered
+export const ERR429_DELAY =  300000; // 5 min
 
-// CANONN & CAPI
 
-// Canonn API urls - This is currently configured to work on a temporary test server
+/* Canonn APIv2 Options */
+
+// Canonn API urls - This is currently configured to work on the development server
 export const API_CANONN_GRAPHQL = 'https://api.canonn.tech:2083/graphql';
 export const API_CANONN_REST = 'https://api.canonn.tech:2083';
-
-// For local copy of Canonn API v2 Only, uncomment if you are building a seed file
 //export const API_CANONN_GRAPHQL = 'http://localhost:1337/graphql';
 //export const API_CANONN_REST = 'http://localhost:1337';
 

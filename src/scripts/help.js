@@ -1,12 +1,8 @@
 
 import SCRIPTS from './index';
-import CAPI_GET from '../api/canonn/capi_get';
 
 import { 
-	UI_header, 
-	UI_footer, 
-	UI_h2,
-	UI_singleHr
+	UI_h2
 } from '../ui.js';
 
 export default function helpScript(runtime) {

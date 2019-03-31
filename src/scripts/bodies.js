@@ -5,10 +5,7 @@ import invalidBody from '../validators/body';
 
 // Import UI console printers for consistent script look
 import { 
-	UI_header, 
-	UI_footer, 
 	UI_h2,
-	UI_singleHr
 } from '../ui';
 
 

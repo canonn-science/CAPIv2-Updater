@@ -1,5 +1,3 @@
-const fetch = require("node-fetch");
-
 import { EDSM_DELAY } from '../../settings';
 import { API_fetch } from '../api';
 

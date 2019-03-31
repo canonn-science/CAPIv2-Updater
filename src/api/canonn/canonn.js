@@ -12,9 +12,7 @@ import {
 	API_CANONN_STEP,
 	API_CANONN_GRAPHQL,
 	API_CANONN_REST,
-	API_CANONN_DELAY,
-	LOCALE, 
-	TIMEZONE
+	API_CANONN_DELAY
 } from '../../settings';
 
 const API_AUTH = API_CANONN_REST+'/auth/local/';
@@ -110,8 +108,6 @@ export function updateCAPIData(type, data, options) {
 	return new Promise(function(resolve, reject) {
 		updateSingle(resolve, reject, type, data, options);
 	});
-
-
 }
 
 
@@ -119,18 +115,18 @@ export function updateCAPIData(type, data, options) {
 -------------------------------------------------
 Internal functions - don't use outside this file. 
 -------------------------------------------------
+
+Fetch data from CAPI graphQL in a loop
+This function fires itself in a loop until all data has been downloaded
+After all loops are completed it returns a cumulative data array with everything fetched.
+
+	resolve: resolve from parent Promise (getCAPIData)
+	reject: reject from parent Promise (getCAPIData)
+	counter: current loop counter for schema 'start, limit' attributes (see schemas)
+	schema: schema function for graphQL
+	qlNode: graphQL node which contains returned data (see capi_get.js graphQLNode)
+	data: cumulative array of data returned from CAPI. This is returned at the end of this function
 */
-
-// Fetch data from CAPI graphQL in a loop
-// This function fires itself in a loop until all data has been downloaded
-// After all loops are completed it returns a cumulative data array with everything fetched.
-
-// resolve: resolve from parent Promise (getCAPIData)
-// reject: reject from parent Promise (getCAPIData)
-// counter: current loop counter for schema 'start, limit' attributes (see schemas)
-// schema: schema function for graphQL
-// qlNode: graphQL node which contains returned data (see capi_get.js graphQLNode)
-// data: cumulative array of data returned from CAPI. This is returned at the end of this function
 
 async function fetchSingle(resolve, reject, counter = 0, schema, whereFilter, qlNode = [], data = []) {
 
@@ -175,13 +171,15 @@ async function fetchSingle(resolve, reject, counter = 0, schema, whereFilter, ql
 
 }
 
-// Update data in CAPI REST
+/*
+Update data in CAPI REST
 
-// resolve: resolve from parent Promise (getCAPIData)
-// reject: reject from parent Promise (getCAPIData)
-// type: CAPI_update.js type
-// data: object you are trying to update or add
-// options: custom updater options, see CAPI_update in api.js
+	resolve: resolve from parent Promise (getCAPIData)
+	reject: reject from parent Promise (getCAPIData)
+	type: CAPI_update.js type
+	data: object you are trying to update or add
+	options: custom updater options, see CAPI_update in api.js
+*/
 
 async function updateSingle(resolve, reject, type, data, options) {
 
@@ -273,14 +271,15 @@ async function updateSingle(resolve, reject, type, data, options) {
 
 }
 
-// Creates a graphQL "where" filter from data for better query management
-// Example usage:
-//
-//	CAPI_fetch('systems', {
-//		where: {
-//			"systemName": "Maia"
-//		}
-//	});
+/* Creates a graphQL "where" filter from data for better query management
+Example usage:
+
+	CAPI_fetch('systems', {
+		where: {
+			"systemName": "Maia"
+		}
+	});
+*/
 
 function QLWhereFilter(data) {
 

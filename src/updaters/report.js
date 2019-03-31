@@ -2,8 +2,6 @@
 	Reports updater
 */
 
-import { mapFields } from '../utils';
-
 export default function reportUpdater(report) {
 
 	if(report) {

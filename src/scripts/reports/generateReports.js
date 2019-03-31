@@ -1,13 +1,9 @@
 // That's all the data fetching and data updating you should ever need.
 import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../../api/api';
 
-import validateBTReport from '../../validators/report';
-import { REPORT_STATUS } from '../../settings';
-
 // Import UI console printers for consistent script look
 import { 
-	UI_h2,
-	UI_singleHr
+	UI_h2
 } from '../../ui';
 
 /*
@@ -60,20 +56,6 @@ export default function generateReports(runtime) {
 			console.log('Chance of incorrect report: '+(incorrectChance*100)+'%');
 			console.log('Chance of duplicate report: '+(duplicateChance*100)+'%');
 			console.log();
-
-			UI_h2('Fetching basic data:');
-
-			const baseFetch = await Promise.all([
-		
-				CAPI_fetch('cmdrs'),
-				CAPI_fetch('systems'),
-				CAPI_fetch('bodies')
-		
-			]);
-
-			const cmdrs = baseFetch[0];
-			const systems = baseFetch[1];
-			const bodies = baseFetch[2];
 
 			// For each report code generate random reports
 			for( const reportCode of runtime.ids ) {

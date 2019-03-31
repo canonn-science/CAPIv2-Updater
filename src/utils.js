@@ -1,9 +1,7 @@
 
 import { 
 	EDSM_DELAY,
-	EDSM_MAX_CALL_STACK,
-	ARG_SYSTEMS_STRING,
-	ARG_BODIES_STRING
+	EDSM_MAX_CALL_STACK
 } from './settings';
 
 
