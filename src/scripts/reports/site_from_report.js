@@ -216,7 +216,7 @@ export default function site_from_reportScript(
 						await CAPI_update(reportsEndpoint, {
 							id: report.id,
 							site: duplicates[0].id,
-							reportStatus: REPORT_STATUS.accepted,
+							reportStatus: REPORT_STATUS.duplicate,
 							reportComment: '[DUPLICATE] Report points to an existing site: #'+duplicates[0].id
 						})
 	
