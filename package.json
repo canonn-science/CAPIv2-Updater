@@ -1,29 +1,27 @@
 {
-	"name": "canonn_edsm_updater",
+	"name": "capiv2-updater",
 	"version": "0.1.0",
-	"description": "Nodejs based tool to update the Canonn API with planetary and stellar data from EDSM",
+	"description": "Nodejs based tool to update the Canonn API with all manner of data",
 	"main": "index.js",
 	"scripts": {
 		"clean": "rimraf build",
 		"build": "npm run clean && babel src -d build",
-		"status": "node build/index.js status",
-		"updateSystems": "node build/index.js updateSystems",
-		"updateBodies": "node build/index.js updateBodies",
-		"updateAll": "node build/index.js updateAll",
-		"status:dev": "nodemon --exec babel-node src/index.js status",
-		"updateSystems:dev": "nodemon --exec babel-node src/index.js updateSystems",
-		"updateBodies:dev": "nodemon --exec babel-node src/index.js updateBodies",
-		"updateAll:dev": "nodemon --exec babel-node src/index.js updateAll"
+		"updater": "node build/index.js",
+		"updater:dev": "nodemon --exec babel-node src/index.js"
 	},
 	"devDependencies": {
-		"babel-cli": "^6.26.0",
-		"babel-preset-env": "^1.7.0",
-		"babel-preset-stage-2": "^6.24.1",
+		"@babel/cli": "^7.2.3",
+		"@babel/core": "^7.2.2",
+		"@babel/node": "^7.2.2",
+		"@babel/plugin-transform-regenerator": "^7.0.0",
+		"@babel/preset-env": "^7.3.1",
 		"nodemon": "^1.18.7",
 		"rimraf": "^2.6.2"
 	},
 	"dependencies": {
+		"@babel/polyfill": "^7.2.5",
 		"dotenv": "^6.1.0",
+		"moment": "^2.24.0",
 		"node-fetch": "^2.3.0"
 	},
 	"author": {

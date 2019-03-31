@@ -1,4 +1,4 @@
-import { API_CANONN_STEP } from '../settings.js';
+import { API_CANONN_STEP } from '../../settings';
 
 /*
 	GraphQL query schema for Bodies to grab data from Canonn API
@@ -6,18 +6,23 @@ import { API_CANONN_STEP } from '../settings.js';
 	query { } is omited on purpose
 */
 
-export default function bodiesSchema(limit = API_CANONN_STEP, start = 0) {
+export default function bodiesSchema(limit = API_CANONN_STEP, start = 0, whereFilter="{}") {
 
 	return `
 	{
-		bodies(limit: ${limit}, start:${start}) {
+		bodies(
+			limit: ${limit},
+			start:${start},
+			where: ${whereFilter}
+		){
+
 			id
 			bodyName
 			system {
 				id
 				systemName
 			}
-
+	
 			edsmID
 			bodyID
 			id64
@@ -52,6 +57,7 @@ export default function bodiesSchema(limit = API_CANONN_STEP, start = 0) {
 			solidComposition
 			atmosphere
 			material
+			
 		}
 	}`;
 }
