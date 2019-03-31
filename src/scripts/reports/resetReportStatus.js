@@ -1,10 +1,9 @@
 
-import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../../api/api';
+import { CAPI_fetch, CAPI_update } from '../../api/api';
 import { REPORT_STATUS } from '../../settings';
 
 import { 
-	UI_h2,
-	UI_singleHr
+	UI_h2
 } from '../../ui.js';
 
 export default function resetReportStatus(runtime) {

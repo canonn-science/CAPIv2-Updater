@@ -6,9 +6,7 @@ import invalidSystem from '../validators/system';
 // Import UI console printers for consistent script look
 import { 
 	UI_header, 
-	UI_footer, 
-	UI_h2,
-	UI_singleHr
+	UI_h2
 } from '../ui';
 
 

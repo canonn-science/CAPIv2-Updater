@@ -1,6 +1,4 @@
 
-import validateSystem from '../../validators/system';
-import validateBody from '../../validators/body';
 import validateReport from '../../validators/report';
 import validateDuplicateSite from '../../validators/duplicateSite';
 
@@ -10,11 +8,8 @@ import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../../api/api';
 import { LOCALE, TIMEZONE, REPORT_STATUS } from '../../settings';
 
 // Import UI console printers for consistent script look
-import { 
-	UI_header, 
-	UI_footer, 
-	UI_h2,
-	UI_singleHr
+import {  
+	UI_h2
 } from '../../ui';
 
 // Max allowed difference between report and site lat/lng for the report to be 

@@ -3,18 +3,15 @@
 	This is the entry script to validate reports and create sites from them.
 
 */
-import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../api/api';
-import { LOCALE, TIMEZONE, REPORT_STATUS } from '../settings';
+import { CAPI_fetch } from '../api/api';
+import { REPORT_STATUS } from '../settings';
 
 import site_from_reportScript from './reports/site_from_report';
 
 
 // Import UI console printers for consistent script look
 import { 
-	UI_header, 
-	UI_footer, 
-	UI_h2,
-	UI_singleHr
+	UI_header
 } from '../ui';
 
 export default function reportsScript(runtime) {

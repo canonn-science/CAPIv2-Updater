@@ -11,7 +11,6 @@ import system_from_edsm from '../../updaters/system_from_edsm';
 import body_from_edsm from '../../updaters/body_from_edsm';
 import reportUpdater from '../../updaters/report';
 import siteUpdater from '../../updaters/site';
-import site_from_report from '../../updaters/site_from_report';
 
 const CAPI_UPDATE = {
 
