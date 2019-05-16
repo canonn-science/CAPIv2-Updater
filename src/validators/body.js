@@ -17,7 +17,7 @@ export default function invalidBody(body) {
 
 	// basics check
 	if( 
-		body.id64 == null 					||
+		//body.id64 == null 					||
 		body.edsmID == null 				||
 		body.bodyID == null 				||
 		body.type == null 					||
