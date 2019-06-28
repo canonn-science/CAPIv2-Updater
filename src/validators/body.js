@@ -19,11 +19,7 @@ export default function invalidBody(body) {
 	if( 
 		//body.id64 == null 					||
 		body.edsmID == null 				||
-		body.bodyID == null 				||
-		body.type == null 					||
-		body.subType == null 				||
-		body.distanceToArrival == null		||
-		body.surfaceTemperature == null
+		body.type == null
 	) {
 		return true;
 	}

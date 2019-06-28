@@ -24,7 +24,8 @@ export default function system_from_edsm({capisystem = {}, edsmsystem = null}) {
 			"edsmCoordLocked" 	: 	edsmsystem.coordsLocked,
 			"edsmCoordX"		: 	edsmsystem.coords.x,
 			"edsmCoordY"		: 	edsmsystem.coords.y,
-			"edsmCoordZ"		: 	edsmsystem.coords.z
+			"edsmCoordZ"		: 	edsmsystem.coords.z,
+			"primaryStar"		:		edsmsystem.primaryStar
 
 		});
 

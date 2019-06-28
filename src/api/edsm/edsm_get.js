@@ -15,7 +15,7 @@ const EDSM_GET = {
 
 	'systems': {
 		url: API_EDSM_URL+'/api-v1/systems',
-		baseData: { showCoordinates: true, showInformation: true, showId: true }
+		baseData: { showCoordinates: true, showInformation: true, showId: true, showPrimaryStar: true }
 		// EDSM_fetch(type, data) POST data required: { systemName: ["Sol", "Maia",...] }
 	},
 
