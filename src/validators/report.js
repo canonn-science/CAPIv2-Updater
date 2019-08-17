@@ -136,10 +136,10 @@ export default async function validateReport(report, { types = [], systems = [],
 	}
 
 
-	if( report.latitude == 0 && report.longitude == 0 ) {
+	if( report.latitude == 0 || report.longitude == 0 || report.latitude == undefined || report.longitude == undefined) {
 
 		reportValid = false;
-		invalidReason.push('[DECLINE] lat/lng both equal 0');
+		invalidReason.push('[DECLINE] lat/lng equal 0 or missing');
 
 	}
 
