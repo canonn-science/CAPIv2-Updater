@@ -2,7 +2,7 @@ import { mapFields } from '../utils';
 
 export default function system_from_edsm({capibody = {}, edsmbody = null}) {
 
-	if(edsmbody && edsmbody.name != undefined) {
+	if(edsmbody) {
 
 		// See mapFields function in utils.js
 		// mapFields(source, map)

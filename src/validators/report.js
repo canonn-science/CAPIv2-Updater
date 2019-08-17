@@ -216,8 +216,12 @@ export default async function validateReport(report, { types = [], systems = [],
 					} else {
 						reportValid = false;
 						invalidReason.push('[DECLINE] Body does not exist in EDSM.');
-    					console.log(' - [DECLINE] Body does not exist in EDSM.');
+							console.log(' - [DECLINE] Body does not exist in EDSM.');
 					}
+				} else {
+					reportValid = false;
+					invalidReason.push('[DECLINE] Body does not exist in EDSM.');
+						console.log(' - [DECLINE] Body does not exist in EDSM.');
 				}
 		
 			} else {
