@@ -2,7 +2,7 @@ import { mapFields } from '../utils';
 
 export default function system_from_edsm({capibody = {}, edsmbody = null}) {
 
-	if(edsmbody) {
+	if(edsmbody && edsmbody.name != undefined) {
 
 		// See mapFields function in utils.js
 		// mapFields(source, map)
@@ -63,7 +63,7 @@ export default function system_from_edsm({capibody = {}, edsmbody = null}) {
 		return output;
 
 	} else {
-		console.log('[ERROR] [UPDATER] body_from_edsm: edsmbody not defined or wrong: ', edsmbody);
+		console.log('[ERROR] [UPDATER] body_from_edsm: body does not exist in edsm: ', edsmbody);
 		return null;
 	}
 

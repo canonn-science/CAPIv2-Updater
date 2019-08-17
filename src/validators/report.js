@@ -173,8 +173,8 @@ export default async function validateReport(report, { types = [], systems = [],
     				console.log(' - [PASS] Body in CAPI and is valid');
     				missingData.body = false;
     			} else {
-    				console.log(' - [NEED] Body is in CAPI but needs an update');
-    				capiBodyToUpdate = capiBody;
+						console.log(' - [NEED] Body is in CAPI but needs an update');
+						capiBodyToUpdate = capiBody;
     			}
 
 			} else {
