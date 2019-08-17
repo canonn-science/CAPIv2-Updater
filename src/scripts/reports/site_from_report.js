@@ -4,7 +4,7 @@ import validateDuplicateSite from '../../validators/duplicateSite';
 
 import site_from_report from '../../updaters/site_from_report';
 
-import { CAPI_fetch, CAPI_update, EDSM_fetch } from '../../api/api';
+import { CAPI_fetch, CAPI_update } from '../../api/api';
 import { LOCALE, TIMEZONE, REPORT_STATUS } from '../../settings';
 
 // Import UI console printers for consistent script look
@@ -129,7 +129,6 @@ export default function site_from_reportScript(
 
 				}
 
-
 				// Check system and add it if needed
 				if( precheck.missingData.system ) {
 
@@ -242,6 +241,13 @@ export default function site_from_reportScript(
 								return type;
 							}
 						});
+
+						// Set cmdr object for this report
+						cmdr = cmdrs.find( cmdr => {
+							if( cmdr.cmdrName == report.cmdrName) {
+								return cmdr;
+							}
+						})
 	
 						// Prepare basics for new site
 						let payload_site = {
@@ -284,10 +290,10 @@ export default function site_from_reportScript(
 
 				// Uncomment this for a delay after report pushing
 				// useful for testing
-				console.log('(for testing purposes) Waiting 20s...');
-				await new Promise( (resolve) => {
-					setTimeout(resolve, 20000);
-				});
+				//console.log('(for testing purposes) Waiting 20s...');
+				//await new Promise( (resolve) => {
+				//	setTimeout(resolve, 20000);
+				//});
 				
 				
 
