@@ -35,8 +35,8 @@ export const ERR429_DELAY =  300000; // 5 min
 // Canonn API urls - This is currently configured to work on the development server
 export const API_CANONN_GRAPHQL = 'https://api.canonn.tech:2083/graphql';
 export const API_CANONN_REST = 'https://api.canonn.tech:2083';
-//export const API_CANONN_GRAPHQL = 'http://localhost:1337/graphql';
-//export const API_CANONN_REST = 'http://localhost:1337';
+//export const API_CANONN_GRAPHQL = 'http://localhost:1339/graphql';
+//export const API_CANONN_REST = 'http://localhost:1339';
 
 // max limit per one GraphQL query for Canonn API
 // consult with your nearest Canonn API admin

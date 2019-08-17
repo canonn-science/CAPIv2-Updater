@@ -4,7 +4,7 @@
 
 export default function invalidSystem(system) {
 
-	if(system.edsmCoordLocked) {
+	if(system.edsmCoordLocked || system.edsmID) {
 		return false;
 	}
 
