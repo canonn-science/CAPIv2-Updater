@@ -47,7 +47,7 @@ authenticate(process.env.API_USERNAME, process.env.API_PASSWORD).then( async (to
 	await ScriptManager.runScripts();
 
 	// Send update log to server.
-	await Update.submit();
+	//await Update.submit();
 
 	// That's all folks.
 

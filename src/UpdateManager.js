@@ -13,6 +13,7 @@ import { CAPI_update } from './api/api';
 import { 
 	UI_header
 } from './ui.js';
+import { fn } from 'moment';
 
 
 const LOG_TYPES = {
@@ -33,17 +34,17 @@ const Update = {
 
 	log: log,
 
-	submit: function() {
+	submit: async function() {
 
 		let log = {
 			runtime: this.runtime,
-			scriptLog: this.scriptLog,
+			//scriptLog: this.scriptLog,
 			errorLog: this.errorLog,
-			updateLog: this.updateLog
+			//updateLog: this.updateLog
 		}
 
 		UI_header('Submitting UpdateLog to CAPI.');
-		CAPI_update('apiupdates', log);
+		await CAPI_update('apiupdates', log);
 
 	}
 
@@ -88,17 +89,19 @@ function logError({type="error", msg ='', object={}, submit=false}) {
 
 	const DT = new Date().toLocaleString(LOCALE, { timeZone: TIMEZONE });
 	const script = Object.assign({}, ScriptManager.activeScript);
+		delete script.fn;
+		delete script.runtime;
 
 	let errorMsg = LOG_TYPES[type]+msg;
 
-	console.log();
 	console.log(errorMsg);
+	console.log(object);
 
 	const newError = {
 		datetime: DT,
 		message: errorMsg,
-		script: JSON.stringify(script),
-		object: JSON.stringify(object)
+		//script: script,
+		object: object
 	}
 
 	Update.errorLog.push(newError);
@@ -109,29 +112,24 @@ function logError({type="error", msg ='', object={}, submit=false}) {
 function logUpdate({type="update", msg ='', object={}, submit=false}) {
 
 	const DT = new Date().toLocaleTimeString(LOCALE, { timeZone: TIMEZONE });
-	const activeScript = Object.assign({}, ScriptManager.activeScript);
+	/*const activeScript = Object.assign({}, ScriptManager.activeScript);
+		delete activeScript.fn;
 
 	let updateLogScript = Update.updateLog.find( log => {
 		return log.script.type == activeScript.type;
-	});
+	});*/
 
 	let update = {
 		dateTime: DT+' '+TIMEZONE,
 		...object
 	}
 
-	if(updateLogScript) {
-		
-		updateLogScript.updates.push(update);
+	Update.updateLog.push({
+		//script: activeScript,
+		updates: [update]
+	});
 
-	} else {
 
-		Update.updateLog.push({
-			script: activeScript,
-			updates: [update]
-		});
-
-	}
 
 
 }

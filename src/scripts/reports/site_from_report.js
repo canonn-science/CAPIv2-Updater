@@ -11,6 +11,7 @@ import { LOCALE, TIMEZONE, REPORT_STATUS } from '../../settings';
 import {  
 	UI_h2
 } from '../../ui';
+import Update from '../../UpdateManager';
 
 // Max allowed difference between report and site lat/lng for the report to be 
 // considered a duplicate of existing site.
@@ -68,6 +69,9 @@ export default function site_from_reportScript(
 		console.log('CMDRS: '+cmdrs.length);
 		console.log('CMDRS (Blacklisted): '+excludecmdrs.length);
 		console.log('Clients (Blacklisted): '+excludeclients.length);
+
+		console.log('REPORTS LIST: ');
+		console.log(reports);
 
 		for( const report of reports ) {
 			if(report) {
@@ -199,7 +203,19 @@ export default function site_from_reportScript(
 					console.log();
 
 					let bodySites = sites.filter( site => {
-						return site.body.bodyName.toLowerCase() == report.bodyName.toLowerCase();
+						if(!site || !site.body) {
+
+							Update.log({
+								type: "error",
+								msg: 'There is a problem with this site - body is null',
+								object: site,
+								submit: true,
+							});
+							return false;
+
+						} else {
+							return site.body.bodyName.toLowerCase() == report.bodyName.toLowerCase();
+						}
 					});
 
 					console.log('Sites found on the same body ['+report.bodyName+']: '+bodySites.length);
