@@ -49,6 +49,10 @@ import lssitesSchema from '../schemas/lssites';
 import lsreportsSchema from '../schemas/lsreports';
 import lstypesSchema from '../schemas/lstypes';
 
+import tbsitesSchema from '../schemas/tbsites';
+import tbreportsSchema from '../schemas/tbreports';
+import tbtypesSchema from '../schemas/tbtypes';
+
 import twsitesSchema from '../schemas/twsites';
 import twreportsSchema from '../schemas/twreports';
 import twtypesSchema from '../schemas/twtypes';
@@ -304,6 +308,25 @@ const CAPI_GET = {
 	'lstypes': {
 		schema: lstypesSchema,
 		graphQLNode: 'lstypes'
+		//updaterNode: 'bodies'
+	},
+
+	// Thargoid Barnacles
+	'tbsites': {
+		schema: tbsitesSchema,
+		graphQLNode: 'tbsites'
+		//updaterNode: 'bodies'
+	},
+
+	'tbreports': {
+		schema: tbreportsSchema,
+		graphQLNode: 'tbreports'
+		//updaterNode: 'bodies'
+	},
+
+	'tbtypes': {
+		schema: tbtypesSchema,
+		graphQLNode: 'tbtypes'
 		//updaterNode: 'bodies'
 	},
 
