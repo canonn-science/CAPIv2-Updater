@@ -136,10 +136,10 @@ export default async function validateReport(report, { types = [], systems = [],
 	}
 
 
-	if( report.latitude == 0 && report.longitude == 0 ) {
+	if( report.latitude == 0 || report.longitude == 0 || report.latitude == undefined || report.longitude == undefined) {
 
 		reportValid = false;
-		invalidReason.push('[DECLINE] lat/lng both equal 0');
+		invalidReason.push('[DECLINE] lat/lng equal 0 or missing');
 
 	}
 
@@ -173,8 +173,8 @@ export default async function validateReport(report, { types = [], systems = [],
     				console.log(' - [PASS] Body in CAPI and is valid');
     				missingData.body = false;
     			} else {
-    				console.log(' - [NEED] Body is in CAPI but needs an update');
-    				capiBodyToUpdate = capiBody;
+						console.log(' - [NEED] Body is in CAPI but needs an update');
+						capiBodyToUpdate = capiBody;
     			}
 
 			} else {
@@ -216,8 +216,12 @@ export default async function validateReport(report, { types = [], systems = [],
 					} else {
 						reportValid = false;
 						invalidReason.push('[DECLINE] Body does not exist in EDSM.');
-    					console.log(' - [DECLINE] Body does not exist in EDSM.');
+							console.log(' - [DECLINE] Body does not exist in EDSM.');
 					}
+				} else {
+					reportValid = false;
+					invalidReason.push('[DECLINE] Body does not exist in EDSM.');
+						console.log(' - [DECLINE] Body does not exist in EDSM.');
 				}
 		
 			} else {

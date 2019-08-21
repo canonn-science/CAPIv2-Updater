@@ -15,7 +15,8 @@ export default function apiupdatesUpdater(updateLog = {}) {
 
 		const output = {
 			updateTime: date,
-			updateLog: updateLog
+			updateLog: updateLog,
+			error: true
 		};
 
 		return output;

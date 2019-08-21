@@ -203,7 +203,7 @@ export async function API_fetch({ url, method, headers, payload={}, delay=API_CA
 				type: 'networkerror',
 				msg: 'Fetch error occured',
 				object: e,
-				submit: true
+				submit: false
 			});
 
 			process.exit();
