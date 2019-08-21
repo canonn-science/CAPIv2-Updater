@@ -103,6 +103,12 @@ const CAPI_UPDATE = {
 		getter: CAPI_GET['lsreports']
 	},
 
+	'tbreports': {
+		url: API_CANONN_REST+'/tbreports',
+		updater:  reportUpdater,
+		getter: CAPI_GET['tbreports']
+	},
+
 	'twreports': {
 		url: API_CANONN_REST+'/twreports',
 		updater:  reportUpdater,
@@ -164,6 +170,12 @@ const CAPI_UPDATE = {
 		url: API_CANONN_REST+'/lssites',
 		updater:  siteUpdater,
 		getter: CAPI_GET['lssites']
+	},
+
+	'tbsites': {
+		url: API_CANONN_REST+'/tbsites',
+		updater:  siteUpdater,
+		getter: CAPI_GET['tbsites']
 	},
 
 	'twsites': {

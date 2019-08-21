@@ -68,7 +68,10 @@ export default function statusScript(runtime) {
 			CAPI_fetch('twreports'),
 
 			CAPI_fetch('apsites'),
-			CAPI_fetch('apreports')
+			CAPI_fetch('apreports'),
+
+			CAPI_fetch('tbsites'),
+			CAPI_fetch('tbreports')
 
 		]);
 
@@ -121,6 +124,11 @@ export default function statusScript(runtime) {
 				name: '[LS] Lava Sprouts',
 				sites: data[17],
 				reports: data[18]
+			},
+			{
+				name: '[TB] Thargoid Barnacles',
+				sites: data[23],
+				reports: data[24]
 			},
 			{
 				name: '[TW] Tube Worms',
