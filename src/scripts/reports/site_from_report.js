@@ -293,6 +293,7 @@ export default function site_from_reportScript(
 							await CAPI_update(reportsEndpoint, {
 								id: report.id,
 								site: newSite[0].id,
+								added: true,
 								reportStatus: REPORT_STATUS.accepted,
 								reportComment: '[ACCEPTED] On: '+ (new Date().toLocaleString(LOCALE, { timeZone: TIMEZONE }) )+' / '+TIMEZONE
 							});
